@@ -26,7 +26,7 @@ console.log(DB_USER, DB_PASSWORD)
 
 //Set up default mongoose connection
 var mongoDB =
-  `mongodb://${DB_USER}:${DB_PASSWORD}@localhost:27017/eproc?authSource=admin`;
+  `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
 
 
 mongoose.connect(mongoDB);
