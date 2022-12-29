@@ -1,0 +1,10 @@
+export type ContractStatus = "active" | "on hold" | "terminated" | "completed" | "extended" | "pending" | "awarded";
+export type PoStatus = "active" | "on hold" | "terminated" | "completed" | "extended" | "pending" | "awarded";
+export type RequestType = 'rfq' | 'rfp' | 'rfi'
+export type ContractType = 'one time'|'framework'
+export type ServiceCategory = 'RECUITEMENT' | 'TEAM BUILDING' | 'IT SERVICES' | 'STATIONERIES SUPPLY' | 'REFRESHMENTS SUPPLY' |'PROMO MATERIALS SUPPLY' | 'PRINTING SERVICES' | 'MEDIA SRVICES' 
+                                | 'CLEANING SERVICES' | 'MEDICAL INSURANCE SERVICES' | 'GENERAL INSURANCE SERVICES' | 'SECURITY SERVICES' | 'CATERING SERVICES (RESTAURANTS)' | 'HOTELS & CONFERENCES SERVICES'
+                                | 'TRAVAL & TOUR SERVICES' | 'DECORATION SERVICS' | 'ENTERTAINMENT SERVICES' | 'TRANSPORT SERVICES' | 'GARAGE & MAINTENANCE SERVICES' | 'GENERAL MAINTENANCE (HOUSING)'
+export type UserType = 'DPT-USER' | 'VENDOR' | 'HOD' | 'PROC-MANAGER' | 'RISK-COM-MEMBER' | 'BoD-MEMBER' | 'CEO' | 'HEAD-OF-FINANCE'
+export type UserStatus = 'created' | 'active' | 'inactive' | ''
+
