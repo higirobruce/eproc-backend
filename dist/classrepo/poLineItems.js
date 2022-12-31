@@ -11,7 +11,7 @@ class PoLineItem {
         this.quantity = quantity;
         this.serviceCategory = serviceCategory;
         this.estimatedUnitCost = estimatedUnitCost;
-        this.currency = currency;
+        this.currency = currency ? currency : 'RWF';
         this.description = description;
         this.techSpecs = techSpecs;
         this.tors = tors;

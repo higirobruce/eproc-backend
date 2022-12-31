@@ -19,10 +19,14 @@ exports.requetsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, f
     res.send(yield (0, requests_2.getAllRequests)());
 }));
 exports.requetsRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
     let { createdBy, items, dueDate, status, attachementUrls, } = req.body;
     let number = yield (0, requests_3.generateReqNumber)();
-    let requestToCreate = new requests_1.Request(createdBy, items, dueDate, status, attachementUrls, number);
+    let itemObjects = items.map((i) => {
+        if (!i.currency)
+            i.currency = 'RWF';
+        return i;
+    });
+    let requestToCreate = new requests_1.Request(createdBy, itemObjects, dueDate, status, attachementUrls, number);
     let createdRequest = yield (0, requests_2.saveRequest)(requestToCreate);
     res.status(201).send(createdRequest);
 }));

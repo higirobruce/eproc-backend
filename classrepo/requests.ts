@@ -6,7 +6,6 @@ import { PoLineItem } from "./poLineItems";
 
 export class Request implements IRequest {
     createdBy: Types.ObjectId;
-   
     items: PoLineItem[];
     dueDate: Date;
     status: ContractStatus;

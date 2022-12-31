@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { PoLineItem } from '../classrepo/poLineItems';
 import { Request } from '../classrepo/requests';
 import { User } from '../classrepo/users';
 import { approveRequest, declineRequest, getAllRequests, saveRequest } from '../controllers/requests';
@@ -14,7 +15,6 @@ requetsRouter.get('/', async (req, res) => {
 })
 
 requetsRouter.post('/', async (req, res) => {
-    console.log(req.body);
     let {
         createdBy,
         items,
@@ -23,8 +23,13 @@ requetsRouter.post('/', async (req, res) => {
         attachementUrls,
     } = req.body
     let number = await generateReqNumber();
+    let itemObjects = items.map((i: PoLineItem) => {
+        if (!i.currency) i.currency = 'RWF';
+        return i;
+    })
 
-    let requestToCreate = new Request(createdBy,items,dueDate,status,attachementUrls,number);
+
+    let requestToCreate = new Request(createdBy, itemObjects, dueDate, status, attachementUrls, number);
 
     let createdRequest = await saveRequest(requestToCreate);
     res.status(201).send(createdRequest)
