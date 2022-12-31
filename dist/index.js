@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const usersRoute_1 = require("./routes/usersRoute");
 const requestsRoute_1 = require("./routes/requestsRoute");
+const serviceCategories_1 = require("./routes/serviceCategories");
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
 const dptRoute_1 = require("./routes/dptRoute");
@@ -56,6 +57,7 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use('/users', auth, usersRoute_1.userRouter);
 app.use('/requests', auth, requestsRoute_1.requetsRouter);
 app.use('/dpts', auth, dptRoute_1.dptRouter);
+app.use('/serviceCategories', auth, serviceCategories_1.serviceCategoryRouter);
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`App listening on port ${PORT}`);
 }));

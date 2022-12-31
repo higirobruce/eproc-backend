@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export class PoLineItem {
     itemId: mongoose.Types.ObjectId
     quantity: number
+    serviceCategory: string
     estimatedUnitCost: number
     currency: string
     description: string
@@ -17,6 +18,7 @@ export class PoLineItem {
     constructor(
         itemId: string,
         quantity: number,
+        serviceCategory: string,
         estimatedUnitCost: number,
         currency: string,
         description: string,
@@ -29,6 +31,7 @@ export class PoLineItem {
     ) {
         this.itemId = itemId ? new mongoose.Types.ObjectId(itemId) : new mongoose.Types.ObjectId()
         this.quantity = quantity
+        this.serviceCategory =  serviceCategory
         this.estimatedUnitCost = estimatedUnitCost
         this.currency = currency
         this.description = description

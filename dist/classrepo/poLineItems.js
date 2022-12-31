@@ -6,9 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PoLineItem = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 class PoLineItem {
-    constructor(itemId, quantity, estimatedUnitCost, currency, description, techSpecs, tors, referenceLinks, budgetLine, budgeted, lineOfBusiness) {
+    constructor(itemId, quantity, serviceCategory, estimatedUnitCost, currency, description, techSpecs, tors, referenceLinks, budgetLine, budgeted, lineOfBusiness) {
         this.itemId = itemId ? new mongoose_1.default.Types.ObjectId(itemId) : new mongoose_1.default.Types.ObjectId();
         this.quantity = quantity;
+        this.serviceCategory = serviceCategory;
         this.estimatedUnitCost = estimatedUnitCost;
         this.currency = currency;
         this.description = description;

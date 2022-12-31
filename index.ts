@@ -5,6 +5,7 @@ import express, { Express, NextFunction, Request, Response } from 'express'
 import mongoose, { SchemaTypes } from 'mongoose'
 import { userRouter } from './routes/usersRoute';
 import { requetsRouter } from './routes/requestsRoute'
+import {serviceCategoryRouter} from './routes/serviceCategories'
 
 
 import bodyParser from 'body-parser';
@@ -67,6 +68,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/users', auth, userRouter);
 app.use('/requests', auth, requetsRouter);
 app.use('/dpts', auth, dptRouter);
+app.use('/serviceCategories', auth, serviceCategoryRouter);
 
 app.listen(PORT, async () => {
 
