@@ -1,22 +1,14 @@
 
-import { createHash } from 'crypto';
 import express, { Express, NextFunction, Request, Response } from 'express'
-
-import mongoose, { SchemaTypes } from 'mongoose'
+import mongoose from 'mongoose'
 import { userRouter } from './routes/usersRoute';
 import { requetsRouter } from './routes/requestsRoute'
 import {serviceCategoryRouter} from './routes/serviceCategories'
-
+import { dptRouter } from './routes/dptRoute';
+import { tenderRouter } from './routes/tenders';
 
 import bodyParser from 'body-parser';
-import cors from 'cors-ts'
-import { Department } from './classrepo/departments';
-import { saveDepartment, getAllDepartments } from './controllers/departments';
-import { dptRouter } from './routes/dptRoute';
-import { Request as Req } from './classrepo/requests';
-import { PoLineItem } from './classrepo/poLineItems';
-import { saveRequest } from './controllers/requests';
-import { generateReqNumber } from './services/requests';
+import cors from 'cors-ts';
 
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999
 const DB_USER = process.env.EPROC_DB_USER 
@@ -69,6 +61,7 @@ app.use('/users', auth, userRouter);
 app.use('/requests', auth, requetsRouter);
 app.use('/dpts', auth, dptRouter);
 app.use('/serviceCategories', auth, serviceCategoryRouter);
+app.use('/tenders', auth, tenderRouter);
 
 app.listen(PORT, async () => {
 

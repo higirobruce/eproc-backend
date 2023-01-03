@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequests = void 0;
+exports.updateStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequests = void 0;
 const requests_1 = require("../models/requests");
 function getAllRequests() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -61,7 +61,7 @@ function declineRequest(id) {
     });
 }
 exports.declineRequest = declineRequest;
-function updateRequestStatus(id, newStatus) {
+function updateStatus(id, newStatus) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: { status: newStatus } });
@@ -75,4 +75,4 @@ function updateRequestStatus(id, newStatus) {
         }
     });
 }
-exports.updateRequestStatus = updateRequestStatus;
+exports.updateStatus = updateStatus;

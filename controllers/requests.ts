@@ -41,3 +41,15 @@ export async function declineRequest(id: String) {
         }
     }
 }
+
+export async function updateRequestStatus(id: String, newStatus: String) {
+    try {
+        await RequestModel.findByIdAndUpdate(id, { $set: { status: newStatus } })
+        return { message: 'done' }
+    } catch (err) {
+        return {
+            error: true,
+            errorMessage: `Error :${err}`
+        }
+    }
+}
