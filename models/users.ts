@@ -62,10 +62,16 @@ export const UserSchema = new Schema<IUserDocument>({
         type: String
     },
     department: {
-        type:Types.ObjectId,
+        type: Types.ObjectId,
         ref: 'Department'
-    }
-   
+    },
+    companyName: {
+        type: String,
+        required: true,
+        unique: true,
+        dropDups: true,
+    },
+
 })
 
 

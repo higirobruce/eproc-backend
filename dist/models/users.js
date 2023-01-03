@@ -67,7 +67,13 @@ exports.UserSchema = new mongoose_1.Schema({
     department: {
         type: mongoose_1.Types.ObjectId,
         ref: 'Department'
-    }
+    },
+    companyName: {
+        type: String,
+        required: true,
+        unique: true,
+        dropDups: true,
+    },
 });
 // Method to set salt and hash the password for a user 
 exports.UserSchema.methods.setPassword = function (password) {
