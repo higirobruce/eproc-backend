@@ -13,6 +13,28 @@ export async function getAllTenders() {
     return reqs
 }
 
+export async function getOpenTenders() {
+    let reqs = await TenderModel.find({status:'open'}).populate('createdBy').populate({
+        path: "createdBy", 
+        populate: {
+            path:'department',
+            model:'Department'
+        }
+    })
+    return reqs
+}
+
+export async function getClosedTenders() {
+    let reqs = await TenderModel.find({status:'closed'}).populate('createdBy').populate({
+        path: "createdBy", 
+        populate: {
+            path:'department',
+            model:'Department'
+        }
+    })
+    return reqs
+}
+
 export async function saveTender(tender: Tender) {
     let newTender = await TenderModel.create(tender);
     return newTender._id;

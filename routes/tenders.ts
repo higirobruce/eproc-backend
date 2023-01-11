@@ -4,7 +4,7 @@ import { Request } from '../classrepo/requests';
 import { Tender } from '../classrepo/tenders';
 import { User } from '../classrepo/users';
 import { approveRequest, declineRequest, getAllRequests, saveRequest, updateRequestStatus } from '../controllers/requests';
-import { getAllTenders, saveTender, updateTenderStatus } from '../controllers/tenders';
+import { getAllTenders, getClosedTenders, getOpenTenders, saveTender, updateTenderStatus } from '../controllers/tenders';
 import { generateReqNumber } from '../services/requests';
 import { generateTenderNumber } from '../services/tenders';
 
@@ -13,6 +13,17 @@ export const tenderRouter = Router();
 
 tenderRouter.get('/', async (req, res) => {
     res.send(await getAllTenders())
+})
+
+tenderRouter.get('/stats', async (req, res) => {
+    let allTenders = await getAllTenders()
+    let openTenders = await getOpenTenders()
+    let closedTenders = await getClosedTenders()
+    res.send({
+        total: allTenders.length,
+        open: openTenders.length,
+        closed: closedTenders.length
+    })
 })
 
 tenderRouter.post('/', async (req, res) => {

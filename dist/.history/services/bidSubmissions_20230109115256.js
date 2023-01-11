@@ -13,7 +13,7 @@ exports.generateBidSubmissionNumber = void 0;
 const bidSubmissions_1 = require("../models/bidSubmissions");
 const generateBidSubmissionNumber = () => __awaiter(void 0, void 0, void 0, function* () {
     // Get the last saved document
-    const lastDocument = yield bidSubmissions_1.BidSubmissionModel.findOne().sort({ number: -1 });
+    const lastDocument = yield bidSubmissions_1.BidSumbissionModel.findOne().sort({ number: -1 });
     // Generate a new 10-digit number, starting from 1000000000 and incrementing by 1
     let newNumber = 13000000;
     if (lastDocument && lastDocument.number) {

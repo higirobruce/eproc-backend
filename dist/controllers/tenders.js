@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateTenderStatus = exports.saveTender = exports.getAllTenders = void 0;
+exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getAllTenders = void 0;
 const tenders_1 = require("../models/tenders");
 function getAllTenders() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -24,6 +24,32 @@ function getAllTenders() {
     });
 }
 exports.getAllTenders = getAllTenders;
+function getOpenTenders() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let reqs = yield tenders_1.TenderModel.find({ status: 'open' }).populate('createdBy').populate({
+            path: "createdBy",
+            populate: {
+                path: 'department',
+                model: 'Department'
+            }
+        });
+        return reqs;
+    });
+}
+exports.getOpenTenders = getOpenTenders;
+function getClosedTenders() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let reqs = yield tenders_1.TenderModel.find({ status: 'closed' }).populate('createdBy').populate({
+            path: "createdBy",
+            populate: {
+                path: 'department',
+                model: 'Department'
+            }
+        });
+        return reqs;
+    });
+}
+exports.getClosedTenders = getClosedTenders;
 function saveTender(tender) {
     return __awaiter(this, void 0, void 0, function* () {
         let newTender = yield tenders_1.TenderModel.create(tender);

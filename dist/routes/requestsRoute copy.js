@@ -41,5 +41,5 @@ exports.requetsRouter.post('/decline/:id', (req, res) => __awaiter(void 0, void 
 exports.requetsRouter.put('/status/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     let { status } = req.body;
-    res.send(yield (0, requests_2.updateStatus)(id, status));
+    res.send(yield (0, requests_2.updateRequestStatus)(id, status));
 }));

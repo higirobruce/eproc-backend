@@ -18,6 +18,16 @@ exports.tenderRouter = (0, express_1.Router)();
 exports.tenderRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, tenders_2.getAllTenders)());
 }));
+exports.tenderRouter.get('/stats', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let allTenders = yield (0, tenders_2.getAllTenders)();
+    let openTenders = yield (0, tenders_2.getOpenTenders)();
+    let closedTenders = yield (0, tenders_2.getClosedTenders)();
+    res.send({
+        total: allTenders.length,
+        open: openTenders.length,
+        closed: closedTenders.length
+    });
+}));
 exports.tenderRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { createdBy, items, dueDate, status, attachementUrls, submissionDeadLine, torsUrl, purchaseRequest } = req.body;
     let number = yield (0, tenders_3.generateTenderNumber)();

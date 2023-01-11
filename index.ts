@@ -3,15 +3,17 @@ import express, { Express, NextFunction, Request, Response } from 'express'
 import mongoose from 'mongoose'
 import { userRouter } from './routes/usersRoute';
 import { requetsRouter } from './routes/requestsRoute'
-import {serviceCategoryRouter} from './routes/serviceCategories'
+import { serviceCategoryRouter } from './routes/serviceCategories'
 import { dptRouter } from './routes/dptRoute';
 import { tenderRouter } from './routes/tenders';
+import { submissionsRouter } from './routes/bidSubmissionsRoute'
 
 import bodyParser from 'body-parser';
 import cors from 'cors-ts';
+import { getAllBidSubmissions, iSubmittedOnTender } from './controllers/bidSubmissions';
 
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999
-const DB_USER = process.env.EPROC_DB_USER 
+const DB_USER = process.env.EPROC_DB_USER
 const DB_PASSWORD = process.env.EPROC_DB_PASSWORD
 
 console.log(DB_USER, DB_PASSWORD)
@@ -62,8 +64,10 @@ app.use('/requests', auth, requetsRouter);
 app.use('/dpts', auth, dptRouter);
 app.use('/serviceCategories', auth, serviceCategoryRouter);
 app.use('/tenders', auth, tenderRouter);
+app.use('/submissions', auth, submissionsRouter)
 
 app.listen(PORT, async () => {
-
+  let a = await getAllBidSubmissions();
+  console.log(a)
   console.log(`App listening on port ${PORT}`)
 })
