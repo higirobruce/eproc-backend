@@ -4,32 +4,43 @@ import { TenderModel } from "../models/tenders";
 
 export async function getAllTenders() {
     let reqs = await TenderModel.find().populate('createdBy').populate({
-        path: "createdBy", 
+        path: "createdBy",
         populate: {
-            path:'department',
-            model:'Department'
+            path: 'department',
+            model: 'Department'
         }
-    })
+    }).populate('purchaseRequest')
+    return reqs
+}
+
+export async function getTendersByRequest(requestId: String) {
+    let reqs = await TenderModel.find({ purchaseRequest: requestId }).populate('createdBy').populate({
+        path: "createdBy",
+        populate: {
+            path: 'department',
+            model: 'Department'
+        }
+    }).populate('purchaseRequest')
     return reqs
 }
 
 export async function getOpenTenders() {
-    let reqs = await TenderModel.find({status:'open'}).populate('createdBy').populate({
-        path: "createdBy", 
+    let reqs = await TenderModel.find({ status: 'open' }).populate('createdBy').populate({
+        path: "createdBy",
         populate: {
-            path:'department',
-            model:'Department'
+            path: 'department',
+            model: 'Department'
         }
-    })
+    }).populate('purchaseRequest')
     return reqs
 }
 
 export async function getClosedTenders() {
-    let reqs = await TenderModel.find({status:'closed'}).populate('createdBy').populate({
-        path: "createdBy", 
+    let reqs = await TenderModel.find({ status: 'closed' }).populate('createdBy').populate({
+        path: "createdBy",
         populate: {
-            path:'department',
-            model:'Department'
+            path: 'department',
+            model: 'Department'
         }
     })
     return reqs
@@ -51,4 +62,117 @@ export async function updateTenderStatus(id: String, newStatus: String) {
             errorMessage: `Error :${err}`
         }
     }
+}
+
+
+export async function getTendCountsByDepartment() {
+    let lookup = [
+        {
+            '$lookup': {
+                'from': 'requests',
+                'localField': 'purchaseRequest',
+                'foreignField': '_id',
+                'as': 'purchaseRequest'
+            }
+        }, {
+            '$unwind': {
+                'path': '$purchaseRequest',
+                'includeArrayIndex': 'string',
+                'preserveNullAndEmptyArrays': false
+            }
+        }, {
+            '$lookup': {
+                'from': 'users',
+                'localField': 'purchaseRequest.createdBy',
+                'foreignField': '_id',
+                'as': 'createdBy'
+            }
+        }, {
+            '$unwind': {
+                'path': '$createdBy',
+                'includeArrayIndex': 'string',
+                'preserveNullAndEmptyArrays': true
+            }
+        }, {
+            '$lookup': {
+                'from': 'departments',
+                'localField': 'createdBy.department',
+                'foreignField': '_id',
+                'as': 'department'
+            }
+        }, {
+            '$unwind': {
+                'path': '$department',
+                'includeArrayIndex': 'string',
+                'preserveNullAndEmptyArrays': false
+            }
+        }, {
+            '$group': {
+                '_id': '$department.description',
+                'totalCount': {
+                    '$count': {}
+                }
+            }
+        }
+    ]
+
+    let result = await TenderModel.aggregate(lookup)
+
+    return result
+}
+
+export async function getTendCountsByCategory() {
+    let lookup = [
+        {
+            '$lookup': {
+                'from': 'requests',
+                'localField': 'purchaseRequest',
+                'foreignField': '_id',
+                'as': 'purchaseRequest'
+            }
+        }, {
+            '$unwind': {
+                'path': '$purchaseRequest',
+                'includeArrayIndex': 'string',
+                'preserveNullAndEmptyArrays': false
+            }
+        }, {
+            '$lookup': {
+                'from': 'users',
+                'localField': 'purchaseRequest.createdBy',
+                'foreignField': '_id',
+                'as': 'createdBy'
+            }
+        }, {
+            '$unwind': {
+                'path': '$createdBy',
+                'includeArrayIndex': 'string',
+                'preserveNullAndEmptyArrays': true
+            }
+        }, {
+            '$lookup': {
+                'from': 'departments',
+                'localField': 'createdBy.department',
+                'foreignField': '_id',
+                'as': 'department'
+            }
+        }, {
+            '$unwind': {
+                'path': '$department',
+                'includeArrayIndex': 'string',
+                'preserveNullAndEmptyArrays': false
+            }
+        }, {
+            '$group': {
+                '_id': '$purchaseRequest.serviceCategory',
+                'totalCount': {
+                    '$count': {}
+                }
+            }
+        }
+    ]
+
+    let result = await TenderModel.aggregate(lookup)
+
+    return result
 }

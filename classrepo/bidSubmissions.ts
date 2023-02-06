@@ -13,6 +13,8 @@ export class BidSubmission implements IBidSubmission {
     number: number;
     createdBy: Types.ObjectId;
     tender: Types.ObjectId;
+    warrantyDuration: String;
+    
 
     constructor(
         proposalUrls: string[],
@@ -24,7 +26,8 @@ export class BidSubmission implements IBidSubmission {
         comment: string,
         number: number,
         createdBy: string,
-        tender: string) {
+        tender: string,
+        warrantyDuration: string) {
 
         this.proposalUrls = proposalUrls
         this.deliveryDate = deliveryDate
@@ -36,6 +39,8 @@ export class BidSubmission implements IBidSubmission {
         this.number = number
         this.createdBy = createdBy ? new Types.ObjectId(createdBy) : new Types.ObjectId()
         this.tender = tender ? new Types.ObjectId(tender) : new Types.ObjectId()
+        this.warrantyDuration = warrantyDuration
     }
+    
 
 }

@@ -32,6 +32,10 @@ export const BidSubmissionSchema = new Schema<IBidSubmissionDocument>({
     },
     number: {
         type: Number
+    },
+    warrantyDuration:{
+        type: String,
+        
     }
    
 })

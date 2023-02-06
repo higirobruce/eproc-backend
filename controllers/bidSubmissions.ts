@@ -48,9 +48,33 @@ export async function selectSubmission(id: String) {
     }
 }
 
+export async function awardSubmission(id: String) {
+    try {
+        await BidSubmissionModel.findByIdAndUpdate(id, { $set: { status: "awarded" } })
+        return { message: 'done' }
+    } catch (err) {
+        return {
+            error: true,
+            errorMessage: `Error :${err}`
+        }
+    }
+}
+
+export async function deselectOtherSubmissions(tenderId: any) {
+    try {
+        await BidSubmissionModel.updateMany({ status: { $ne: 'selected' }, tender: tenderId }, { $set: { status: 'not selected' } })
+        return { message: 'done' }
+    } catch (err) {
+        return {
+            error: true,
+            errorMessage: `Error :${err}`
+        }
+    }
+}
+
 export async function rejectOtherSubmissions(tenderId: any) {
     try {
-        await BidSubmissionModel.updateMany({ status: { $ne: 'selected' }, tender: tenderId }, { $set: { status: 'rejected' } })
+        await BidSubmissionModel.updateMany({ status: { $nin: ['selected','awarded'] }, tender: tenderId }, { $set: { status: 'not awarded' } })
         return { message: 'done' }
     } catch (err) {
         return {

@@ -1,17 +1,24 @@
-import mongoose from "mongoose";
-import { PoLineItem } from "../classrepo/poLineItems";
-import { iItem } from "./iItems";
+import mongoose, { Types } from "mongoose";
 
 export interface IPurchaseOrder {
     number: number,
-    vendor: mongoose.Types.ObjectId,
-    items : Array<PoLineItem>,
-    dueDate: Date,
-    comments: string
-    contract: mongoose.Types.ObjectId,
-    createdBy: mongoose.Types.ObjectId,
+    paymentTerms: String,
+    status: String,
+    deliveryProgress: number
+
 }
 
 export interface IPurchaseOrderDocument extends IPurchaseOrder, mongoose.Document {
-    
+    vendor: {
+        type: Types.ObjectId,
+        ref: 'Vendors'
+    },
+    tender: {
+        type: Types.ObjectId,
+        ref: 'Tenders'
+    },
+    createdBy: {
+        type: Types.ObjectId,
+        ref: 'Users'
+    }
 }

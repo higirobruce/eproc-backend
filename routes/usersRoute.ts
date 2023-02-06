@@ -23,8 +23,6 @@ userRouter.post('/', async (req, res) => {
     console.log(req.body);
     let {
         userType,
-        firstName,
-        lastName,
         email,
         telephone,
         experienceDurationInYears,
@@ -37,17 +35,22 @@ userRouter.post('/', async (req, res) => {
         rating,
         tin,
         companyName,
-        companyEmail,
-        nid,
-        passport,
         notes,
-        department
+        department,
+        contactPersonNames,
+        title,
+        building,
+        streetNo,
+        avenue,
+        city,
+        country,
+        passportNid,
+        services
     } = req.body
     let number = await generateUserNumber();
 
-    let userToCreate = new User(userType,
-        firstName,
-        lastName,
+    let userToCreate = new User(
+        userType,
         email,
         telephone,
         experienceDurationInYears,
@@ -57,10 +60,20 @@ userRouter.post('/', async (req, res) => {
         hashPassword(password),
         createdOn,
         createdBy,
-        rating, tin, companyName,
-        companyEmail,
-        nid,
-        passport, number, notes, department)
+        rating,
+        tin,
+        companyName,
+        number,
+        notes,
+        department,
+        contactPersonNames,
+        title,
+        building,
+        streetNo,
+        avenue,
+        city,
+        country,
+        passportNid, services)
 
     let createdUser = await saveUser(userToCreate);
     res.status(201).send(createdUser)
@@ -68,10 +81,10 @@ userRouter.post('/', async (req, res) => {
 
 userRouter.post('/login', async (req, res) => {
     let { email, password } = req.body;
-    
+
     let user = await getUserByEmail(email);
 
-    if(user){
+    if (user) {
         res.send({
             allowed: validPassword(password, user!.password),
             user: user
@@ -83,7 +96,7 @@ userRouter.post('/login', async (req, res) => {
         })
     }
 
-    
+
 })
 
 

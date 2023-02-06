@@ -7,10 +7,10 @@ import { serviceCategoryRouter } from './routes/serviceCategories'
 import { dptRouter } from './routes/dptRoute';
 import { tenderRouter } from './routes/tenders';
 import { submissionsRouter } from './routes/bidSubmissionsRoute'
+import { poRouter } from './routes/purchaseOrders'
 
 import bodyParser from 'body-parser';
 import cors from 'cors-ts';
-import { getAllBidSubmissions, iSubmittedOnTender } from './controllers/bidSubmissions';
 
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999
 const DB_USER = process.env.EPROC_DB_USER
@@ -65,9 +65,9 @@ app.use('/dpts', auth, dptRouter);
 app.use('/serviceCategories', auth, serviceCategoryRouter);
 app.use('/tenders', auth, tenderRouter);
 app.use('/submissions', auth, submissionsRouter)
+app.use('/purchaseOrders', auth, poRouter)
 
 app.listen(PORT, async () => {
-  let a = await getAllBidSubmissions();
-  console.log(a)
+
   console.log(`App listening on port ${PORT}`)
 })

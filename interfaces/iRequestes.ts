@@ -8,8 +8,15 @@ export interface IRequest {
     dueDate: Date,
     status: ContractStatus,
     attachementUrls: String[],
-    number: number
-
+    number: number,
+    description: String,
+    serviceCategory: String,
+    reasonForRejection: String,
+    declinedBy: String,
+    budgeted: boolean,
+    budgetLine: String,
+    approvalDate: Date,
+    title: String
 }
 
 export interface IRequestDocument extends IRequest, Document {

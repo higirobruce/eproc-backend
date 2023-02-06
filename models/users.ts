@@ -7,10 +7,7 @@ export const UserSchema = new Schema<IUserDocument>({
     userType: {
         type: String,
     },
-    firstName: {
-        type: String
-    },
-    lastName: {
+    contactPersonNames: {
         type: String
     },
     email: {
@@ -49,13 +46,22 @@ export const UserSchema = new Schema<IUserDocument>({
         type: Number, unique: true,
         dropDups: true,
     },
-    passport: {
+    passportNid: {
         type: String
     },
-    companyEmail: {
+    building: {
         type: String
     },
-    nid: {
+    streetNo: {
+        type: String
+    },
+    avenue: {
+        type: String
+    },
+    city: {
+        type: String
+    },
+    country: {
         type: String
     },
     notes: {
@@ -71,6 +77,7 @@ export const UserSchema = new Schema<IUserDocument>({
         unique: true,
         dropDups: true,
     },
+    services: Array
 
 })
 

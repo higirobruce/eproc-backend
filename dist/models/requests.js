@@ -16,6 +16,31 @@ exports.RequestSchema = new mongoose_1.Schema({
     },
     number: {
         type: Number
+    },
+    description: {
+        type: String
+    },
+    serviceCategory: {
+        type: String
+    },
+    reasonForRejection: {
+        type: String
+    },
+    declinedBy: {
+        type: String
+    },
+    budgeted: {
+        type: Boolean
+    },
+    budgetLine: {
+        type: String
+    },
+    approvalDate: {
+        type: Date,
+        default: Date.now()
+    },
+    title: {
+        type: String
     }
 });
 exports.RequestModel = (0, mongoose_1.model)('Request', exports.RequestSchema);

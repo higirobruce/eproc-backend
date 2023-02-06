@@ -29,7 +29,7 @@ exports.getAllUsers = getAllUsers;
 function getAllVendors() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find({ userType: "VENDOR" });
+            let users = yield users_1.UserModel.find({ userType: "VENDOR" }).populate('department');
             return users;
         }
         catch (err) {
@@ -44,7 +44,7 @@ exports.getAllVendors = getAllVendors;
 function getAllInternalUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" } });
+            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" } }).populate('department');
             return users;
         }
         catch (err) {
@@ -81,7 +81,7 @@ exports.getUserByEmail = getUserByEmail;
 function approveUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "approved" } });
+            yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "approved" } }).populate('department');
             return { message: 'done' };
         }
         catch (err) {

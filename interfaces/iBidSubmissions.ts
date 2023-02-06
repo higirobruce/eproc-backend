@@ -6,6 +6,7 @@ export interface IBidSubmission {
     deliveryDate: Date,
     price: number,
     warranty: number,
+    warrantyDuration: String,
     discount: number,
     status: String,
     comment: String,

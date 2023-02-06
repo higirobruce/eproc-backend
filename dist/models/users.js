@@ -10,10 +10,7 @@ exports.UserSchema = new mongoose_1.Schema({
     userType: {
         type: String,
     },
-    firstName: {
-        type: String
-    },
-    lastName: {
+    contactPersonNames: {
         type: String
     },
     email: {
@@ -52,13 +49,22 @@ exports.UserSchema = new mongoose_1.Schema({
         type: Number, unique: true,
         dropDups: true,
     },
-    passport: {
+    passportNid: {
         type: String
     },
-    companyEmail: {
+    building: {
         type: String
     },
-    nid: {
+    streetNo: {
+        type: String
+    },
+    avenue: {
+        type: String
+    },
+    city: {
+        type: String
+    },
+    country: {
         type: String
     },
     notes: {
@@ -74,6 +80,7 @@ exports.UserSchema = new mongoose_1.Schema({
         unique: true,
         dropDups: true,
     },
+    services: Array
 });
 // Method to set salt and hash the password for a user 
 exports.UserSchema.methods.setPassword = function (password) {

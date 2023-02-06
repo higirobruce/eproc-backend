@@ -4,11 +4,15 @@ import { UserStatus, UserType } from '../types/types';
 
 export interface IUser {
     userType: UserType,
-    firstName: string,
-    lastName: string,
+    contactPersonNames: string,
     companyName: string,
     email: string,
-    companyEmail: string,
+    title: string,
+    building: string,
+    streetNo: string,
+    avenue: string,
+    city: string,
+    country: string,
     telephone: string,
     experienceDurationInYears: number | null,
     experienceDurationInMonths: number | null,
@@ -19,10 +23,10 @@ export interface IUser {
     createdBy: Types.ObjectId,
     rating: number,
     tin: number,
-    nid: string,
-    passport: string,
+    passportNid: string,
     number: number,
-    notes: string
+    notes: string,
+    services: Array<string>,
 
 }
 

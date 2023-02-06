@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSubmissionStatus = exports.rejectSubmission = exports.rejectOtherSubmissions = exports.selectSubmission = exports.saveBidSubmission = exports.iSubmittedOnTender = exports.getAllBidSubmissionsByTender = exports.getAllBidSubmissions = void 0;
+exports.updateSubmissionStatus = exports.rejectSubmission = exports.rejectOtherSubmissions = exports.deselectOtherSubmissions = exports.awardSubmission = exports.selectSubmission = exports.saveBidSubmission = exports.iSubmittedOnTender = exports.getAllBidSubmissionsByTender = exports.getAllBidSubmissions = void 0;
 const bidSubmissions_1 = require("../models/bidSubmissions");
 function getAllBidSubmissions() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -66,10 +66,40 @@ function selectSubmission(id) {
     });
 }
 exports.selectSubmission = selectSubmission;
+function awardSubmission(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield bidSubmissions_1.BidSubmissionModel.findByIdAndUpdate(id, { $set: { status: "awarded" } });
+            return { message: 'done' };
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`
+            };
+        }
+    });
+}
+exports.awardSubmission = awardSubmission;
+function deselectOtherSubmissions(tenderId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield bidSubmissions_1.BidSubmissionModel.updateMany({ status: { $ne: 'selected' }, tender: tenderId }, { $set: { status: 'not selected' } });
+            return { message: 'done' };
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`
+            };
+        }
+    });
+}
+exports.deselectOtherSubmissions = deselectOtherSubmissions;
 function rejectOtherSubmissions(tenderId) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield bidSubmissions_1.BidSubmissionModel.updateMany({ status: { $ne: 'selected' }, tender: tenderId }, { $set: { status: 'rejected' } });
+            yield bidSubmissions_1.BidSubmissionModel.updateMany({ status: { $nin: ['selected', 'awarded'] }, tender: tenderId }, { $set: { status: 'not awarded' } });
             return { message: 'done' };
         }
         catch (err) {

@@ -5,8 +5,6 @@ import { UserType, UserStatus } from "../types/types";
 
 export class User implements IUser {
     userType: UserType;
-    firstName: string;
-    lastName: string;
     email: string;
     telephone: string;
     experienceDurationInYears: number | null;
@@ -19,17 +17,21 @@ export class User implements IUser {
     rating: number;
     tin: number;
     companyName: string;
-    companyEmail: string;
-    nid: string;
-    passport: string;
     number: number;
     notes: string;
     department: Types.ObjectId;
-    
+    contactPersonNames: string;
+    title: string;
+    building: string;
+    streetNo: string;
+    avenue: string;
+    city: string;
+    country: string;
+    passportNid: string;
+    services: string[];
+
     constructor(
         userType: UserType,
-        firstName: string,
-        lastName: string,
         email: string,
         telephone: string,
         experienceDurationInYears: number | null,
@@ -42,16 +44,20 @@ export class User implements IUser {
         rating: number,
         tin: number,
         companyName: string,
-        companyEmail: string,
-        nid: string,
-        passport: string,
         number: number,
         notes: string,
-        department: string
+        department: string,
+        contactPersonNames: string,
+        title: string,
+        building: string,
+        streetNo: string,
+        avenue: string,
+        city: string,
+        country: string,
+        passportNid: string,
+        services: string[]
     ) {
         this.userType = userType;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.email = email;
         this.telephone = telephone;
         this.experienceDurationInYears = experienceDurationInYears;
@@ -64,13 +70,21 @@ export class User implements IUser {
         this.rating = rating;
         this.tin = tin;
         this.companyName = companyName;
-        this.companyEmail = companyEmail;
-        this.nid = nid;
-        this.passport = passport
         this.number = number
         this.notes = notes
-        this.department = department? new Types.ObjectId(department) : new Types.ObjectId(); 
+        this.department = department ? new Types.ObjectId(department) : new Types.ObjectId();
+        this.contactPersonNames = contactPersonNames
+        this.title = title
+        this.building = building
+        this.streetNo = streetNo
+        this.avenue = avenue
+        this.city = city
+        this.country = country
+        this.passportNid = passportNid
+        this.services = services
     }
+    
+
 
 
 }

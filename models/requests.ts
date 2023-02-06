@@ -17,8 +17,33 @@ export const RequestSchema = new Schema<IRequestDocument>({
     },
     number: {
         type: Number
+    },
+    description: {
+        type: String
+    },
+    serviceCategory: {
+        type: String
+    },
+    reasonForRejection: {
+        type: String
+    },
+    declinedBy: {
+        type: String
+    },
+    budgeted: {
+        type: Boolean
+    },
+    budgetLine: {
+        type: String
+    },
+    approvalDate: {
+        type: Date,
+        default: Date.now()
+    },
+    title: {
+        type: String
     }
-   
+
 })
 
 export const RequestModel = model<IRequestDocument>('Request', RequestSchema);

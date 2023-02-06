@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getAllBidSubmissions, getAllBidSubmissionsByTender, iSubmittedOnTender, rejectOtherSubmissions, rejectSubmission, saveBidSubmission, selectSubmission, updateSubmissionStatus } from '../controllers/bidSubmissions';
+import { awardSubmission, deselectOtherSubmissions, getAllBidSubmissions, getAllBidSubmissionsByTender, iSubmittedOnTender, rejectOtherSubmissions, rejectSubmission, saveBidSubmission, selectSubmission, updateSubmissionStatus } from '../controllers/bidSubmissions';
 import { BidSubmission } from '../classrepo/bidSubmissions';
 import { generateBidSubmissionNumber } from '../services/bidSubmissions';
 
@@ -32,7 +32,8 @@ submissionsRouter.post('/', async (req, res) => {
         status,
         comment,
         createdBy,
-        tender
+        tender,
+        warrantyDuration
     } = req.body
     let number = await generateBidSubmissionNumber();
 
@@ -42,7 +43,7 @@ submissionsRouter.post('/', async (req, res) => {
         warranty,
         discount,
         status,
-        comment, number, createdBy, tender);
+        comment, number, createdBy, tender, warrantyDuration);
 
     let createdSubmission = await saveBidSubmission(submission)
     console.log(createdSubmission);
@@ -52,8 +53,18 @@ submissionsRouter.post('/', async (req, res) => {
 
 submissionsRouter.post('/select/:id', async (req, res) => {
     let { id } = req.params;
-    let {tenderId} = req.query
+    let { tenderId } = req.query
     selectSubmission(id).then(async (r) => {
+        await deselectOtherSubmissions(tenderId);
+        res.send(r)
+    })
+
+})
+
+submissionsRouter.post('/award/:id', async (req, res) => {
+    let { id } = req.params;
+    let { tenderId } = req.query
+    awardSubmission(id).then(async (r) => {
         await rejectOtherSubmissions(tenderId);
         res.send(r)
     })

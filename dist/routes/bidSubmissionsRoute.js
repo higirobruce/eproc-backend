@@ -29,9 +29,9 @@ exports.submissionsRouter.get('/submitted/:tenderId', (req, res) => __awaiter(vo
     res.send(yield (0, bidSubmissions_1.iSubmittedOnTender)(tenderId, vendorId));
 }));
 exports.submissionsRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { proposalUrls, deliveryDate, price, warranty, discount, status, comment, createdBy, tender } = req.body;
+    let { proposalUrls, deliveryDate, price, warranty, discount, status, comment, createdBy, tender, warrantyDuration } = req.body;
     let number = yield (0, bidSubmissions_3.generateBidSubmissionNumber)();
-    let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, warranty, discount, status, comment, number, createdBy, tender);
+    let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration);
     let createdSubmission = yield (0, bidSubmissions_1.saveBidSubmission)(submission);
     console.log(createdSubmission);
     res.status(201).send(createdSubmission);
@@ -40,6 +40,14 @@ exports.submissionsRouter.post('/select/:id', (req, res) => __awaiter(void 0, vo
     let { id } = req.params;
     let { tenderId } = req.query;
     (0, bidSubmissions_1.selectSubmission)(id).then((r) => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, bidSubmissions_1.deselectOtherSubmissions)(tenderId);
+        res.send(r);
+    }));
+}));
+exports.submissionsRouter.post('/award/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    let { tenderId } = req.query;
+    (0, bidSubmissions_1.awardSubmission)(id).then((r) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, bidSubmissions_1.rejectOtherSubmissions)(tenderId);
         res.send(r);
     }));

@@ -15,7 +15,7 @@ export async function getAllUsers() {
 
 export async function getAllVendors() {
     try {
-        let users = await UserModel.find({ userType: "VENDOR" });
+        let users = await UserModel.find({ userType: "VENDOR" }).populate('department');
         return users;
     } catch (err) {
         return {
@@ -27,7 +27,7 @@ export async function getAllVendors() {
 
 export async function getAllInternalUsers() {
     try {
-        let users = await UserModel.find({ userType: { $ne: "VENDOR" } });
+        let users = await UserModel.find({ userType: { $ne: "VENDOR" } }).populate('department');
         return users;
     } catch (err) {
         return {
@@ -57,7 +57,7 @@ export async function getUserByEmail(userEmail: String) {
 
 export async function approveUser(id: String) {
     try {
-        await UserModel.findByIdAndUpdate(id, { $set: { status: "approved" } })
+        await UserModel.findByIdAndUpdate(id, { $set: { status: "approved" } }).populate('department');
         return { message: 'done' }
     } catch (err) {
         return {

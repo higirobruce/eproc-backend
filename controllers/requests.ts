@@ -3,10 +3,10 @@ import { RequestModel } from "../models/requests";
 
 export async function getAllRequests() {
     let reqs = await RequestModel.find().populate('createdBy').populate({
-        path: "createdBy", 
+        path: "createdBy",
         populate: {
-            path:'department',
-            model:'Department'
+            path: 'department',
+            model: 'Department'
         }
     })
     return reqs
@@ -30,9 +30,10 @@ export async function approveRequest(id: String) {
     }
 }
 
-export async function declineRequest(id: String) {
+export async function declineRequest(id: String, reason: String, declinedBy: String) {
+    console.log(reason)
     try {
-        await RequestModel.findByIdAndUpdate(id, { $set: { status: "declined" } })
+        await RequestModel.findByIdAndUpdate(id, { $set: { status: "declined", reasonForRejection: reason, declinedBy: declinedBy } })
         return { message: 'done' }
     } catch (err) {
         return {
@@ -44,7 +45,7 @@ export async function declineRequest(id: String) {
 
 export async function updateRequestStatus(id: String, newStatus: String) {
     try {
-        await RequestModel.findByIdAndUpdate(id, { $set: { status: newStatus } })
+        await RequestModel.findByIdAndUpdate(id, { $set: { status: newStatus, approvalDate: Date.now() } })
         return { message: 'done' }
     } catch (err) {
         return {
@@ -52,4 +53,47 @@ export async function updateRequestStatus(id: String, newStatus: String) {
             errorMessage: `Error :${err}`
         }
     }
+}
+
+export async function getReqCountsByDepartment() {
+    let lookup = [
+        {
+            '$lookup': {
+                'from': 'users',
+                'localField': 'createdBy',
+                'foreignField': '_id',
+                'as': 'createdBy'
+            }
+        }, {
+            '$unwind': {
+                'path': '$createdBy',
+                'includeArrayIndex': 'string',
+                'preserveNullAndEmptyArrays': true
+            }
+        }, {
+            '$lookup': {
+                'from': 'departments',
+                'localField': 'createdBy.department',
+                'foreignField': '_id',
+                'as': 'department'
+            }
+        }, {
+            '$unwind': {
+                'path': '$department',
+                'includeArrayIndex': 'string',
+                'preserveNullAndEmptyArrays': false
+            }
+        }, {
+            '$group': {
+                '_id': '$department.description',
+                'totalCount': {
+                    '$count': {}
+                }
+            }
+        }
+    ];
+
+    let result = await RequestModel.aggregate(lookup)
+
+    return result
 }

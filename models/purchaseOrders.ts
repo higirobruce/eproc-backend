@@ -1,14 +1,28 @@
-import mongoose, { Schema, model, connect, Document } from 'mongoose';
+import mongoose, { Schema, model, connect, Document, Types } from 'mongoose';
 import { IPurchaseOrderDocument } from '../interfaces/iPurchaseOrders';
 
 export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
     number: Number,
-    vendor: mongoose.Types.ObjectId,
-    items: Array<mongoose.Types.ObjectId>,
-    dueDate: Date,
-    contract:mongoose.Types.ObjectId,
-    createdBy:mongoose.Types.ObjectId,
-    comments: String
+    vendor: {
+        type: Types.ObjectId,
+        ref: 'User'
+    },
+    tender:{
+        type: Types.ObjectId,
+        ref: 'Tender'
+    },
+    createdBy:{
+        type: Types.ObjectId,
+        ref: 'User'
+    },
+    paymentTerms: String,
+    status:{
+        type: String
+    },
+    deliveryProgress:{
+        type:Number,
+        default: 0
+    }
 })
 
 export const PurchaseOrderModel = model<IPurchaseOrderDocument>('PurchaseOrder', PurchaseOrderSchema);

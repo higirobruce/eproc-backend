@@ -4,7 +4,7 @@ import { Request } from '../classrepo/requests';
 import { Tender } from '../classrepo/tenders';
 import { User } from '../classrepo/users';
 import { approveRequest, declineRequest, getAllRequests, saveRequest, updateRequestStatus } from '../controllers/requests';
-import { getAllTenders, getClosedTenders, getOpenTenders, saveTender, updateTenderStatus } from '../controllers/tenders';
+import { getAllTenders, getClosedTenders, getOpenTenders, getTendCountsByCategory, getTendCountsByDepartment, getTendersByRequest, saveTender, updateTenderStatus } from '../controllers/tenders';
 import { generateReqNumber } from '../services/requests';
 import { generateTenderNumber } from '../services/tenders';
 
@@ -14,6 +14,20 @@ export const tenderRouter = Router();
 tenderRouter.get('/', async (req, res) => {
     res.send(await getAllTenders())
 })
+
+tenderRouter.get('/byRequest/:requestId', async (req, res) => {
+    let { requestId } = req.params
+    res.send(await getTendersByRequest(requestId))
+})
+
+tenderRouter.get('/countsByDep', async (req, res) => {
+    res.send(await getTendCountsByDepartment())
+})
+
+tenderRouter.get('/countsByCat', async (req, res) => {
+    res.send(await getTendCountsByCategory())
+})
+
 
 tenderRouter.get('/stats', async (req, res) => {
     let allTenders = await getAllTenders()
