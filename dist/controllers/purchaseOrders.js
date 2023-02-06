@@ -33,7 +33,6 @@ function getPOByTenderId(tenderId) {
                 model: 'Request'
             }
         });
-        console.log(tenderId, pos);
         return pos;
     });
 }

@@ -4,7 +4,6 @@ import { DepartmentModel } from "../models/departments";
 export async function getAllDepartments() {
     try {
         let dpts = await DepartmentModel.find();
-        console.log(dpts)
         return dpts;
     } catch (err) {
         return {

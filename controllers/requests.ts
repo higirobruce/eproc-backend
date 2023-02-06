@@ -31,7 +31,6 @@ export async function approveRequest(id: String) {
 }
 
 export async function declineRequest(id: String, reason: String, declinedBy: String) {
-    console.log(reason)
     try {
         await RequestModel.findByIdAndUpdate(id, { $set: { status: "declined", reasonForRejection: reason, declinedBy: declinedBy } })
         return { message: 'done' }

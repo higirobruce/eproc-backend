@@ -20,7 +20,6 @@ exports.submissionsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 
 }));
 exports.submissionsRouter.get('/byTender/:tenderId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { tenderId } = req.params;
-    console.log(tenderId);
     res.send(yield (0, bidSubmissions_1.getAllBidSubmissionsByTender)(tenderId));
 }));
 exports.submissionsRouter.get('/submitted/:tenderId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -33,7 +32,6 @@ exports.submissionsRouter.post('/', (req, res) => __awaiter(void 0, void 0, void
     let number = yield (0, bidSubmissions_3.generateBidSubmissionNumber)();
     let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration);
     let createdSubmission = yield (0, bidSubmissions_1.saveBidSubmission)(submission);
-    console.log(createdSubmission);
     res.status(201).send(createdSubmission);
 }));
 exports.submissionsRouter.post('/select/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

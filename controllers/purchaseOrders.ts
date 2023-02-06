@@ -21,7 +21,6 @@ export async function getPOByTenderId(tenderId: String) {
             model: 'Request'
         }
     });
-    console.log(tenderId, pos)
     return pos;
 }
 

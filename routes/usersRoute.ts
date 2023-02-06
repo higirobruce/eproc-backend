@@ -20,7 +20,6 @@ userRouter.get('/internal', async (req, res) => {
 
 
 userRouter.post('/', async (req, res) => {
-    console.log(req.body);
     let {
         userType,
         email,

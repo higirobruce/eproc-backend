@@ -48,7 +48,6 @@ function approveRequest(id) {
 exports.approveRequest = approveRequest;
 function declineRequest(id, reason, declinedBy) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(reason);
         try {
             yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: { status: "declined", reasonForRejection: reason, declinedBy: declinedBy } });
             return { message: 'done' };

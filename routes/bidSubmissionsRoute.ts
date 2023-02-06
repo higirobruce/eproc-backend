@@ -12,7 +12,6 @@ submissionsRouter.get('/', async (req, res) => {
 
 submissionsRouter.get('/byTender/:tenderId', async (req, res) => {
     let { tenderId } = req.params
-    console.log(tenderId)
     res.send(await getAllBidSubmissionsByTender(tenderId))
 })
 
@@ -46,7 +45,6 @@ submissionsRouter.post('/', async (req, res) => {
         comment, number, createdBy, tender, warrantyDuration);
 
     let createdSubmission = await saveBidSubmission(submission)
-    console.log(createdSubmission);
     res.status(201).send(createdSubmission)
 })
 

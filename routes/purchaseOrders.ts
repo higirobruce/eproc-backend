@@ -32,7 +32,6 @@ poRouter.post('/', async (req, res) => {
         deliveryProgress
     } = req.body
 
-    console.log(req.body)
     let number = await generatePONumber();
 
 

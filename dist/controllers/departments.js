@@ -15,7 +15,6 @@ function getAllDepartments() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let dpts = yield departments_1.DepartmentModel.find();
-            console.log(dpts);
             return dpts;
         }
         catch (err) {

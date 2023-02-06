@@ -15,10 +15,6 @@ import cors from 'cors-ts';
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999
 const DB_USER = process.env.EPROC_DB_USER
 const DB_PASSWORD = process.env.EPROC_DB_PASSWORD
-
-console.log(DB_USER, DB_PASSWORD)
-
-
 //Set up default mongoose connection
 var mongoDB =
   `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
