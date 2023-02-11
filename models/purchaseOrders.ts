@@ -15,7 +15,7 @@ export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
         type: Types.ObjectId,
         ref: 'User'
     },
-    paymentTerms: String,
+    sections: Array,
     status:{
         type: String
     },

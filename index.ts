@@ -8,9 +8,11 @@ import { dptRouter } from './routes/dptRoute';
 import { tenderRouter } from './routes/tenders';
 import { submissionsRouter } from './routes/bidSubmissionsRoute'
 import { poRouter } from './routes/purchaseOrders'
+import { contractRouter } from './routes/contracts'
 
 import bodyParser from 'body-parser';
 import cors from 'cors-ts';
+import { getSalesOrders, sapLogin } from './utils/sapB1Connection';
 
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999
 const DB_USER = process.env.EPROC_DB_USER
@@ -62,8 +64,11 @@ app.use('/serviceCategories', auth, serviceCategoryRouter);
 app.use('/tenders', auth, tenderRouter);
 app.use('/submissions', auth, submissionsRouter)
 app.use('/purchaseOrders', auth, poRouter)
+app.use('/contracts', auth, contractRouter)
 
 app.listen(PORT, async () => {
 
+  await sapLogin();
+  
   console.log(`App listening on port ${PORT}`)
 })

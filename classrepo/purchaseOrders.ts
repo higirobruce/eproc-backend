@@ -7,7 +7,7 @@ export class PurchaseOrder implements IPurchaseOrder {
     vendor: mongoose.Types.ObjectId;
     tender: mongoose.Types.ObjectId;
     createdBy: mongoose.Types.ObjectId;
-    paymentTerms: string;
+    sections: [];
     status: String;
     deliveryProgress: number;
 
@@ -16,7 +16,7 @@ export class PurchaseOrder implements IPurchaseOrder {
         vendor: string,
         tender: string,
         createdBy: string,
-        paymentTerms: string,
+        sections: [],
         status: string,
         deliveryProgress: number
     ) {
@@ -24,7 +24,7 @@ export class PurchaseOrder implements IPurchaseOrder {
         this.vendor = vendor ? new mongoose.Types.ObjectId(vendor) : new mongoose.Types.ObjectId();
         this.tender = tender ? new mongoose.Types.ObjectId(tender) : new mongoose.Types.ObjectId();
         this.createdBy = createdBy ? new mongoose.Types.ObjectId(createdBy) : new mongoose.Types.ObjectId();
-        this.paymentTerms = paymentTerms
+        this.sections = sections
         this.status = status
         this.deliveryProgress=deliveryProgress
     }

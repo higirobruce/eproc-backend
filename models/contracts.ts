@@ -1,17 +1,28 @@
-import mongoose, { Schema, model, connect, Document } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 import { IContractDocument } from '../interfaces/iContracts';
 
 export const Contract = new Schema<IContractDocument>({
     number: Number,
-    vendor: mongoose.Types.ObjectId,
-    startDate: Date,
-    endDate: Date,
-    description: String,
-    type: String,
-    status: String,
-    contractOwner: mongoose.Types.ObjectId,
-    request: mongoose.Types.ObjectId,
-    createdBy: mongoose.Types.ObjectId
+    vendor: {
+        type: Types.ObjectId,
+        ref: 'User'
+    },
+    tender: {
+        type: Types.ObjectId,
+        ref: 'Tender'
+    },
+    createdBy: {
+        type: Types.ObjectId,
+        ref: 'User'
+    },
+    sections: Array,
+    status: {
+        type: String
+    },
+    deliveryProgress: {
+        type: Number,
+        default: 0
+    }
 
 })
 

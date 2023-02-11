@@ -16,7 +16,7 @@ exports.PurchaseOrderSchema = new mongoose_1.Schema({
         type: mongoose_1.Types.ObjectId,
         ref: 'User'
     },
-    paymentTerms: String,
+    sections: Array,
     status: {
         type: String
     },

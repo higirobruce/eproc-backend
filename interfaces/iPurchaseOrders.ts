@@ -2,7 +2,7 @@ import mongoose, { Types } from "mongoose";
 
 export interface IPurchaseOrder {
     number: number,
-    paymentTerms: String,
+    sections: [],
     status: String,
     deliveryProgress: number
 

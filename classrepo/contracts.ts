@@ -6,37 +6,27 @@ import { ContractType, ContractStatus } from "../types/types";
 export class Contract implements IContract {
     number: number;
     vendor: Types.ObjectId;
-    startDate: Date;
-    endDate: Date;
-    description: string;
-    type: ContractType;
-    status: ContractStatus;
-    contractOwner: Types.ObjectId;
-    request: Types.ObjectId;
+    tender: Types.ObjectId;
     createdBy: Types.ObjectId;
+    sections: [];
+    status: String;
+    deliveryProgress: number;
 
     constructor(
         number: number,
         vendor: string,
-        startDate: Date,
-        endDate: Date,
-        description: string,
-        type: ContractType,
-        status: ContractStatus,
-        contractOwner: string,
-        request: string,
+        tender: string,
         createdBy: string,
+        sections: [],
+        status: string,
+        deliveryProgress: number
     ) {
         this.number = number;
-        this.vendor = vendor ? new Types.ObjectId(vendor) :new Types.ObjectId();
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.description = description;
-        this.type = type;
-        this.status = status;
-        this.contractOwner = contractOwner ? new Types.ObjectId(contractOwner) : new Types.ObjectId()
-        this.request = request ? new Types.ObjectId(request) : new Types.ObjectId()
-        this.createdBy = createdBy ? new Types.ObjectId(createdBy) : new Types.ObjectId()
+        this.vendor = vendor ? new Types.ObjectId(vendor) : new Types.ObjectId();
+        this.tender = tender ? new Types.ObjectId(tender) : new Types.ObjectId();
+        this.createdBy = createdBy ? new Types.ObjectId(createdBy) : new Types.ObjectId();
+        this.sections = sections
+        this.status = status
+        this.deliveryProgress=deliveryProgress
     }
-
 }

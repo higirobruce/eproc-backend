@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveContract = exports.getAllContracts = void 0;
+exports.getContractByVendorId = exports.getContractByTenderId = exports.saveContract = exports.getAllContracts = void 0;
 const contracts_1 = require("../models/contracts");
 function getAllContracts() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -24,3 +24,23 @@ function saveContract(contract) {
     });
 }
 exports.saveContract = saveContract;
+function getContractByTenderId(tenderId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let pos = yield contracts_1.ContractModel.find({ tender: tenderId }).populate('tender').populate('vendor').populate('createdBy').populate({
+            path: "tender",
+            populate: {
+                path: 'purchaseRequest',
+                model: 'Request'
+            }
+        });
+        return pos;
+    });
+}
+exports.getContractByTenderId = getContractByTenderId;
+function getContractByVendorId(vendorId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let pos = yield contracts_1.ContractModel.find({ vendor: vendorId }).populate('tender').populate('vendor').populate('createdBy');
+        return pos;
+    });
+}
+exports.getContractByVendorId = getContractByVendorId;

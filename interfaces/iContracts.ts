@@ -1,20 +1,24 @@
-import mongoose,{Document} from "mongoose";
-import { ContractStatus, ContractType } from "../types/types";
+import {Document, Types} from "mongoose";
 
 export interface IContract {
     number: number,
-    vendor: mongoose.Types.ObjectId,
-    startDate: Date,
-    endDate: Date,
-    description: string,
-    type: ContractType,
-    status: ContractStatus,
-    contractOwner: mongoose.Types.ObjectId
-    request: mongoose.Types.ObjectId
-    createdBy: mongoose.Types.ObjectId
+    sections: [],
+    status: String,
+    deliveryProgress: number
 
 }
 
 export interface IContractDocument extends IContract, Document {
-
+    vendor: {
+        type: Types.ObjectId,
+        ref: 'Vendors'
+    },
+    tender: {
+        type: Types.ObjectId,
+        ref: 'Tenders'
+    },
+    createdBy: {
+        type: Types.ObjectId,
+        ref: 'Users'
+    }
 }

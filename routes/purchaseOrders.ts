@@ -27,7 +27,7 @@ poRouter.post('/', async (req, res) => {
         vendor,
         tender,
         createdBy,
-        paymentTerms,
+        sections,
         status,
         deliveryProgress
     } = req.body
@@ -39,7 +39,7 @@ poRouter.post('/', async (req, res) => {
         vendor,
         tender,
         createdBy,
-        paymentTerms,
+        sections,
         status,
         deliveryProgress);
 
