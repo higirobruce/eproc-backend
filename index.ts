@@ -12,11 +12,13 @@ import { contractRouter } from './routes/contracts'
 
 import bodyParser from 'body-parser';
 import cors from 'cors-ts';
-import { getSalesOrders, sapLogin } from './utils/sapB1Connection';
+import { sapLogin, SESSION_ID } from './utils/sapB1Connection';
+import { createSupplierinB1 } from './controllers/users';
 
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999
 const DB_USER = process.env.EPROC_DB_USER
 const DB_PASSWORD = process.env.EPROC_DB_PASSWORD
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //Set up default mongoose connection
 var mongoDB =
   `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
@@ -68,7 +70,7 @@ app.use('/contracts', auth, contractRouter)
 
 app.listen(PORT, async () => {
 
-  await sapLogin();
-  
+ 
+  await createSupplierinB1();
   console.log(`App listening on port ${PORT}`)
 })

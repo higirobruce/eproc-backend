@@ -24,10 +24,11 @@ const purchaseOrders_1 = require("./routes/purchaseOrders");
 const contracts_1 = require("./routes/contracts");
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
-const sapB1Connection_1 = require("./utils/sapB1Connection");
+const users_1 = require("./controllers/users");
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999;
 const DB_USER = process.env.EPROC_DB_USER;
 const DB_PASSWORD = process.env.EPROC_DB_PASSWORD;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //Set up default mongoose connection
 var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
 mongoose_1.default.connect(mongoDB);
@@ -67,6 +68,6 @@ app.use('/submissions', auth, bidSubmissionsRoute_1.submissionsRouter);
 app.use('/purchaseOrders', auth, purchaseOrders_1.poRouter);
 app.use('/contracts', auth, contracts_1.contractRouter);
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, sapB1Connection_1.sapLogin)();
+    yield (0, users_1.createSupplierinB1)();
     console.log(`App listening on port ${PORT}`);
 }));

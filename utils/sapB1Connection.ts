@@ -1,52 +1,27 @@
-const SAPb1 = require("node-sapb1");
-const fs = require('fs')
-var config = {
-  host: "http://192.168.20.181",
-  port: 50000,
-  version: 2,
-  username: "manager",
-  password: "K1g@li@123",
-  company: "Z_TEST_IREMBO_DB",
 
-  //ca: fs.readFileSync("/path/to/certificate.crt"),
-};
+var config = {
+  "CompanyDB": "Z_TEST_IREMBO_DB",
+  "UserName": "manager",
+  "Password": "K1g@li@123"
+}
+export var SESSION_ID:any;
+export var COOKIE:any;
 
 export function sapLogin() {
-  SAPb1.createSession(
-    config,
-    (sap:any) => {
-      // Success
-      console.log(sap)
+  fetch('https://192.168.20.181:50000/b1s/v1/Login', {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json', 
     },
-    (error:any, type:any) => {
-      // Error
-      // type = 1, Connection errors
-      // type = 2, SAP response errors.
-      console.log(error, type)
-    }
-  );
+    body: JSON.stringify(config)
+  })
+    .then(async res => {
+      let resJson = await res.json();
+      SESSION_ID = resJson?.SessionId;
+      COOKIE = res.headers.get('set-cookie')
+      console.log('Logged in', SESSION_ID, COOKIE)
+    }).catch(err => {
+      console.log(err)
+    })
 }
 
-export function getSalesOrders() {
-  SAPb1.createSession(
-    config,
-    (sap:any) => {
-      sap
-        .resource("Orders")
-        .queryBuilder()
-        .select("DocNum, DocEntry, CardCode, DocumentLines")
-        .orderBy("DocNum", "asc")
-        .findAll(
-          (data:any) => {
-            console.log(data);
-          },
-          (error:any, type:any) => {
-            console.log(error, type);
-          }
-        );
-    },
-    (error:any, type:any) => {
-      console.log(error, type);
-    }
-  );
-}

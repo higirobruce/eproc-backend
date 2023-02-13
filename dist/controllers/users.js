@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getAllInternalUsers = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
 function getAllUsers() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -56,6 +56,30 @@ function getAllInternalUsers() {
     });
 }
 exports.getAllInternalUsers = getAllInternalUsers;
+function createSupplierinB1() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let options = {
+            // "CardCode": "SA0003",
+            "CardName": "Aline1",
+            "CardType": "cSupplier",
+            "Series": 98
+        };
+        fetch('https://192.168.20.181:50000/b1s/v1/BusinessPartners', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Cookie': 'B1SESSION=e0e4b6de-aa10-11ed-8000-000c29f945cd; ROUTEID=.node5; SESSION=e0e4b6de-aa10-11ed-8000-000c29f945cd'
+            },
+            body: JSON.stringify(options)
+        }).then(res => res.json())
+            .then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err);
+        });
+    });
+}
+exports.createSupplierinB1 = createSupplierinB1;
 function saveUser(user) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
