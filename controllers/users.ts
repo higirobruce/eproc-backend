@@ -52,13 +52,13 @@ export async function createSupplierinB1(CardName: String, CardType: String, Ser
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
-            'Cookie': 'B1SESSION=749a6c86-ab8b-11ed-8000-000c29f945cd; ROUTEID=.node5; SESSION=749a6c86-ab8b-11ed-8000-000c29f945cd'
+            'Cookie': 'B1SESSION=12b28ebc-ac5e-11ed-8002-000c29f945cd; ROUTEID=.node2; SESSION=12b28ebc-ac5e-11ed-8002-000c29f945cdß'
         },
         body: JSON.stringify(
             options
         )
     }).then(res => res.json())
-        .then(res => {
+        .then( res => {
             return res?.CardCode
         }).catch(err => {
             console.log(err)

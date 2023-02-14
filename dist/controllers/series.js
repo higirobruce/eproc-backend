@@ -30,7 +30,9 @@ function getSeriesByDescription(desc) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            console.log(desc);
             let series = yield series_1.SeriesModel.find({ seriesDesc: desc });
+            console.log(series);
             return (_a = series[0]) === null || _a === void 0 ? void 0 : _a.series;
         }
         catch (err) {
