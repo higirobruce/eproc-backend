@@ -19,6 +19,7 @@ export function sapLogin() {
       let resJson = await res.json();
       SESSION_ID = resJson?.SessionId;
       COOKIE = res.headers.get('set-cookie')
+      console.log(resJson)
       console.log('Logged in', SESSION_ID, COOKIE)
     }).catch(err => {
       console.log(err)

@@ -13,7 +13,8 @@ import { contractRouter } from './routes/contracts'
 import bodyParser from 'body-parser';
 import cors from 'cors-ts';
 import { sapLogin, SESSION_ID } from './utils/sapB1Connection';
-import { createSupplierinB1 } from './controllers/users';
+import { createSupplierinB1, getB1SeriesFromNames } from './controllers/users';
+import { getSeriesByDescription } from './controllers/series';
 
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999
 const DB_USER = process.env.EPROC_DB_USER
@@ -69,8 +70,5 @@ app.use('/purchaseOrders', auth, poRouter)
 app.use('/contracts', auth, contractRouter)
 
 app.listen(PORT, async () => {
-
- 
-  await createSupplierinB1();
   console.log(`App listening on port ${PORT}`)
 })

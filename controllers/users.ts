@@ -1,6 +1,7 @@
 import { User } from "../classrepo/users";
 import { UserModel } from "../models/users";
 import { sapLogin, SESSION_ID } from "../utils/sapB1Connection";
+import { getSeriesByDescription } from "./series";
 
 export async function getAllUsers() {
     try {
@@ -38,36 +39,46 @@ export async function getAllInternalUsers() {
     }
 }
 
-export async function createSupplierinB1() {
-    
+export async function createSupplierinB1(CardName: String, CardType: String, Series: any) {
+
     let options = {
         // "CardCode": "SA0003",
-        "CardName": "Aline1",
-        "CardType": "cSupplier",
-        "Series": 98
+        CardName,
+        CardType,
+        Series
     };
-    
+
     fetch('https://192.168.20.181:50000/b1s/v1/BusinessPartners', {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
-            'Cookie': 'B1SESSION=e0e4b6de-aa10-11ed-8000-000c29f945cd; ROUTEID=.node5; SESSION=e0e4b6de-aa10-11ed-8000-000c29f945cd'
+            'Cookie': 'B1SESSION=749a6c86-ab8b-11ed-8000-000c29f945cd; ROUTEID=.node5; SESSION=749a6c86-ab8b-11ed-8000-000c29f945cd'
         },
         body: JSON.stringify(
             options
         )
     }).then(res => res.json())
         .then(res => {
-            console.log(res)
+            return res?.CardCode
         }).catch(err => {
             console.log(err)
         })
 }
 
+export async function getB1SeriesFromNames(entityName:String){
+    let firstChar = entityName.substring(0,1).toUpperCase();
+    // let secondChar = lastName.substring(0,1).toUpperCase();
+    let series = await getSeriesByDescription(`S${firstChar}`)
+    return series;
+}
+
 
 export async function saveUser(user: User) {
     try {
-
+        let name = user.companyName
+        let series = await getB1SeriesFromNames(name)
+        let createdCode = await createSupplierinB1(name,'cSupplier',series)
+        console.log(createdCode)
         let createdUser = await UserModel.create(user)
         return createdUser._id
     } catch (err) {

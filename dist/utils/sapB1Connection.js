@@ -27,6 +27,7 @@ function sapLogin() {
         let resJson = yield res.json();
         exports.SESSION_ID = resJson === null || resJson === void 0 ? void 0 : resJson.SessionId;
         exports.COOKIE = res.headers.get('set-cookie');
+        console.log(resJson);
         console.log('Logged in', exports.SESSION_ID, exports.COOKIE);
     })).catch(err => {
         console.log(err);

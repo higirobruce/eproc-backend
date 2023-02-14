@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
-const series_1 = require("./series");
 function getAllUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -74,29 +73,24 @@ function createSupplierinB1(CardName, CardType, Series) {
             body: JSON.stringify(options)
         }).then(res => res.json())
             .then(res => {
-            return res === null || res === void 0 ? void 0 : res.CardCode;
+            console.log(res);
         }).catch(err => {
             console.log(err);
         });
     });
 }
 exports.createSupplierinB1 = createSupplierinB1;
-function getB1SeriesFromNames(entityName) {
+function getB1SeriesFromNames(firstName, lastName) {
     return __awaiter(this, void 0, void 0, function* () {
-        let firstChar = entityName.substring(0, 1).toUpperCase();
-        // let secondChar = lastName.substring(0,1).toUpperCase();
-        let series = yield (0, series_1.getSeriesByDescription)(`S${firstChar}`);
-        return series;
+        let firstChar = firstName.substring(0, 1).toUpperCase();
+        let secondChar = lastName.substring(0, 1).toUpperCase();
+        console.log(`${firstChar}${secondChar}`);
     });
 }
 exports.getB1SeriesFromNames = getB1SeriesFromNames;
 function saveUser(user) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let name = user.companyName;
-            let series = yield getB1SeriesFromNames(name);
-            let createdCode = yield createSupplierinB1(name, 'cSupplier', series);
-            console.log(createdCode);
             let createdUser = yield users_1.UserModel.create(user);
             return createdUser._id;
         }
