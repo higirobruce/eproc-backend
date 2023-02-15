@@ -52,7 +52,7 @@ export async function createSupplierinB1(CardName: String, CardType: String, Ser
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
-            'Cookie': 'B1SESSION=12b28ebc-ac5e-11ed-8002-000c29f945cd; ROUTEID=.node2; SESSION=12b28ebc-ac5e-11ed-8002-000c29f945cdß'
+            'Cookie': 'B1SESSION=f408c4da-ad49-11ed-8002-000c29f945cd; ROUTEID=.node2; SESSION=f408c4da-ad49-11ed-8002-000c29f945cd'
         },
         body: JSON.stringify(
             options
