@@ -93,6 +93,5 @@ export async function getReqCountsByDepartment() {
     ];
 
     let result = await RequestModel.aggregate(lookup)
-
     return result
 }
