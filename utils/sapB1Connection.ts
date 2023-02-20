@@ -1,6 +1,9 @@
+import {LocalStorage} from 'node-localstorage';
+
+let localstorage = new LocalStorage('./scratch');
 
 var config = {
-  "CompanyDB": "Z_TEST_IREMBO_DB",
+  "CompanyDB": "Z_TEST",
   "UserName": "manager",
   "Password": "K1g@li@123"
 }
@@ -21,8 +24,7 @@ export function sapLogin() {
       COOKIE = res.headers.get('set-cookie')
       console.log(resJson)
       console.log('Logged in', SESSION_ID, COOKIE)
-
-      
+      localstorage.setItem('cookie',`${COOKIE}`)
     }).catch(err => {
       console.log(err)
     })

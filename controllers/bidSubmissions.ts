@@ -25,6 +25,17 @@ export async function getAllBidSubmissionsByTender(tenderId: String) {
     return reqs
 }
 
+export async function getAllBidSubmissionsByVendor(vendorId: String) {
+    let reqs = await BidSubmissionModel.find({ createdBy: vendorId }).populate('createdBy').populate({
+        path: "createdBy",
+        populate: {
+            path: 'department',
+            model: 'Department'
+        }
+    }).populate('tender')
+    return reqs
+}
+
 export async function iSubmittedOnTender(tenderId: string, vendorId: any) {
     let reqs = await BidSubmissionModel.find({ tender: tenderId, createdBy: vendorId })
     return reqs.length > 0;

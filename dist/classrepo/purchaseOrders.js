@@ -6,12 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PurchaseOrder = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 class PurchaseOrder {
-    constructor(number, vendor, tender, createdBy, sections, status, deliveryProgress) {
+    constructor(number, vendor, tender, request, createdBy, sections, items, status, deliveryProgress) {
         this.number = number;
         this.vendor = vendor ? new mongoose_1.default.Types.ObjectId(vendor) : new mongoose_1.default.Types.ObjectId();
         this.tender = tender ? new mongoose_1.default.Types.ObjectId(tender) : new mongoose_1.default.Types.ObjectId();
+        this.request = request ? new mongoose_1.default.Types.ObjectId(request) : new mongoose_1.default.Types.ObjectId();
         this.createdBy = createdBy ? new mongoose_1.default.Types.ObjectId(createdBy) : new mongoose_1.default.Types.ObjectId();
         this.sections = sections;
+        this.items = items;
         this.status = status;
         this.deliveryProgress = deliveryProgress;
     }

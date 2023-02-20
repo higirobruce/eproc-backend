@@ -12,11 +12,16 @@ exports.PurchaseOrderSchema = new mongoose_1.Schema({
         type: mongoose_1.Types.ObjectId,
         ref: 'Tender'
     },
+    request: {
+        type: mongoose_1.Types.ObjectId,
+        ref: 'Request'
+    },
     createdBy: {
         type: mongoose_1.Types.ObjectId,
         ref: 'User'
     },
     sections: Array,
+    items: Array,
     status: {
         type: String
     },

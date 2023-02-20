@@ -64,6 +64,18 @@ export async function updateTenderStatus(id: String, newStatus: String) {
     }
 }
 
+export async function updateTender(id: String, newTender: Tender) {
+    try {
+        let updatedTender = await TenderModel.findOneAndUpdate({_id: id}, newTender, {upsert:true})
+        return { message: 'done' }
+    } catch (err) {
+        return {
+            error: true,
+            errorMessage: `Error :${err}`
+        }
+    }
+}
+
 
 export async function getTendCountsByDepartment() {
     let lookup = [

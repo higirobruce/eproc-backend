@@ -15,21 +15,21 @@ const contracts_1 = require("../classrepo/contracts");
 const contracts_2 = require("../controllers/contracts");
 const contracts_3 = require("../services/contracts");
 exports.contractRouter = (0, express_1.Router)();
-exports.contractRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.contractRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, contracts_2.getAllContracts)());
 }));
-exports.contractRouter.get('/byTenderId/:tenderId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.contractRouter.get("/byTenderId/:tenderId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { tenderId } = req.params;
     res.send(yield (0, contracts_2.getContractByTenderId)(tenderId));
 }));
-exports.contractRouter.get('/byVendorId/:vendorId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.contractRouter.get("/byVendorId/:vendorId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { vendorId } = req.params;
     res.send(yield (0, contracts_2.getContractByVendorId)(vendorId));
 }));
-exports.contractRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { vendor, tender, createdBy, sections, status, deliveryProgress } = req.body;
+exports.contractRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { vendor, tender, request, createdBy, sections, status, deliveryProgress, startDate, endDate, } = req.body;
     let number = yield (0, contracts_3.generateContractNumber)();
-    let tenderToCreate = new contracts_1.Contract(number, vendor, tender, createdBy, sections, status, deliveryProgress);
-    let createdTender = yield (0, contracts_2.saveContract)(tenderToCreate);
-    res.status(201).send(createdTender);
+    let contractToCreate = new contracts_1.Contract(tender, number, vendor, request, createdBy, sections, status, deliveryProgress, startDate, endDate);
+    let createdContract = yield (0, contracts_2.saveContract)(contractToCreate);
+    res.status(201).send(createdContract);
 }));

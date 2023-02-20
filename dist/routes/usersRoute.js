@@ -15,43 +15,51 @@ const users_1 = require("../classrepo/users");
 const users_2 = require("../controllers/users");
 const users_3 = require("../services/users");
 exports.userRouter = (0, express_1.Router)();
-exports.userRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllUsers)());
 }));
-exports.userRouter.get('/vendors', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userRouter.get("/vendors", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllVendors)());
 }));
-exports.userRouter.get('/internal', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userRouter.get("/internal", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllInternalUsers)());
 }));
-exports.userRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, building, streetNo, avenue, city, country, passportNid, services } = req.body;
+exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, building, streetNo, avenue, city, country, passportNid, services, permissions, } = req.body;
     let number = yield (0, users_3.generateUserNumber)();
-    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, building, streetNo, avenue, city, country, passportNid, services);
+    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, building, streetNo, avenue, city, country, passportNid, services, permissions);
     let createdUser = yield (0, users_2.saveUser)(userToCreate);
     res.status(201).send(createdUser);
 }));
-exports.userRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { email, password } = req.body;
     let user = yield (0, users_2.getUserByEmail)(email);
     if (user) {
         res.send({
             allowed: (0, users_3.validPassword)(password, user.password),
-            user: user
+            user: user,
         });
     }
     else {
         res.send({
             allowed: false,
-            user: {}
+            user: {},
         });
     }
 }));
-exports.userRouter.post('/approve/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userRouter.post("/approve/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     res.send(yield (0, users_2.approveUser)(id));
 }));
-exports.userRouter.post('/decline/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userRouter.post("/decline/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     res.send(yield (0, users_2.declineUser)(id));
+}));
+exports.userRouter.post("/ban/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    res.send(yield (0, users_2.banUser)(id));
+}));
+exports.userRouter.post("/activate/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    res.send(yield (0, users_2.activateUser)(id));
 }));

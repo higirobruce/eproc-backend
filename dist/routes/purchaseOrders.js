@@ -22,14 +22,18 @@ exports.poRouter.get('/byTenderId/:tenderId', (req, res) => __awaiter(void 0, vo
     let { tenderId } = req.params;
     res.send(yield (0, purchaseOrders_2.getPOByTenderId)(tenderId));
 }));
+exports.poRouter.get('/byRequestId/:requestId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { requestId } = req.params;
+    res.send(yield (0, purchaseOrders_2.getPOByRequestId)(requestId));
+}));
 exports.poRouter.get('/byVendorId/:vendorId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { vendorId } = req.params;
     res.send(yield (0, purchaseOrders_2.getPOByVendorId)(vendorId));
 }));
 exports.poRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { vendor, tender, createdBy, sections, status, deliveryProgress } = req.body;
+    let { vendor, tender, request, createdBy, sections, items, status, deliveryProgress } = req.body;
     let number = yield (0, purchaseOrders_3.generatePONumber)();
-    let tenderToCreate = new purchaseOrders_1.PurchaseOrder(number, vendor, tender, createdBy, sections, status, deliveryProgress);
+    let tenderToCreate = new purchaseOrders_1.PurchaseOrder(number, vendor, tender, request, createdBy, sections, items, status, deliveryProgress);
     let createdTender = yield (0, purchaseOrders_2.savePO)(tenderToCreate);
     res.status(201).send(createdTender);
 }));

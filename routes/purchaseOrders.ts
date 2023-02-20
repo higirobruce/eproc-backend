@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { PurchaseOrder } from '../classrepo/purchaseOrders';
-import { getAllPOs, getPOByTenderId, getPOByVendorId, savePO, updatePOStatus, updateProgress } from '../controllers/purchaseOrders';
+import { getAllPOs, getPOByRequestId, getPOByTenderId, getPOByVendorId, savePO, updatePOStatus, updateProgress } from '../controllers/purchaseOrders';
 import { generatePONumber } from '../services/purchaseOrders';
 
 export const poRouter = Router();
@@ -15,19 +15,25 @@ poRouter.get('/byTenderId/:tenderId', async (req, res) => {
     res.send(await getPOByTenderId(tenderId))
 })
 
+poRouter.get('/byRequestId/:requestId', async (req, res) => {
+    let { requestId } = req.params
+    res.send(await getPOByRequestId(requestId))
+})
+
 poRouter.get('/byVendorId/:vendorId', async (req, res) => {
     let { vendorId } = req.params
     res.send(await getPOByVendorId(vendorId))
 })
 
 
-
 poRouter.post('/', async (req, res) => {
     let {
         vendor,
         tender,
+        request,
         createdBy,
         sections,
+        items,
         status,
         deliveryProgress
     } = req.body
@@ -38,8 +44,10 @@ poRouter.post('/', async (req, res) => {
     let tenderToCreate = new PurchaseOrder(number,
         vendor,
         tender,
+        request,
         createdBy,
         sections,
+        items,
         status,
         deliveryProgress);
 

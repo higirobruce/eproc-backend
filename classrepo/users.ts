@@ -29,6 +29,7 @@ export class User implements IUser {
     country: string;
     passportNid: string;
     services: string[];
+    permissions: Object;
 
     constructor(
         userType: UserType,
@@ -55,7 +56,8 @@ export class User implements IUser {
         city: string,
         country: string,
         passportNid: string,
-        services: string[]
+        services: string[],
+        permissions: Object
     ) {
         this.userType = userType;
         this.email = email;
@@ -82,7 +84,10 @@ export class User implements IUser {
         this.country = country
         this.passportNid = passportNid
         this.services = services
+        this.permissions = permissions
+
     }
+    
     
 
 

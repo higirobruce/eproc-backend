@@ -73,7 +73,6 @@ function createSupplierinB1(CardName, CardType, Series) {
             body: JSON.stringify(options)
         }).then(res => res.json())
             .then(res => {
-            console.log(res);
         }).catch(err => {
             console.log(err);
         });
@@ -84,7 +83,6 @@ function getB1SeriesFromNames(firstName, lastName) {
     return __awaiter(this, void 0, void 0, function* () {
         let firstChar = firstName.substring(0, 1).toUpperCase();
         let secondChar = lastName.substring(0, 1).toUpperCase();
-        console.log(`${firstChar}${secondChar}`);
     });
 }
 exports.getB1SeriesFromNames = getB1SeriesFromNames;

@@ -5,17 +5,21 @@ const mongoose_1 = require("mongoose");
 exports.BidSubmissionSchema = new mongoose_1.Schema({
     createdBy: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     tender: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'Tender'
+        ref: "Tender",
     },
     proposalUrls: Array,
     deliveryDate: Date,
     price: {
         type: Number,
-        required: true
+        required: true,
+    },
+    currency: {
+        type: String,
+        default: "RWF",
     },
     warranty: {
         type: Number,
@@ -25,16 +29,16 @@ exports.BidSubmissionSchema = new mongoose_1.Schema({
     },
     status: {
         type: String,
-        default: 'pending'
+        default: "pending",
     },
     comment: {
         type: String,
     },
     number: {
-        type: Number
+        type: Number,
     },
     warrantyDuration: {
         type: String,
-    }
+    },
 });
-exports.BidSubmissionModel = (0, mongoose_1.model)('BidSubmission', exports.BidSubmissionSchema);
+exports.BidSubmissionModel = (0, mongoose_1.model)("BidSubmission", exports.BidSubmissionSchema);

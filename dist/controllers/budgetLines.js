@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSeriesByDescription = exports.getAllSeries = void 0;
-const series_1 = require("../models/series");
-function getAllSeries() {
+exports.saveBudgetLine = exports.getAllBudgetLines = void 0;
+const budgetLines_1 = require("../models/budgetLines");
+function getAllBudgetLines() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let series = yield series_1.SeriesModel.find();
-            return series;
+            let dpts = yield budgetLines_1.BudgetLineModel.find();
+            return dpts;
         }
         catch (err) {
             return {
@@ -25,13 +25,12 @@ function getAllSeries() {
         }
     });
 }
-exports.getAllSeries = getAllSeries;
-function getSeriesByDescription(desc) {
-    var _a;
+exports.getAllBudgetLines = getAllBudgetLines;
+function saveBudgetLine(budgetLine) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let series = yield series_1.SeriesModel.find({ seriesDesc: desc });
-            return (_a = series[0]) === null || _a === void 0 ? void 0 : _a.series;
+            let createdBudgetL = yield budgetLines_1.BudgetLineModel.create(budgetLine);
+            return createdBudgetL._id;
         }
         catch (err) {
             return {
@@ -41,4 +40,4 @@ function getSeriesByDescription(desc) {
         }
     });
 }
-exports.getSeriesByDescription = getSeriesByDescription;
+exports.saveBudgetLine = saveBudgetLine;

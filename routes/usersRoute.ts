@@ -1,110 +1,132 @@
-import { Router } from 'express'
-import { User } from '../classrepo/users';
-import { approveUser, declineUser, getAllInternalUsers, getAllUsers, getAllVendors, getUserByEmail, saveUser } from '../controllers/users';
-import { generateUserNumber, hashPassword, validPassword } from '../services/users';
+import { Router } from "express";
+import { User } from "../classrepo/users";
+import {
+  activateUser,
+  approveUser,
+  banUser,
+  declineUser,
+  getAllInternalUsers,
+  getAllUsers,
+  getAllVendors,
+  getUserByEmail,
+  saveUser,
+} from "../controllers/users";
+import {
+  generateUserNumber,
+  hashPassword,
+  validPassword,
+} from "../services/users";
 
 export const userRouter = Router();
 
+userRouter.get("/", async (req, res) => {
+  res.send(await getAllUsers());
+});
 
-userRouter.get('/', async (req, res) => {
-    res.send(await getAllUsers())
-})
+userRouter.get("/vendors", async (req, res) => {
+  res.send(await getAllVendors());
+});
 
-userRouter.get('/vendors', async (req, res) => {
-    res.send(await getAllVendors())
-})
+userRouter.get("/internal", async (req, res) => {
+  res.send(await getAllInternalUsers());
+});
 
-userRouter.get('/internal', async (req, res) => {
-    res.send(await getAllInternalUsers())
-})
+userRouter.post("/", async (req, res) => {
+  let {
+    userType,
+    email,
+    telephone,
+    experienceDurationInYears,
+    experienceDurationInMonths,
+    webSite,
+    status,
+    password,
+    createdOn,
+    createdBy,
+    rating,
+    tin,
+    companyName,
+    notes,
+    department,
+    contactPersonNames,
+    title,
+    building,
+    streetNo,
+    avenue,
+    city,
+    country,
+    passportNid,
+    services,
+    permissions,
+  } = req.body;
+  let number = await generateUserNumber();
 
+  let userToCreate = new User(
+    userType,
+    email,
+    telephone,
+    experienceDurationInYears,
+    experienceDurationInMonths,
+    webSite,
+    status,
+    hashPassword(password),
+    createdOn,
+    createdBy,
+    rating,
+    tin,
+    companyName,
+    number,
+    notes,
+    department,
+    contactPersonNames,
+    title,
+    building,
+    streetNo,
+    avenue,
+    city,
+    country,
+    passportNid,
+    services,
+    permissions
+  );
 
-userRouter.post('/', async (req, res) => {
-    let {
-        userType,
-        email,
-        telephone,
-        experienceDurationInYears,
-        experienceDurationInMonths,
-        webSite,
-        status,
-        password,
-        createdOn,
-        createdBy,
-        rating,
-        tin,
-        companyName,
-        notes,
-        department,
-        contactPersonNames,
-        title,
-        building,
-        streetNo,
-        avenue,
-        city,
-        country,
-        passportNid,
-        services
-    } = req.body
-    let number = await generateUserNumber();
+  let createdUser = await saveUser(userToCreate);
+  res.status(201).send(createdUser);
+});
 
-    let userToCreate = new User(
-        userType,
-        email,
-        telephone,
-        experienceDurationInYears,
-        experienceDurationInMonths,
-        webSite,
-        status,
-        hashPassword(password),
-        createdOn,
-        createdBy,
-        rating,
-        tin,
-        companyName,
-        number,
-        notes,
-        department,
-        contactPersonNames,
-        title,
-        building,
-        streetNo,
-        avenue,
-        city,
-        country,
-        passportNid, services)
+userRouter.post("/login", async (req, res) => {
+  let { email, password } = req.body;
 
-    let createdUser = await saveUser(userToCreate);
-    res.status(201).send(createdUser)
-})
+  let user = await getUserByEmail(email);
 
-userRouter.post('/login', async (req, res) => {
-    let { email, password } = req.body;
+  if (user) {
+    res.send({
+      allowed: validPassword(password, user!.password),
+      user: user,
+    });
+  } else {
+    res.send({
+      allowed: false,
+      user: {},
+    });
+  }
+});
 
-    let user = await getUserByEmail(email);
+userRouter.post("/approve/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await approveUser(id));
+});
 
-    if (user) {
-        res.send({
-            allowed: validPassword(password, user!.password),
-            user: user
-        })
-    } else {
-        res.send({
-            allowed: false,
-            user: {}
-        })
-    }
+userRouter.post("/decline/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await declineUser(id));
+});
 
-
-})
-
-
-userRouter.post('/approve/:id', async (req, res) => {
-    let { id } = req.params;
-    res.send(await approveUser(id))
-})
-
-userRouter.post('/decline/:id', async (req, res) => {
-    let { id } = req.params;
-    res.send(await declineUser(id))
-})
+userRouter.post("/ban/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await banUser(id));
+});
+userRouter.post("/activate/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await activateUser(id));
+});

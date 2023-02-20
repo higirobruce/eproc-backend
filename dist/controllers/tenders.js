@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByRequest = exports.getAllTenders = void 0;
+exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTender = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByRequest = exports.getAllTenders = void 0;
 const tenders_1 = require("../models/tenders");
 function getAllTenders() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -85,6 +85,21 @@ function updateTenderStatus(id, newStatus) {
     });
 }
 exports.updateTenderStatus = updateTenderStatus;
+function updateTender(id, newTender) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let updatedTender = yield tenders_1.TenderModel.findOneAndUpdate({ _id: id }, newTender, { upsert: true });
+            return { message: 'done' };
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`
+            };
+        }
+    });
+}
+exports.updateTender = updateTender;
 function getTendCountsByDepartment() {
     return __awaiter(this, void 0, void 0, function* () {
         let lookup = [

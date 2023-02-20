@@ -10,7 +10,9 @@ export interface ITender {
     status: ContractStatus,
     attachementUrls: String[],
     torsUrl: String,
-    number: number
+    number: number,
+    invitationSent: Boolean,
+    invitees: []
 
 }
 

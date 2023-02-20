@@ -6,6 +6,7 @@ export class BidSubmission implements IBidSubmission {
     proposalUrls: string[];
     deliveryDate: Date;
     price: number;
+    currency: string;
     warranty: number;
     discount: number;
     status: string;
@@ -20,6 +21,7 @@ export class BidSubmission implements IBidSubmission {
         proposalUrls: string[],
         deliveryDate: Date,
         price: number,
+        currency: string,
         warranty: number,
         discount: number,
         status: string,
@@ -32,6 +34,7 @@ export class BidSubmission implements IBidSubmission {
         this.proposalUrls = proposalUrls
         this.deliveryDate = deliveryDate
         this.price = price
+        this.currency = currency
         this.warranty = warranty
         this.discount = discount
         this.status = status

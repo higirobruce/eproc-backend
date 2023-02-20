@@ -12,6 +12,10 @@ exports.Contract = new mongoose_1.Schema({
         type: mongoose_1.Types.ObjectId,
         ref: 'Tender'
     },
+    request: {
+        type: mongoose_1.Types.ObjectId,
+        ref: 'Request'
+    },
     createdBy: {
         type: mongoose_1.Types.ObjectId,
         ref: 'User'
@@ -23,6 +27,12 @@ exports.Contract = new mongoose_1.Schema({
     deliveryProgress: {
         type: Number,
         default: 0
+    },
+    startDate: {
+        type: Date
+    },
+    endDate: {
+        type: Date
     }
 });
 exports.ContractModel = (0, mongoose_1.model)('Contract', exports.Contract);

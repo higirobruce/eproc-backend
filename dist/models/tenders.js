@@ -5,23 +5,28 @@ const mongoose_1 = require("mongoose");
 exports.TenderSchema = new mongoose_1.Schema({
     createdBy: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     attachementUrls: Array,
     dueDate: Date,
     submissionDeadLine: Date,
     purchaseRequest: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'Request'
+        ref: "Request",
     },
     torsUrl: String,
     items: Array,
     status: {
         type: String,
-        default: 'pending'
+        default: "pending",
     },
     number: {
-        type: Number
-    }
+        type: Number,
+    },
+    invitationSent: {
+        type: Boolean,
+        default: false,
+    },
+    invitees: [],
 });
-exports.TenderModel = (0, mongoose_1.model)('Tender', exports.TenderSchema);
+exports.TenderModel = (0, mongoose_1.model)("Tender", exports.TenderSchema);

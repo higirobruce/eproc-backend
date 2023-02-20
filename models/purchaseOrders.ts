@@ -11,11 +11,17 @@ export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
         type: Types.ObjectId,
         ref: 'Tender'
     },
+    request:{
+        type: Types.ObjectId,
+        ref: 'Request'
+    },
+
     createdBy:{
         type: Types.ObjectId,
         ref: 'User'
     },
     sections: Array,
+    items: Array,
     status:{
         type: String
     },

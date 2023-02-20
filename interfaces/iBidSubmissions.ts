@@ -5,6 +5,7 @@ export interface IBidSubmission {
     proposalUrls: String[],
     deliveryDate: Date,
     price: number,
+    currency: String,
     warranty: number,
     warrantyDuration: String,
     discount: number,

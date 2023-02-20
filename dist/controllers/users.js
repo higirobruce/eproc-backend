@@ -9,19 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
+const sapB1Connection_1 = require("../utils/sapB1Connection");
 const series_1 = require("./series");
+const node_localstorage_1 = require("node-localstorage");
+let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 function getAllUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find().populate('department');
+            let users = yield users_1.UserModel.find().populate("department");
             return users;
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -30,13 +33,13 @@ exports.getAllUsers = getAllUsers;
 function getAllVendors() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find({ userType: "VENDOR" }).populate('department');
+            let users = yield users_1.UserModel.find({ userType: "VENDOR" }).populate("department");
             return users;
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -45,13 +48,13 @@ exports.getAllVendors = getAllVendors;
 function getAllInternalUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" } }).populate('department');
+            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" } }).populate("department");
             return users;
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -63,20 +66,48 @@ function createSupplierinB1(CardName, CardType, Series) {
             // "CardCode": "SA0003",
             CardName,
             CardType,
-            Series
+            Series,
         };
-        fetch('https://192.168.20.181:50000/b1s/v1/BusinessPartners', {
+        return fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'Cookie': 'B1SESSION=f408c4da-ad49-11ed-8002-000c29f945cd; ROUTEID=.node2; SESSION=f408c4da-ad49-11ed-8002-000c29f945cd'
+                "Content-Type": "application/json",
+                Cookie: `${localstorage.getItem("cookie")}`,
             },
-            body: JSON.stringify(options)
-        }).then(res => res.json())
-            .then(res => {
-            return res === null || res === void 0 ? void 0 : res.CardCode;
-        }).catch(err => {
-            console.log(err);
+            body: JSON.stringify(options),
+        })
+            .then((res) => res.json())
+            .then((res) => __awaiter(this, void 0, void 0, function* () {
+            if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
+                yield (0, sapB1Connection_1.sapLogin)();
+                fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Cookie: `${localstorage.getItem("cookie")}`,
+                    },
+                    body: JSON.stringify(options),
+                })
+                    .then((res) => res.json())
+                    .then((res) => __awaiter(this, void 0, void 0, function* () {
+                    if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
+                        console.log("Tried many times, we cant login");
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }))
+                    .catch((err) => {
+                    return false;
+                });
+            }
+            else {
+                return true;
+            }
+        }))
+            .catch((err) => {
+            return false;
         });
     });
 }
@@ -93,17 +124,13 @@ exports.getB1SeriesFromNames = getB1SeriesFromNames;
 function saveUser(user) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let name = user.companyName;
-            let series = yield getB1SeriesFromNames(name);
-            let createdCode = yield createSupplierinB1(name, 'cSupplier', series);
-            console.log(createdCode);
             let createdUser = yield users_1.UserModel.create(user);
             return createdUser._id;
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -119,13 +146,25 @@ exports.getUserByEmail = getUserByEmail;
 function approveUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "approved" } }).populate('department');
-            return { message: 'done' };
+            let user = yield users_1.UserModel.findById(id).populate("department");
+            let name = user === null || user === void 0 ? void 0 : user.companyName;
+            let series = yield getB1SeriesFromNames(name);
+            let createdCode = yield createSupplierinB1(name, "cSupplier", series);
+            if (createdCode) {
+                user = yield users_1.UserModel.findByIdAndUpdate(id, {
+                    $set: { status: "approved" },
+                }).populate("department");
+            }
+            return {
+                status: createdCode ? "approved" : "created",
+                error: !createdCode,
+                message: createdCode ? "" : "Could not connect to SAP B1.",
+            };
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -134,15 +173,45 @@ exports.approveUser = approveUser;
 function declineUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "declined" } });
-            return { message: 'done' };
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "declined" } }, { new: true });
+            return user;
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
 }
 exports.declineUser = declineUser;
+function banUser(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "banned" } }, { new: true });
+            return user;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.banUser = banUser;
+function activateUser(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "approved" } }, { new: true });
+            return user;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.activateUser = activateUser;

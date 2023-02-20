@@ -9,6 +9,7 @@ const crypto_1 = __importDefault(require("crypto"));
 exports.UserSchema = new mongoose_1.Schema({
     userType: {
         type: String,
+        defaul: "VENDOR"
     },
     contactPersonNames: {
         type: String
@@ -80,7 +81,11 @@ exports.UserSchema = new mongoose_1.Schema({
         unique: true,
         dropDups: true,
     },
-    services: Array
+    services: Array,
+    permissions: Object,
+    title: {
+        type: String
+    }
 });
 // Method to set salt and hash the password for a user 
 exports.UserSchema.methods.setPassword = function (password) {

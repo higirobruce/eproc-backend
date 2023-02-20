@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSubmissionStatus = exports.rejectSubmission = exports.rejectOtherSubmissions = exports.deselectOtherSubmissions = exports.awardSubmission = exports.selectSubmission = exports.saveBidSubmission = exports.iSubmittedOnTender = exports.getAllBidSubmissionsByTender = exports.getAllBidSubmissions = void 0;
+exports.updateSubmissionStatus = exports.rejectSubmission = exports.rejectOtherSubmissions = exports.deselectOtherSubmissions = exports.awardSubmission = exports.selectSubmission = exports.saveBidSubmission = exports.iSubmittedOnTender = exports.getAllBidSubmissionsByVendor = exports.getAllBidSubmissionsByTender = exports.getAllBidSubmissions = void 0;
 const bidSubmissions_1 = require("../models/bidSubmissions");
 function getAllBidSubmissions() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -37,6 +37,19 @@ function getAllBidSubmissionsByTender(tenderId) {
     });
 }
 exports.getAllBidSubmissionsByTender = getAllBidSubmissionsByTender;
+function getAllBidSubmissionsByVendor(vendorId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let reqs = yield bidSubmissions_1.BidSubmissionModel.find({ createdBy: vendorId }).populate('createdBy').populate({
+            path: "createdBy",
+            populate: {
+                path: 'department',
+                model: 'Department'
+            }
+        }).populate('tender');
+        return reqs;
+    });
+}
+exports.getAllBidSubmissionsByVendor = getAllBidSubmissionsByVendor;
 function iSubmittedOnTender(tenderId, vendorId) {
     return __awaiter(this, void 0, void 0, function* () {
         let reqs = yield bidSubmissions_1.BidSubmissionModel.find({ tender: tenderId, createdBy: vendorId });

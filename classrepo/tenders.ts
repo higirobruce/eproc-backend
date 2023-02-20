@@ -14,6 +14,8 @@ export class Tender implements ITender {
     submissionDeadLine: Date;
     torsUrl: string;
     purchaseRequest: Types.ObjectId;
+    invitationSent: Boolean;
+    invitees: []
 
     constructor(
         createdBy: string,
@@ -24,7 +26,9 @@ export class Tender implements ITender {
         number: number,
         submissionDeadLine: Date,
         torsUrl: string,
-        purchaseRequest: string
+        purchaseRequest: string,
+        invitationSent: boolean,
+        invitees: []
     ) {
         this.createdBy = createdBy ? new Types.ObjectId(createdBy) : new Types.ObjectId()
         this.items = items
@@ -35,6 +39,8 @@ export class Tender implements ITender {
         this.submissionDeadLine = submissionDeadLine
         this.torsUrl = torsUrl
         this.purchaseRequest = purchaseRequest? new Types.ObjectId(purchaseRequest) : new Types.ObjectId()
+        this.invitationSent=invitationSent
+        this.invitees = invitees
     }
 
 

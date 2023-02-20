@@ -1,29 +1,31 @@
+import express, { Express, NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
+import { userRouter } from "./routes/usersRoute";
+import { requetsRouter } from "./routes/requestsRoute";
+import { serviceCategoryRouter } from "./routes/serviceCategories";
+import { dptRouter } from "./routes/dptRoute";
+import { tenderRouter } from "./routes/tenders";
+import { submissionsRouter } from "./routes/bidSubmissionsRoute";
+import { poRouter } from "./routes/purchaseOrders";
+import { contractRouter } from "./routes/contracts";
+import { budgetLinesRouter } from "./routes/budgetLinesRoute";
+import {uploadRouter} from './routes/upload'
 
-import express, { Express, NextFunction, Request, Response } from 'express'
-import mongoose from 'mongoose'
-import { userRouter } from './routes/usersRoute';
-import { requetsRouter } from './routes/requestsRoute'
-import { serviceCategoryRouter } from './routes/serviceCategories'
-import { dptRouter } from './routes/dptRoute';
-import { tenderRouter } from './routes/tenders';
-import { submissionsRouter } from './routes/bidSubmissionsRoute'
-import { poRouter } from './routes/purchaseOrders'
-import { contractRouter } from './routes/contracts'
+import bodyParser from "body-parser";
+import cors from "cors-ts";
+import { sapLogin, SESSION_ID } from "./utils/sapB1Connection";
+import { createSupplierinB1, getB1SeriesFromNames } from "./controllers/users";
+import { getSeriesByDescription } from "./controllers/series";
+import { LocalStorage } from "node-localstorage";
 
-import bodyParser from 'body-parser';
-import cors from 'cors-ts';
-import { sapLogin, SESSION_ID } from './utils/sapB1Connection';
-import { createSupplierinB1, getB1SeriesFromNames } from './controllers/users';
-import { getSeriesByDescription } from './controllers/series';
+let localstorage = new LocalStorage("./scratch");
 
-const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999
-const DB_USER = process.env.EPROC_DB_USER
-const DB_PASSWORD = process.env.EPROC_DB_PASSWORD
+const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999;
+const DB_USER = process.env.EPROC_DB_USER;
+const DB_PASSWORD = process.env.EPROC_DB_PASSWORD;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //Set up default mongoose connection
-var mongoDB =
-  `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
-
+var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
 
 mongoose.connect(mongoDB);
 //Get the default connection
@@ -59,16 +61,24 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
-app.use('/users', auth, userRouter);
-app.use('/requests', auth, requetsRouter);
-app.use('/dpts', auth, dptRouter);
-app.use('/serviceCategories', auth, serviceCategoryRouter);
-app.use('/tenders', auth, tenderRouter);
-app.use('/submissions', auth, submissionsRouter)
-app.use('/purchaseOrders', auth, poRouter)
-app.use('/contracts', auth, contractRouter)
+app.use("/users", auth, userRouter);
+app.use("/requests", auth, requetsRouter);
+app.use("/dpts", auth, dptRouter);
+app.use("/serviceCategories", auth, serviceCategoryRouter);
+app.use("/tenders", auth, tenderRouter);
+app.use("/submissions", auth, submissionsRouter);
+app.use("/purchaseOrders", auth, poRouter);
+app.use("/contracts", auth, contractRouter);
+app.use("/budgetLines", auth, budgetLinesRouter);
+app.use('/uploads', uploadRouter)
 
 app.listen(PORT, async () => {
-  console.log(`App listening on port ${PORT}`)
-})
+  // console.log(localstorage.getItem('cookie'))
+  // await sapLogin()
+  let name = "CVL";
+  let series = await getB1SeriesFromNames(name!);
+  let createdCode = await createSupplierinB1(name!, "cSupplier", series);
+  
+
+  console.log(`App listening on port ${PORT}`);
+});

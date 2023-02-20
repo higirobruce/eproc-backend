@@ -22,15 +22,19 @@ exports.submissionsRouter.get('/byTender/:tenderId', (req, res) => __awaiter(voi
     let { tenderId } = req.params;
     res.send(yield (0, bidSubmissions_1.getAllBidSubmissionsByTender)(tenderId));
 }));
+exports.submissionsRouter.get('/byVendor/:vendorId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { vendorId } = req.params;
+    res.send(yield (0, bidSubmissions_1.getAllBidSubmissionsByVendor)(vendorId));
+}));
 exports.submissionsRouter.get('/submitted/:tenderId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { tenderId } = req.params;
     let { vendorId } = req.query;
     res.send(yield (0, bidSubmissions_1.iSubmittedOnTender)(tenderId, vendorId));
 }));
 exports.submissionsRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { proposalUrls, deliveryDate, price, warranty, discount, status, comment, createdBy, tender, warrantyDuration } = req.body;
+    let { proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, createdBy, tender, warrantyDuration } = req.body;
     let number = yield (0, bidSubmissions_3.generateBidSubmissionNumber)();
-    let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration);
+    let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration);
     let createdSubmission = yield (0, bidSubmissions_1.saveBidSubmission)(submission);
     res.status(201).send(createdSubmission);
 }));

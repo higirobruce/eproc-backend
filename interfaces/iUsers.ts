@@ -27,6 +27,7 @@ export interface IUser {
     number: number,
     notes: string,
     services: Array<string>,
+    permissions: Object
 
 }
 

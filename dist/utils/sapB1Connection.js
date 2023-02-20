@@ -10,8 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sapLogin = exports.COOKIE = exports.SESSION_ID = void 0;
+const node_localstorage_1 = require("node-localstorage");
+let localstorage = new node_localstorage_1.LocalStorage('./scratch');
 var config = {
-    "CompanyDB": "Z_TEST_IREMBO_DB",
+    "CompanyDB": "Z_TEST",
     "UserName": "manager",
     "Password": "K1g@li@123"
 };
@@ -29,6 +31,7 @@ function sapLogin() {
         exports.COOKIE = res.headers.get('set-cookie');
         console.log(resJson);
         console.log('Logged in', exports.SESSION_ID, exports.COOKIE);
+        localstorage.setItem('cookie', `${exports.COOKIE}`);
     })).catch(err => {
         console.log(err);
     });

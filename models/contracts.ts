@@ -11,6 +11,10 @@ export const Contract = new Schema<IContractDocument>({
         type: Types.ObjectId,
         ref: 'Tender'
     },
+    request:{
+        type: Types.ObjectId,
+        ref: 'Request'
+    },
     createdBy: {
         type: Types.ObjectId,
         ref: 'User'
@@ -22,6 +26,12 @@ export const Contract = new Schema<IContractDocument>({
     deliveryProgress: {
         type: Number,
         default: 0
+    },
+    startDate:{
+        type: Date
+    },
+    endDate:{
+        type:Date
     }
 
 })

@@ -6,6 +6,7 @@ import crypto from 'crypto';
 export const UserSchema = new Schema<IUserDocument>({
     userType: {
         type: String,
+        defaul:"VENDOR"
     },
     contactPersonNames: {
         type: String
@@ -77,7 +78,11 @@ export const UserSchema = new Schema<IUserDocument>({
         unique: true,
         dropDups: true,
     },
-    services: Array
+    services: Array,
+    permissions: Object,
+    title:{
+        type: String
+    }
 
 })
 

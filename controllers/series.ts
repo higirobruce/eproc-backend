@@ -15,9 +15,7 @@ export async function getAllSeries() {
 
 export async function getSeriesByDescription(desc: String) {
     try {
-        console.log(desc)
         let series = await SeriesModel.find({ seriesDesc: desc });
-        console.log(series)
         
         return series[0]?.series;
     } catch (err) {
