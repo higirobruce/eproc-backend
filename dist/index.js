@@ -26,7 +26,6 @@ const budgetLinesRoute_1 = require("./routes/budgetLinesRoute");
 const upload_1 = require("./routes/upload");
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
-const users_1 = require("./controllers/users");
 const node_localstorage_1 = require("node-localstorage");
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999;
@@ -76,8 +75,5 @@ app.use('/uploads', upload_1.uploadRouter);
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(localstorage.getItem('cookie'))
     // await sapLogin()
-    let name = "CVL";
-    let series = yield (0, users_1.getB1SeriesFromNames)(name);
-    let createdCode = yield (0, users_1.createSupplierinB1)(name, "cSupplier", series);
     console.log(`App listening on port ${PORT}`);
 }));

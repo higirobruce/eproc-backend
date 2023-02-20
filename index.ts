@@ -75,10 +75,5 @@ app.use('/uploads', uploadRouter)
 app.listen(PORT, async () => {
   // console.log(localstorage.getItem('cookie'))
   // await sapLogin()
-  let name = "CVL";
-  let series = await getB1SeriesFromNames(name!);
-  let createdCode = await createSupplierinB1(name!, "cSupplier", series);
-  
-
   console.log(`App listening on port ${PORT}`);
 });
