@@ -9,14 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getPOByTenderId = exports.getAllPOs = void 0;
+exports.savePOInB1 = exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getPOByTenderId = exports.getAllPOs = void 0;
 const purchaseOrders_1 = require("../models/purchaseOrders");
+const node_localstorage_1 = require("node-localstorage");
+const sapB1Connection_1 = require("../utils/sapB1Connection");
+let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 /**
-* Get all POs in the database. This is used to populate the list of purchases and get the purchase order for each purchase
-*
-*
-* @return { Promise } A promise that resolves with an array
-*/
+ * Get all POs in the database. This is used to populate the list of purchases and get the purchase order for each purchase
+ *
+ *
+ * @return { Promise } A promise that resolves with an array
+ */
 function getAllPOs() {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield purchaseOrders_1.PurchaseOrderModel.find()
@@ -36,13 +39,13 @@ function getAllPOs() {
 }
 exports.getAllPOs = getAllPOs;
 /**
-* Get purchase order by tender id. This is used to populate the form fields when creating a new purchase order
-*
-* @param tenderId - The id of the tender
-* @param String
-*
-* @return { Object } The purchase order with the tender id as key and the request as value. If there is no purchase order with the tender id null is
-*/
+ * Get purchase order by tender id. This is used to populate the form fields when creating a new purchase order
+ *
+ * @param tenderId - The id of the tender
+ * @param String
+ *
+ * @return { Object } The purchase order with the tender id as key and the request as value. If there is no purchase order with the tender id null is
+ */
 function getPOByTenderId(tenderId) {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield purchaseOrders_1.PurchaseOrderModel.find({ tender: tenderId })
@@ -80,13 +83,13 @@ function getPOByRequestId(requestId) {
 }
 exports.getPOByRequestId = getPOByRequestId;
 /**
-* Get purchase order by vendor id. This is used for testing purposes to ensure that the user doesn't accidentally get an error when trying to create a purchase order that does not exist.
-*
-* @param vendorId - Vendor id to look for. If null or " " will return all pos.
-* @param String
-*
-* @return { Promise } The promise is resolved with an object with the following properties : tender : The user's tender createdBy : The user's created by
-*/
+ * Get purchase order by vendor id. This is used for testing purposes to ensure that the user doesn't accidentally get an error when trying to create a purchase order that does not exist.
+ *
+ * @param vendorId - Vendor id to look for. If null or " " will return all pos.
+ * @param String
+ *
+ * @return { Promise } The promise is resolved with an object with the following properties : tender : The user's tender createdBy : The user's created by
+ */
 function getPOByVendorId(vendorId) {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield purchaseOrders_1.PurchaseOrderModel.find({ vendor: vendorId })
@@ -98,14 +101,14 @@ function getPOByVendorId(vendorId) {
 }
 exports.getPOByVendorId = getPOByVendorId;
 /**
-* Updates the status of Purchase Order. This is a convenience method for updating the status of a Purchase Order
-*
-* @param id - The id of the Po to update
-* @param String
-* @param newStatus - The status to set the PO to.
-*
-* @return { Object } The result of the action i. e. { message : true|false errorMessage :'Error '
-*/
+ * Updates the status of Purchase Order. This is a convenience method for updating the status of a Purchase Order
+ *
+ * @param id - The id of the Po to update
+ * @param String
+ * @param newStatus - The status to set the PO to.
+ *
+ * @return { Object } The result of the action i. e. { message : true|false errorMessage :'Error '
+ */
 function updatePOStatus(id, newStatus) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -124,14 +127,14 @@ function updatePOStatus(id, newStatus) {
 }
 exports.updatePOStatus = updatePOStatus;
 /**
-* Updates the progress of purchase order. It is used to update the delivery progress of a purchased order
-*
-* @param id - ID of the purchase order
-* @param String
-* @param progress - String representing the amount of the order that has been dismissed
-*
-* @return { Object } Object with error flag and errorMessage set if an error occured during update otherwise an error is
-*/
+ * Updates the progress of purchase order. It is used to update the delivery progress of a purchased order
+ *
+ * @param id - ID of the purchase order
+ * @param String
+ * @param progress - String representing the amount of the order that has been dismissed
+ *
+ * @return { Object } Object with error flag and errorMessage set if an error occured during update otherwise an error is
+ */
 function updateProgress(id, progress) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -148,13 +151,13 @@ function updateProgress(id, progress) {
 }
 exports.updateProgress = updateProgress;
 /**
-* Saves a Purchase Order to the database. This will throw if there is an error saving the PO.
-*
-* @param po - The Purchase Order to save. Must be an instance of PurchaseOrder
-* @param PurchaseOrder
-*
-* @return { Promise } The created PO
-*/
+ * Saves a Purchase Order to the database. This will throw if there is an error saving the PO.
+ *
+ * @param po - The Purchase Order to save. Must be an instance of PurchaseOrder
+ * @param PurchaseOrder
+ *
+ * @return { Promise } The created PO
+ */
 function savePO(po) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -167,3 +170,49 @@ function savePO(po) {
     });
 }
 exports.savePO = savePO;
+function savePOInB1(CardCode, DocType, DocumentLines) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return fetch("https://192.168.20.181:50000/b1s/v1/PurchaseOrders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: `${localstorage.getItem("cookie")}`,
+            },
+            body: JSON.stringify({ CardCode, DocType, DocumentLines }),
+        })
+            .then((res) => res.json())
+            .then((res) => __awaiter(this, void 0, void 0, function* () {
+            if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
+                yield (0, sapB1Connection_1.sapLogin)();
+                fetch("https://192.168.20.181:50000/b1s/v1/PurchaseOrders", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Cookie: `${localstorage.getItem("cookie")}`,
+                    },
+                    body: JSON.stringify({ CardCode, DocType, DocumentLines }),
+                })
+                    .then((res) => res.json())
+                    .then((res) => __awaiter(this, void 0, void 0, function* () {
+                    if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
+                        console.log("Tried many times, we cant login");
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }))
+                    .catch((err) => {
+                    return false;
+                });
+            }
+            else {
+                return true;
+            }
+        }))
+            .catch((err) => {
+            return false;
+        });
+    });
+}
+exports.savePOInB1 = savePOInB1;

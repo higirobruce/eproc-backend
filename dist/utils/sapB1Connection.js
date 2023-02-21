@@ -9,31 +9,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sapLogin = exports.COOKIE = exports.SESSION_ID = void 0;
+exports.sapLogout = exports.sapLogin = exports.COOKIE = exports.SESSION_ID = void 0;
 const node_localstorage_1 = require("node-localstorage");
-let localstorage = new node_localstorage_1.LocalStorage('./scratch');
+let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 var config = {
-    "CompanyDB": "Z_TEST",
-    "UserName": "manager",
-    "Password": "K1g@li@123"
+    CompanyDB: "Z_TEST",
+    UserName: "manager",
+    Password: "K1g@li@123",
 };
 function sapLogin() {
-    fetch('https://192.168.20.181:50000/b1s/v1/Login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(config)
-    })
-        .then((res) => __awaiter(this, void 0, void 0, function* () {
-        let resJson = yield res.json();
-        exports.SESSION_ID = resJson === null || resJson === void 0 ? void 0 : resJson.SessionId;
-        exports.COOKIE = res.headers.get('set-cookie');
-        console.log(resJson);
-        console.log('Logged in', exports.SESSION_ID, exports.COOKIE);
-        localstorage.setItem('cookie', `${exports.COOKIE}`);
-    })).catch(err => {
-        console.log(err);
+    return __awaiter(this, void 0, void 0, function* () {
+        return fetch("https://192.168.20.181:50000/b1s/v1/Login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(config),
+        });
     });
 }
 exports.sapLogin = sapLogin;
+function sapLogout() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return fetch("https://192.168.20.181:50000/b1s/v1/Logout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: `${localstorage.getItem("cookie")}`,
+            },
+            body: JSON.stringify(config),
+        });
+    });
+}
+exports.sapLogout = sapLogout;

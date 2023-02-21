@@ -9,7 +9,8 @@ import { submissionsRouter } from "./routes/bidSubmissionsRoute";
 import { poRouter } from "./routes/purchaseOrders";
 import { contractRouter } from "./routes/contracts";
 import { budgetLinesRouter } from "./routes/budgetLinesRoute";
-import {uploadRouter} from './routes/upload'
+import { uploadRouter } from "./routes/upload";
+import b1Router from "./services/b1";
 
 import bodyParser from "body-parser";
 import cors from "cors-ts";
@@ -17,6 +18,8 @@ import { sapLogin, SESSION_ID } from "./utils/sapB1Connection";
 import { createSupplierinB1, getB1SeriesFromNames } from "./controllers/users";
 import { getSeriesByDescription } from "./controllers/series";
 import { LocalStorage } from "node-localstorage";
+import { savePOInB1 } from "./controllers/purchaseOrders";
+
 
 let localstorage = new LocalStorage("./scratch");
 
@@ -70,10 +73,13 @@ app.use("/submissions", auth, submissionsRouter);
 app.use("/purchaseOrders", auth, poRouter);
 app.use("/contracts", auth, contractRouter);
 app.use("/budgetLines", auth, budgetLinesRouter);
-app.use('/uploads', uploadRouter)
+app.use("/uploads", uploadRouter);
+app.use('/b1', b1Router)
 
 app.listen(PORT, async () => {
   // console.log(localstorage.getItem('cookie'))
   // await sapLogin()
+  
   console.log(`App listening on port ${PORT}`);
 });
+

@@ -1,32 +1,32 @@
-import {LocalStorage} from 'node-localstorage';
+import { LocalStorage } from "node-localstorage";
 
-let localstorage = new LocalStorage('./scratch');
+let localstorage = new LocalStorage("./scratch");
 
 var config = {
-  "CompanyDB": "Z_TEST",
-  "UserName": "manager",
-  "Password": "K1g@li@123"
-}
-export var SESSION_ID:any;
-export var COOKIE:any;
+  CompanyDB: "Z_TEST",
+  UserName: "manager",
+  Password: "K1g@li@123",
+};
+export var SESSION_ID: any;
+export var COOKIE: any;
 
-export function sapLogin() {
-  fetch('https://192.168.20.181:50000/b1s/v1/Login', {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json', 
+export async function sapLogin() {
+  return fetch("https://192.168.20.181:50000/b1s/v1/Login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(config)
-  })
-    .then(async res => {
-      let resJson = await res.json();
-      SESSION_ID = resJson?.SessionId;
-      COOKIE = res.headers.get('set-cookie')
-      console.log(resJson)
-      console.log('Logged in', SESSION_ID, COOKIE)
-      localstorage.setItem('cookie',`${COOKIE}`)
-    }).catch(err => {
-      console.log(err)
-    })
+    body: JSON.stringify(config),
+  });
 }
 
+export async function sapLogout() {
+  return fetch("https://192.168.20.181:50000/b1s/v1/Logout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: `${localstorage.getItem("cookie")}`,
+    },
+    body: JSON.stringify(config),
+  });
+}

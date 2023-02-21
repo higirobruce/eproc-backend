@@ -24,6 +24,7 @@ const purchaseOrders_1 = require("./routes/purchaseOrders");
 const contracts_1 = require("./routes/contracts");
 const budgetLinesRoute_1 = require("./routes/budgetLinesRoute");
 const upload_1 = require("./routes/upload");
+const b1_1 = __importDefault(require("./services/b1"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
 const node_localstorage_1 = require("node-localstorage");
@@ -71,7 +72,8 @@ app.use("/submissions", auth, bidSubmissionsRoute_1.submissionsRouter);
 app.use("/purchaseOrders", auth, purchaseOrders_1.poRouter);
 app.use("/contracts", auth, contracts_1.contractRouter);
 app.use("/budgetLines", auth, budgetLinesRoute_1.budgetLinesRouter);
-app.use('/uploads', upload_1.uploadRouter);
+app.use("/uploads", upload_1.uploadRouter);
+app.use('/b1', b1_1.default);
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(localstorage.getItem('cookie'))
     // await sapLogin()
