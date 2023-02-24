@@ -10,6 +10,7 @@ import {
   getAllVendors,
   getUserByEmail,
   saveUser,
+  updateUser,
 } from "../controllers/users";
 import {
   generateUserNumber,
@@ -126,7 +127,15 @@ userRouter.post("/ban/:id", async (req, res) => {
   let { id } = req.params;
   res.send(await banUser(id));
 });
+
 userRouter.post("/activate/:id", async (req, res) => {
   let { id } = req.params;
   res.send(await activateUser(id));
 });
+
+userRouter.put('/:id', async (req,res)=>{
+  let {id} = req.params
+  let {newUser} = req.body;
+
+  res.send(await updateUser(id,newUser))
+})

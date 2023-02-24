@@ -54,6 +54,18 @@ export async function updateRequestStatus(id: String, newStatus: String) {
     }
 }
 
+export async function updateRequest(id: String, update: Request) {
+    try {
+        await RequestModel.findByIdAndUpdate(id, update)
+        return { message: 'done' }
+    } catch (err) {
+        return {
+            error: true,
+            errorMessage: `Error :${err}`
+        }
+    }
+}
+
 export async function getReqCountsByDepartment() {
     let lookup = [
         {

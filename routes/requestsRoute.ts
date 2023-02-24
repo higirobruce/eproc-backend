@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { PoLineItem } from '../classrepo/poLineItems';
 import { Request } from '../classrepo/requests';
 import { User } from '../classrepo/users';
-import { approveRequest, declineRequest, getAllRequests, getReqCountsByDepartment, saveRequest, updateRequestStatus } from '../controllers/requests';
+import { approveRequest, declineRequest, getAllRequests, getReqCountsByDepartment, saveRequest, updateRequest, updateRequestStatus } from '../controllers/requests';
 import { approveUser, declineUser, getAllInternalUsers, getAllUsers, getAllVendors, getUserByEmail, saveUser } from '../controllers/users';
 import { generateReqNumber } from '../services/requests';
 import { generateUserNumber, hashPassword, validPassword } from '../services/users';
@@ -78,4 +78,10 @@ requetsRouter.put('/status/:id', async (req, res) => {
     let { id } = req.params;
     let { status } = req.body;
     res.send(await updateRequestStatus(id, status))
+})
+
+requetsRouter.put('/:id', async (req, res) => {
+    let { id } = req.params;
+    let { updates } = req.body;
+    res.send(await updateRequest(id, updates))
 })

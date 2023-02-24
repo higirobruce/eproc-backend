@@ -17,7 +17,7 @@ export async function sapLogin() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(config),
-  });
+  })
 }
 
 export async function sapLogout() {

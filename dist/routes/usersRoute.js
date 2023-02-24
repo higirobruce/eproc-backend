@@ -63,3 +63,8 @@ exports.userRouter.post("/activate/:id", (req, res) => __awaiter(void 0, void 0,
     let { id } = req.params;
     res.send(yield (0, users_2.activateUser)(id));
 }));
+exports.userRouter.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    let { newUser } = req.body;
+    res.send(yield (0, users_2.updateUser)(id, newUser));
+}));

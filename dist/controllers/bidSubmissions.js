@@ -19,7 +19,13 @@ function getAllBidSubmissions() {
                 path: 'department',
                 model: 'Department'
             }
-        }).populate('tender');
+        }).populate('tender').populate({
+            path: "tender",
+            populate: {
+                path: 'purchaseRequest',
+                model: 'Request'
+            }
+        });
         return reqs;
     });
 }
@@ -32,7 +38,13 @@ function getAllBidSubmissionsByTender(tenderId) {
                 path: 'department',
                 model: 'Department'
             }
-        }).populate('tender');
+        }).populate('tender').populate({
+            path: "tender",
+            populate: {
+                path: 'purchaseRequest',
+                model: 'Request'
+            }
+        });
         return reqs;
     });
 }
@@ -45,7 +57,13 @@ function getAllBidSubmissionsByVendor(vendorId) {
                 path: 'department',
                 model: 'Department'
             }
-        }).populate('tender');
+        }).populate('tender').populate({
+            path: "tender",
+            populate: {
+                path: 'purchaseRequest',
+                model: 'Request'
+            }
+        });
         return reqs;
     });
 }

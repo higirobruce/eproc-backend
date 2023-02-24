@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReqCountsByDepartment = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequests = void 0;
+exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequests = void 0;
 const requests_1 = require("../models/requests");
 function getAllRequests() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -76,6 +76,21 @@ function updateRequestStatus(id, newStatus) {
     });
 }
 exports.updateRequestStatus = updateRequestStatus;
+function updateRequest(id, update) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield requests_1.RequestModel.findByIdAndUpdate(id, update);
+            return { message: 'done' };
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`
+            };
+        }
+    });
+}
+exports.updateRequest = updateRequest;
 function getReqCountsByDepartment() {
     return __awaiter(this, void 0, void 0, function* () {
         let lookup = [

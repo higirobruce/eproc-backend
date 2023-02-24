@@ -155,43 +155,22 @@ export async function savePOInB1(
   DocType: String,
   DocumentLines: DocumentLines[]
 ) {
-  return fetch("https://192.168.20.181:50000/b1s/v1/PurchaseOrders", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: `${localstorage.getItem("cookie")}`,
-    },
-    body: JSON.stringify({ CardCode, DocType, DocumentLines }),
-  })
-    .then((res) => res.json())
-    .then(async (res) => {
-      if (res?.error && res?.error.code == 301) {
-        await sapLogin();
-        fetch("https://192.168.20.181:50000/b1s/v1/PurchaseOrders", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Cookie: `${localstorage.getItem("cookie")}`,
-          },
-          body: JSON.stringify({ CardCode, DocType, DocumentLines }),
-        })
-          .then((res) => res.json())
-          .then(async (res) => {
-            if (res?.error && res?.error.code == 301) {
-              console.log("Tried many times, we cant login");
-              return false;
-            } else {
-              return true;
-            }
-          })
-          .catch((err) => {
-            return false;
-          });
-      } else {
-        return true;
-      }
+  return sapLogin().then(async (res) => {
+    let COOKIE = res.headers.get("set-cookie");
+    localstorage.setItem("cookie", `${COOKIE}`);
+
+    fetch("https://192.168.20.181:50000/b1s/v1/PurchaseOrders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `${localstorage.getItem("cookie")}`,
+      },
+      body: JSON.stringify({ CardCode, DocType, DocumentLines }),
     })
-    .catch((err) => {
-      return false;
-    });
+      .then((res) => res.json())
+      .then((res) => console.log(res))
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 }

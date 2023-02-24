@@ -10,7 +10,13 @@ export async function getAllBidSubmissions() {
             path: 'department',
             model: 'Department'
         }
-    }).populate('tender')
+    }).populate('tender').populate({
+        path: "tender",
+        populate: {
+            path: 'purchaseRequest',
+            model: 'Request'
+        }
+    })
     return reqs
 }
 
@@ -21,7 +27,13 @@ export async function getAllBidSubmissionsByTender(tenderId: String) {
             path: 'department',
             model: 'Department'
         }
-    }).populate('tender')
+    }).populate('tender').populate({
+        path: "tender",
+        populate: {
+            path: 'purchaseRequest',
+            model: 'Request'
+        }
+    })
     return reqs
 }
 
@@ -32,7 +44,13 @@ export async function getAllBidSubmissionsByVendor(vendorId: String) {
             path: 'department',
             model: 'Department'
         }
-    }).populate('tender')
+    }).populate('tender').populate({
+        path: "tender",
+        populate: {
+            path: 'purchaseRequest',
+            model: 'Request'
+        }
+    })
     return reqs
 }
 

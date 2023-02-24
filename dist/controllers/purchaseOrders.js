@@ -172,47 +172,23 @@ function savePO(po) {
 exports.savePO = savePO;
 function savePOInB1(CardCode, DocType, DocumentLines) {
     return __awaiter(this, void 0, void 0, function* () {
-        return fetch("https://192.168.20.181:50000/b1s/v1/PurchaseOrders", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Cookie: `${localstorage.getItem("cookie")}`,
-            },
-            body: JSON.stringify({ CardCode, DocType, DocumentLines }),
-        })
-            .then((res) => res.json())
-            .then((res) => __awaiter(this, void 0, void 0, function* () {
-            if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
-                yield (0, sapB1Connection_1.sapLogin)();
-                fetch("https://192.168.20.181:50000/b1s/v1/PurchaseOrders", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Cookie: `${localstorage.getItem("cookie")}`,
-                    },
-                    body: JSON.stringify({ CardCode, DocType, DocumentLines }),
-                })
-                    .then((res) => res.json())
-                    .then((res) => __awaiter(this, void 0, void 0, function* () {
-                    if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
-                        console.log("Tried many times, we cant login");
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                }))
-                    .catch((err) => {
-                    return false;
-                });
-            }
-            else {
-                return true;
-            }
-        }))
-            .catch((err) => {
-            return false;
-        });
+        return (0, sapB1Connection_1.sapLogin)().then((res) => __awaiter(this, void 0, void 0, function* () {
+            let COOKIE = res.headers.get("set-cookie");
+            localstorage.setItem("cookie", `${COOKIE}`);
+            fetch("https://192.168.20.181:50000/b1s/v1/PurchaseOrders", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Cookie: `${localstorage.getItem("cookie")}`,
+                },
+                body: JSON.stringify({ CardCode, DocType, DocumentLines }),
+            })
+                .then((res) => res.json())
+                .then((res) => console.log(res))
+                .catch((err) => {
+                console.log(err);
+            });
+        }));
     });
 }
 exports.savePOInB1 = savePOInB1;

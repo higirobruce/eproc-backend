@@ -74,9 +74,7 @@ export const UserSchema = new Schema<IUserDocument>({
     },
     companyName: {
         type: String,
-        required: true,
         unique: true,
-        dropDups: true,
     },
     services: Array,
     permissions: Object,

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
 const series_1 = require("./series");
@@ -68,47 +68,32 @@ function createSupplierinB1(CardName, CardType, Series) {
             CardType,
             Series,
         };
-        return fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Cookie: `${localstorage.getItem("cookie")}`,
-            },
-            body: JSON.stringify(options),
-        })
-            .then((res) => res.json())
-            .then((res) => __awaiter(this, void 0, void 0, function* () {
-            if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
-                yield (0, sapB1Connection_1.sapLogin)();
-                fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Cookie: `${localstorage.getItem("cookie")}`,
-                    },
-                    body: JSON.stringify(options),
-                })
-                    .then((res) => res.json())
-                    .then((res) => __awaiter(this, void 0, void 0, function* () {
-                    if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
-                        console.log("Tried many times, we cant login");
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                }))
-                    .catch((err) => {
+        return (0, sapB1Connection_1.sapLogin)().then((res) => __awaiter(this, void 0, void 0, function* () {
+            let COOKIE = res.headers.get("set-cookie");
+            localstorage.setItem("cookie", `${COOKIE}`);
+            return fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Cookie: `${localstorage.getItem("cookie")}`,
+                },
+                body: JSON.stringify(options),
+            })
+                .then((res) => res.json())
+                .then((res) => __awaiter(this, void 0, void 0, function* () {
+                console.log(res);
+                if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
+                    console.log("Tried many times, we cant login");
                     return false;
-                });
-            }
-            else {
-                return true;
-            }
-        }))
-            .catch((err) => {
-            return false;
-        });
+                }
+                else {
+                    return true;
+                }
+            }))
+                .catch((err) => {
+                return false;
+            });
+        }));
     });
 }
 exports.createSupplierinB1 = createSupplierinB1;
@@ -215,3 +200,19 @@ function activateUser(id) {
     });
 }
 exports.activateUser = activateUser;
+function updateUser(id, newUser) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log(newUser);
+        try {
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, newUser, { new: true });
+            return user;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.updateUser = updateUser;

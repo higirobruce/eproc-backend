@@ -58,45 +58,31 @@ export async function createSupplierinB1(
     Series,
   };
 
-  return fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: `${localstorage.getItem("cookie")}`,
-    },
-    body: JSON.stringify(options),
-  })
-    .then((res) => res.json())
-    .then(async (res) => {
-      if (res?.error && res?.error.code == 301) {
-        await sapLogin();
-        fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Cookie: `${localstorage.getItem("cookie")}`,
-          },
-          body: JSON.stringify(options),
-        })
-          .then((res) => res.json())
-          .then(async (res) => {
-            if (res?.error && res?.error.code == 301) {
-              console.log("Tried many times, we cant login");
-              return false;
-            } else {
-              return true;
-            }
-          })
-          .catch((err) => {
-            return false;
-          });
-      } else {
-        return true;
-      }
+  return sapLogin().then(async (res) => {
+    let COOKIE = res.headers.get("set-cookie");
+    localstorage.setItem("cookie", `${COOKIE}`);
+    return fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `${localstorage.getItem("cookie")}`,
+      },
+      body: JSON.stringify(options),
     })
-    .catch((err) => {
-      return false;
-    });
+      .then((res) => res.json())
+      .then(async (res) => {
+        console.log(res);
+        if (res?.error && res?.error.code == 301) {
+          console.log("Tried many times, we cant login");
+          return false;
+        } else {
+          return true;
+        }
+      })
+      .catch((err) => {
+        return false;
+      });
+  });
 }
 
 export async function getB1SeriesFromNames(entityName: String) {
@@ -188,6 +174,19 @@ export async function activateUser(id: String) {
       { $set: { status: "approved" } },
       { new: true }
     );
+    return user;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
+export async function updateUser(id: String, newUser: User) {
+  console.log(newUser);
+  try {
+    let user = await UserModel.findByIdAndUpdate(id, newUser, { new: true });
     return user;
   } catch (err) {
     return {
