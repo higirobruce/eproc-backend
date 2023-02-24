@@ -41,8 +41,8 @@ contractRouter.post("/", async (req, res) => {
     sections,
     status,
     deliveryProgress,
-    startDate,
-    endDate,
+    contractStartDate,
+    contractEndDate,
   } = req.body;
 
   let number = await generateContractNumber();
@@ -56,8 +56,8 @@ contractRouter.post("/", async (req, res) => {
     sections,
     status,
     deliveryProgress,
-    startDate,
-    endDate
+    contractStartDate,
+    contractEndDate
   );
 
   let createdContract = await saveContract(contractToCreate);

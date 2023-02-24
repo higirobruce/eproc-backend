@@ -27,9 +27,9 @@ exports.contractRouter.get("/byVendorId/:vendorId", (req, res) => __awaiter(void
     res.send(yield (0, contracts_2.getContractByVendorId)(vendorId));
 }));
 exports.contractRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { vendor, tender, request, createdBy, sections, status, deliveryProgress, startDate, endDate, } = req.body;
+    let { vendor, tender, request, createdBy, sections, status, deliveryProgress, contractStartDate, contractEndDate, } = req.body;
     let number = yield (0, contracts_3.generateContractNumber)();
-    let contractToCreate = new contracts_1.Contract(tender, number, vendor, request, createdBy, sections, status, deliveryProgress, startDate, endDate);
+    let contractToCreate = new contracts_1.Contract(tender, number, vendor, request, createdBy, sections, status, deliveryProgress, contractStartDate, contractEndDate);
     let createdContract = yield (0, contracts_2.saveContract)(contractToCreate);
     res.status(201).send(createdContract);
 }));
