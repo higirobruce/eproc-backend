@@ -28,6 +28,7 @@ const b1_1 = __importDefault(require("./services/b1"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
 const node_localstorage_1 = require("node-localstorage");
+const path_1 = __importDefault(require("path"));
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999;
 const DB_USER = process.env.EPROC_DB_USER;
@@ -74,6 +75,28 @@ app.use("/contracts", auth, contracts_1.contractRouter);
 app.use("/budgetLines", auth, budgetLinesRoute_1.budgetLinesRouter);
 app.use("/uploads", upload_1.uploadRouter);
 app.use('/b1', b1_1.default);
+app.get("/file/:folder/:name", function (req, res, next) {
+    var folder = req.params.folder;
+    console.log(folder);
+    var options = {
+        root: path_1.default.join(__dirname, "public/", folder),
+        dotfiles: "deny",
+        headers: {
+            "x-timestamp": Date.now(),
+            "x-sent": true,
+        },
+    };
+    var fileName = req.params.name;
+    console.log(fileName);
+    res.sendFile(fileName, options, function (err) {
+        if (err) {
+            next("File not found! 😏");
+        }
+        else {
+            console.log("Sent:", fileName);
+        }
+    });
+});
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(localstorage.getItem('cookie'))
     // await sapLogin()

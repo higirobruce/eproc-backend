@@ -80,6 +80,12 @@ export const UserSchema = new Schema<IUserDocument>({
     permissions: Object,
     title:{
         type: String
+    },
+    rdbCertId:{
+        type: String
+    },
+    vatCertId:{
+        type: String
     }
 
 })

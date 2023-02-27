@@ -83,6 +83,12 @@ exports.UserSchema = new mongoose_1.Schema({
     permissions: Object,
     title: {
         type: String
+    },
+    rdbCertId: {
+        type: String
+    },
+    vatCertId: {
+        type: String
     }
 });
 // Method to set salt and hash the password for a user 

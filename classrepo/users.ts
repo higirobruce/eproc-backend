@@ -30,6 +30,8 @@ export class User implements IUser {
     passportNid: string;
     services: string[];
     permissions: Object;
+    rdbCertId: String;
+    vatCertId: String;
 
     constructor(
         userType: UserType,
@@ -57,7 +59,9 @@ export class User implements IUser {
         country: string,
         passportNid: string,
         services: string[],
-        permissions: Object
+        permissions: Object,
+        rdbCertId: string,
+        vatCertId: string,
     ) {
         this.userType = userType;
         this.email = email;
@@ -85,6 +89,8 @@ export class User implements IUser {
         this.passportNid = passportNid
         this.services = services
         this.permissions = permissions
+        this.rdbCertId = rdbCertId
+        this.vatCertId = vatCertId
 
     }
     

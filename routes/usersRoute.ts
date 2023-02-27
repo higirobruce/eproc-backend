@@ -59,6 +59,8 @@ userRouter.post("/", async (req, res) => {
     passportNid,
     services,
     permissions,
+    rdbCertId,
+    vatCertId
   } = req.body;
   let number = await generateUserNumber();
 
@@ -88,7 +90,9 @@ userRouter.post("/", async (req, res) => {
     country,
     passportNid,
     services,
-    permissions
+    permissions,
+    rdbCertId,
+    vatCertId
   );
 
   let createdUser = await saveUser(userToCreate);
