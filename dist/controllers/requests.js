@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequests = void 0;
+exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
 const requests_1 = require("../models/requests");
 function getAllRequests() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -24,6 +24,19 @@ function getAllRequests() {
     });
 }
 exports.getAllRequests = getAllRequests;
+function getAllRequestsByCreator(createdBy) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let reqs = yield requests_1.RequestModel.find({ createdBy }).populate('createdBy').populate({
+            path: "createdBy",
+            populate: {
+                path: 'department',
+                model: 'Department'
+            }
+        });
+        return reqs;
+    });
+}
+exports.getAllRequestsByCreator = getAllRequestsByCreator;
 function saveRequest(request) {
     return __awaiter(this, void 0, void 0, function* () {
         let newReq = yield requests_1.RequestModel.create(request);

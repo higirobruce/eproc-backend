@@ -50,16 +50,7 @@ export const UserSchema = new Schema<IUserDocument>({
     passportNid: {
         type: String
     },
-    building: {
-        type: String
-    },
-    streetNo: {
-        type: String
-    },
-    avenue: {
-        type: String
-    },
-    city: {
+    hqAddress: {
         type: String
     },
     country: {

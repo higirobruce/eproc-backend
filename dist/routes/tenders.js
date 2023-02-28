@@ -22,6 +22,10 @@ exports.tenderRouter.get("/byRequest/:requestId", (req, res) => __awaiter(void 0
     let { requestId } = req.params;
     res.send(yield (0, tenders_2.getTendersByRequest)(requestId));
 }));
+exports.tenderRouter.post("/byServiceCategories/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { serviceCategories } = req.body;
+    res.send(yield (0, tenders_2.getTendersByServiceCategoryList)(serviceCategories));
+}));
 exports.tenderRouter.get("/countsByDep", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, tenders_2.getTendCountsByDepartment)());
 }));

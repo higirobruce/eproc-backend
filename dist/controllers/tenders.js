@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTender = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByRequest = exports.getAllTenders = void 0;
+exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTender = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByServiceCategoryList = exports.getTendersByRequest = exports.getAllTenders = void 0;
 const tenders_1 = require("../models/tenders");
 function getAllTenders() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -37,6 +37,65 @@ function getTendersByRequest(requestId) {
     });
 }
 exports.getTendersByRequest = getTendersByRequest;
+function getTendersByServiceCategoryList(serviceCategories) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let pipeline = [
+            {
+                '$lookup': {
+                    'from': 'requests',
+                    'localField': 'purchaseRequest',
+                    'foreignField': '_id',
+                    'as': 'purchaseRequest'
+                }
+            }, {
+                '$unwind': {
+                    'path': '$purchaseRequest',
+                    'preserveNullAndEmptyArrays': true
+                }
+            }, {
+                '$lookup': {
+                    'from': 'users',
+                    'localField': 'createdBy',
+                    'foreignField': '_id',
+                    'as': 'createdBy'
+                }
+            }, {
+                '$unwind': {
+                    'path': '$createdBy',
+                    'preserveNullAndEmptyArrays': false
+                }
+            }, {
+                '$lookup': {
+                    'from': 'departments',
+                    'localField': 'createdBy.department',
+                    'foreignField': '_id',
+                    'as': 'createdBy.department'
+                }
+            }, {
+                '$unwind': {
+                    'path': '$createdBy.department',
+                    'preserveNullAndEmptyArrays': false
+                }
+            }, {
+                '$match': {
+                    'purchaseRequest.serviceCategory': {
+                        '$in': serviceCategories
+                    }
+                }
+            }
+        ];
+        // let reqs = await TenderModel.find({ purchaseRequest: requestId }).populate('createdBy').populate({
+        //     path: "createdBy",
+        //     populate: {
+        //         path: 'department',
+        //         model: 'Department'
+        //     }
+        // }).populate('purchaseRequest')
+        let reqs = yield tenders_1.TenderModel.aggregate(pipeline);
+        return reqs;
+    });
+}
+exports.getTendersByServiceCategoryList = getTendersByServiceCategoryList;
 function getOpenTenders() {
     return __awaiter(this, void 0, void 0, function* () {
         let reqs = yield tenders_1.TenderModel.find({ status: 'open' }).populate('createdBy').populate({

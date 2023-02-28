@@ -21,7 +21,6 @@ import { LocalStorage } from "node-localstorage";
 import { savePOInB1 } from "./controllers/purchaseOrders";
 import path from "path";
 
-
 let localstorage = new LocalStorage("./scratch");
 
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999;
@@ -75,11 +74,11 @@ app.use("/purchaseOrders", auth, poRouter);
 app.use("/contracts", auth, contractRouter);
 app.use("/budgetLines", auth, budgetLinesRouter);
 app.use("/uploads", uploadRouter);
-app.use('/b1', b1Router)
+app.use("/b1", b1Router);
 
 app.get("/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
-  console.log(folder)
+  console.log(folder);
   var options = {
     root: path.join(__dirname, "public/", folder),
     dotfiles: "deny",
@@ -90,7 +89,7 @@ app.get("/file/:folder/:name", function (req, res, next) {
   };
 
   var fileName = req.params.name;
-  console.log(fileName)
+  console.log(fileName);
   res.sendFile(fileName, options, function (err) {
     if (err) {
       next("File not found! 😏");
@@ -103,7 +102,6 @@ app.get("/file/:folder/:name", function (req, res, next) {
 app.listen(PORT, async () => {
   // console.log(localstorage.getItem('cookie'))
   // await sapLogin()
-  
+
   console.log(`App listening on port ${PORT}`);
 });
-

@@ -74,7 +74,7 @@ app.use("/purchaseOrders", auth, purchaseOrders_1.poRouter);
 app.use("/contracts", auth, contracts_1.contractRouter);
 app.use("/budgetLines", auth, budgetLinesRoute_1.budgetLinesRouter);
 app.use("/uploads", upload_1.uploadRouter);
-app.use('/b1', b1_1.default);
+app.use("/b1", b1_1.default);
 app.get("/file/:folder/:name", function (req, res, next) {
     var folder = req.params.folder;
     console.log(folder);

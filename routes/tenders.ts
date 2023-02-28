@@ -17,6 +17,7 @@ import {
   getTendCountsByCategory,
   getTendCountsByDepartment,
   getTendersByRequest,
+  getTendersByServiceCategoryList,
   saveTender,
   updateTender,
   updateTenderStatus,
@@ -33,6 +34,11 @@ tenderRouter.get("/", async (req, res) => {
 tenderRouter.get("/byRequest/:requestId", async (req, res) => {
   let { requestId } = req.params;
   res.send(await getTendersByRequest(requestId));
+});
+
+tenderRouter.post("/byServiceCategories/", async (req, res) => {
+  let { serviceCategories } = req.body;
+  res.send(await getTendersByServiceCategoryList(serviceCategories));
 });
 
 tenderRouter.get("/countsByDep", async (req, res) => {

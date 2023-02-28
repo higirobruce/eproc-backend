@@ -25,9 +25,9 @@ exports.userRouter.get("/internal", (req, res) => __awaiter(void 0, void 0, void
     res.send(yield (0, users_2.getAllInternalUsers)());
 }));
 exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, building, streetNo, avenue, city, country, passportNid, services, permissions, rdbCertId, vatCertId } = req.body;
+    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId } = req.body;
     let number = yield (0, users_3.generateUserNumber)();
-    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, building, streetNo, avenue, city, country, passportNid, services, permissions, rdbCertId, vatCertId);
+    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId);
     let createdUser = yield (0, users_2.saveUser)(userToCreate);
     res.status(201).send(createdUser);
 }));

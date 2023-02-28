@@ -22,10 +22,7 @@ export class User implements IUser {
     department: Types.ObjectId;
     contactPersonNames: string;
     title: string;
-    building: string;
-    streetNo: string;
-    avenue: string;
-    city: string;
+    hqAddress: string;
     country: string;
     passportNid: string;
     services: string[];
@@ -52,10 +49,7 @@ export class User implements IUser {
         department: string,
         contactPersonNames: string,
         title: string,
-        building: string,
-        streetNo: string,
-        avenue: string,
-        city: string,
+        hqAddress: string,
         country: string,
         passportNid: string,
         services: string[],
@@ -81,10 +75,7 @@ export class User implements IUser {
         this.department = department ? new Types.ObjectId(department) : new Types.ObjectId();
         this.contactPersonNames = contactPersonNames
         this.title = title
-        this.building = building
-        this.streetNo = streetNo
-        this.avenue = avenue
-        this.city = city
+        this.hqAddress = hqAddress
         this.country = country
         this.passportNid = passportNid
         this.services = services

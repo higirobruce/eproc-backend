@@ -1,8 +1,20 @@
+import { ObjectId } from "mongoose";
 import { Request } from "../classrepo/requests";
 import { RequestModel } from "../models/requests";
 
 export async function getAllRequests() {
     let reqs = await RequestModel.find().populate('createdBy').populate({
+        path: "createdBy",
+        populate: {
+            path: 'department',
+            model: 'Department'
+        }
+    })
+    return reqs
+}
+
+export async function getAllRequestsByCreator(createdBy: String) {
+    let reqs = await RequestModel.find({createdBy}).populate('createdBy').populate({
         path: "createdBy",
         populate: {
             path: 'department',

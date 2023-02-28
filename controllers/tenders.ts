@@ -24,6 +24,66 @@ export async function getTendersByRequest(requestId: String) {
     return reqs
 }
 
+export async function getTendersByServiceCategoryList(serviceCategories: []) {
+    let pipeline = [
+        {
+          '$lookup': {
+            'from': 'requests', 
+            'localField': 'purchaseRequest', 
+            'foreignField': '_id', 
+            'as': 'purchaseRequest'
+          }
+        }, {
+          '$unwind': {
+            'path': '$purchaseRequest', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$lookup': {
+            'from': 'users', 
+            'localField': 'createdBy', 
+            'foreignField': '_id', 
+            'as': 'createdBy'
+          }
+        }, {
+          '$unwind': {
+            'path': '$createdBy', 
+            'preserveNullAndEmptyArrays': false
+          }
+        }, {
+          '$lookup': {
+            'from': 'departments', 
+            'localField': 'createdBy.department', 
+            'foreignField': '_id', 
+            'as': 'createdBy.department'
+          }
+        }, {
+          '$unwind': {
+            'path': '$createdBy.department', 
+            'preserveNullAndEmptyArrays': false
+          }
+        }, {
+          '$match': {
+            'purchaseRequest.serviceCategory': {
+              '$in': serviceCategories
+            }
+          }
+        }
+      ]
+    // let reqs = await TenderModel.find({ purchaseRequest: requestId }).populate('createdBy').populate({
+    //     path: "createdBy",
+    //     populate: {
+    //         path: 'department',
+    //         model: 'Department'
+    //     }
+    // }).populate('purchaseRequest')
+
+    let reqs = await TenderModel.aggregate(pipeline)
+    return reqs
+}
+
+
+
 export async function getOpenTenders() {
     let reqs = await TenderModel.find({ status: 'open' }).populate('createdBy').populate({
         path: "createdBy",
