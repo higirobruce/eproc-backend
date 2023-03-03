@@ -14,6 +14,7 @@ const express_1 = require("express");
 const requests_1 = require("../classrepo/requests");
 const requests_2 = require("../controllers/requests");
 const requests_3 = require("../services/requests");
+const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.requetsRouter = (0, express_1.Router)();
 exports.requetsRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, requests_2.getAllRequests)());
@@ -49,6 +50,8 @@ exports.requetsRouter.post("/decline/:id", (req, res) => __awaiter(void 0, void 
 exports.requetsRouter.put("/status/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     let { status } = req.body;
+    if (status === "approved (fd)")
+        (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "higirobru@gmail.com", "Your approval is needed", "A purchase request has reached your level of approval.", "", "pmApproval");
     res.send(yield (0, requests_2.updateRequestStatus)(id, status));
 }));
 exports.requetsRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

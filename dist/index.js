@@ -29,7 +29,6 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
 const node_localstorage_1 = require("node-localstorage");
 const path_1 = __importDefault(require("path"));
-const sendEmailNode_1 = require("./utils/sendEmailNode");
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999;
 const DB_USER = process.env.EPROC_DB_USER;
@@ -98,6 +97,5 @@ app.get("/file/:folder/:name", function (req, res, next) {
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(localstorage.getItem('cookie'))
     // await sapLogin()
-    yield (0, sendEmailNode_1.send)('bhigiro@shapeherd.rw', 'higirobru@gmail.com', 'subject', 'text', 'html', 'newTender');
     console.log(`App listening on port ${PORT}`);
 }));

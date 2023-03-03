@@ -27,6 +27,7 @@ import {
   hashPassword,
   validPassword,
 } from "../services/users";
+import { send } from "../utils/sendEmailNode";
 
 export const requetsRouter = Router();
 
@@ -104,6 +105,16 @@ requetsRouter.post("/decline/:id", async (req, res) => {
 requetsRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
+
+  if (status === "approved (fd)")
+    send(
+      "bhigiro@shapeherd.rw",
+      "higirobru@gmail.com",
+      "Your approval is needed",
+      "A purchase request has reached your level of approval.",
+      "",
+      "pmApproval"
+    );
   res.send(await updateRequestStatus(id, status));
 });
 

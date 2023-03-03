@@ -103,7 +103,5 @@ app.listen(PORT, async () => {
   // console.log(localstorage.getItem('cookie'))
   // await sapLogin()
 
-  await send('bhigiro@shapeherd.rw','higirobru@gmail.com','subject','text', 'html', 'newTender')
-
   console.log(`App listening on port ${PORT}`);
 });
