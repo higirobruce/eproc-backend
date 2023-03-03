@@ -39,6 +39,8 @@ export const BidSubmissionSchema = new Schema<IBidSubmissionDocument>({
   warrantyDuration: {
     type: String,
   },
+  proposalDocId: String,
+  otherDocId: String,
 });
 
 export const BidSubmissionModel = model<IBidSubmissionDocument>(

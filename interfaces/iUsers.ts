@@ -25,8 +25,10 @@ export interface IUser {
     notes: string,
     services: Array<string>,
     permissions: Object,
-    rdbCertId: String
-    vatCertId: String
+    rdbCertId: String,
+    vatCertId: String,
+    bankName: String,
+    bankAccountNumber: String
 
 }
 

@@ -16,6 +16,7 @@ import {
   getOpenTenders,
   getTendCountsByCategory,
   getTendCountsByDepartment,
+  getTendersById,
   getTendersByRequest,
   getTendersByServiceCategoryList,
   saveTender,
@@ -24,6 +25,7 @@ import {
 } from "../controllers/tenders";
 import { generateReqNumber } from "../services/requests";
 import { generateTenderNumber } from "../services/tenders";
+import { send } from "../utils/sendEmailNode";
 
 export const tenderRouter = Router();
 
@@ -71,7 +73,9 @@ tenderRouter.post("/", async (req, res) => {
     torsUrl,
     purchaseRequest,
     invitationSent,
-    invitees
+    invitees,
+    docId,
+    evaluationReportId
   } = req.body;
   let number = await generateTenderNumber();
   let itemObjects = items.map((i: PoLineItem) => {
@@ -90,21 +94,46 @@ tenderRouter.post("/", async (req, res) => {
     torsUrl,
     purchaseRequest,
     invitationSent,
-    invitees
+    invitees,
+    docId,
+    evaluationReportId
+  );
+
+  send(
+    "bhigiro@shapeherd.rw",
+    "higirobru@gmail.com",
+    "NEW TENDER created",
+    "Please check on the new Tender",
+    "",
+    "newTender"
   );
 
   let createdTender = await saveTender(tenderToCreate);
+
   res.status(201).send(createdTender);
 });
 
-tenderRouter.put('/:id', async (req,res)=>{
-    let {id} = req.params
-    let {newTender} = req.body
-    res.send(await updateTender(id, newTender))
-})
+tenderRouter.put("/:id", async (req, res) => {
+  let { id } = req.params;
+  let { newTender, sendInvitation } = req.body;
+
+  let updatedTender = await updateTender(id, newTender);
+
+  if (sendInvitation)
+    send(
+      "bhigiro@shapeherd.rw",
+      "higirobru@gmail.com",
+      "Invitation in Tender awarding",
+      `${JSON.stringify(updatedTender)}`,
+      "",
+      "invitation"
+    );
+  res.send(updatedTender);
+});
 
 tenderRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
   res.send(await updateTenderStatus(id, status));
 });
+

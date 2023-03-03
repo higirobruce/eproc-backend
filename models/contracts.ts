@@ -32,7 +32,8 @@ export const Contract = new Schema<IContractDocument>({
     },
     endDate:{
         type:Date
-    }
+    },
+    signatories: []
 
 })
 

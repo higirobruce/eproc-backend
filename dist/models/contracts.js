@@ -33,6 +33,7 @@ exports.Contract = new mongoose_1.Schema({
     },
     endDate: {
         type: Date
-    }
+    },
+    signatories: []
 });
 exports.ContractModel = (0, mongoose_1.model)('Contract', exports.Contract);

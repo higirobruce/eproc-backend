@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getContractByVendorId = exports.getContractByTenderId = exports.saveContract = exports.getAllContracts = void 0;
+exports.updateContract = exports.getContractByVendorId = exports.getContractByTenderId = exports.saveContract = exports.getAllContracts = void 0;
 const contracts_1 = require("../models/contracts");
 /**
-* Get all contracts in the database. This is used to populate the list of contracts when creating a new invoice.
-*
-*
-* @return { Promise } A promise that resolves with an array of ContractModel instances. Each ContractModel is populated with vendor tender and request
-*/
+ * Get all contracts in the database. This is used to populate the list of contracts when creating a new invoice.
+ *
+ *
+ * @return { Promise } A promise that resolves with an array of ContractModel instances. Each ContractModel is populated with vendor tender and request
+ */
 function getAllContracts() {
     return __awaiter(this, void 0, void 0, function* () {
         let contracts = yield contracts_1.ContractModel.find()
@@ -36,13 +36,13 @@ function getAllContracts() {
 }
 exports.getAllContracts = getAllContracts;
 /**
-* Saves a contract to the database. This is a convenience method for use in unit tests. It will create a new contract if it does not exist and update any fields that are not provided by the user.
-*
-* @param contract - The contract to save. Must be validated before being saved.
-* @param Contract
-*
-* @return { Promise } Resolves with the newly created contract or rejects with an error message if there was a problem
-*/
+ * Saves a contract to the database. This is a convenience method for use in unit tests. It will create a new contract if it does not exist and update any fields that are not provided by the user.
+ *
+ * @param contract - The contract to save. Must be validated before being saved.
+ * @param Contract
+ *
+ * @return { Promise } Resolves with the newly created contract or rejects with an error message if there was a problem
+ */
 function saveContract(contract) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield contracts_1.ContractModel.create(contract);
@@ -50,13 +50,13 @@ function saveContract(contract) {
 }
 exports.saveContract = saveContract;
 /**
-* Get a contract by tender id. This is used to create a purchase request and get the contract from the database
-*
-* @param tenderId - The id of the tender
-* @param String
-*
-* @return { Promise } The contract as an object with fields for the tender request vendor createdBy and request
-*/
+ * Get a contract by tender id. This is used to create a purchase request and get the contract from the database
+ *
+ * @param tenderId - The id of the tender
+ * @param String
+ *
+ * @return { Promise } The contract as an object with fields for the tender request vendor createdBy and request
+ */
 function getContractByTenderId(tenderId) {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield contracts_1.ContractModel.find({ tender: tenderId })
@@ -76,13 +76,13 @@ function getContractByTenderId(tenderId) {
 }
 exports.getContractByTenderId = getContractByTenderId;
 /**
-* Get a contract by vendor id. This is used to create a list of contract in order to display the list
-*
-* @param vendorId - Vendor id of the contract
-* @param String
-*
-* @return { Promise } The contract with the id specified in the vendorId as the first parameter. If no contract is found an empty Promise is
-*/
+ * Get a contract by vendor id. This is used to create a list of contract in order to display the list
+ *
+ * @param vendorId - Vendor id of the contract
+ * @param String
+ *
+ * @return { Promise } The contract with the id specified in the vendorId as the first parameter. If no contract is found an empty Promise is
+ */
 function getContractByVendorId(vendorId) {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield contracts_1.ContractModel.find({ vendor: vendorId })
@@ -94,3 +94,9 @@ function getContractByVendorId(vendorId) {
     });
 }
 exports.getContractByVendorId = getContractByVendorId;
+function updateContract(id, contract) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield contracts_1.ContractModel.findByIdAndUpdate(id, contract, { new: true });
+    });
+}
+exports.updateContract = updateContract;

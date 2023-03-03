@@ -13,6 +13,7 @@ export class Contract implements IContract {
   deliveryProgress: number;
   startDate: Date;
   endDate: Date;
+  signatories: [];
 
   constructor(
     tender: string,
@@ -24,7 +25,8 @@ export class Contract implements IContract {
     status: string,
     deliveryProgress: number,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    signatories: []
   ) {
     this.number = number;
     this.vendor = vendor ? new Types.ObjectId(vendor) : new Types.ObjectId();
@@ -38,5 +40,7 @@ export class Contract implements IContract {
     this.deliveryProgress = deliveryProgress;
     this.startDate = startDate;
     this.endDate = endDate;
+    this.signatories = signatories
   }
+  
 }

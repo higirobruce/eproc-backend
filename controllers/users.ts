@@ -32,6 +32,20 @@ export async function getAllVendors() {
   }
 }
 
+export async function getVendorById(id: string) {
+  try {
+    let users = await UserModel.findOne({ userType: "VENDOR", _id: id}).populate(
+      "department"
+    );
+    return users;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
 export async function getAllInternalUsers() {
   try {
     let users = await UserModel.find({ userType: { $ne: "VENDOR" } }).populate(
@@ -71,7 +85,6 @@ export async function createSupplierinB1(
     })
       .then((res) => res.json())
       .then(async (res) => {
-        console.log(res);
         if (res?.error && res?.error.code == 301) {
           console.log("Tried many times, we cant login");
           return false;
@@ -184,9 +197,25 @@ export async function activateUser(id: String) {
 }
 
 export async function updateUser(id: String, newUser: User) {
-  console.log(newUser);
+
   try {
     let user = await UserModel.findByIdAndUpdate(id, newUser, { new: true });
+    return user;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
+export async function saveBankDetails(id: String, bankName: String, bankAccountNumber:String) {
+  try {
+    let user = await UserModel.findByIdAndUpdate(
+      id,
+      { $set: { bankName, bankAccountNumber } },
+      { new: true }
+    );
     return user;
   } catch (err) {
     return {

@@ -7,6 +7,7 @@ import {
   getPOByVendorId,
   savePO,
   savePOInB1,
+  updatePo,
   updatePOStatus,
   updateProgress,
 } from "../controllers/purchaseOrders";
@@ -45,6 +46,7 @@ poRouter.post("/", async (req, response) => {
     status,
     deliveryProgress,
     B1Data,
+    signatories,
   } = req.body;
 
   let CardCode;
@@ -52,26 +54,35 @@ poRouter.post("/", async (req, response) => {
     let bp = res.value;
     if (bp?.length >= 1) {
       CardCode = bp[0].CardCode;
-      await savePOInB1(CardCode, B1Data.DocType, B1Data.DocumentLines);
-
-      let number = await generatePONumber();
-
-      let tenderToCreate = new PurchaseOrder(
-        number,
-        vendor,
-        tender,
-        request,
-        createdBy,
-        sections,
-        items,
-        status,
-        deliveryProgress
+      let b1Response = await savePOInB1(
+        CardCode,
+        B1Data.DocType,
+        B1Data.DocumentLines
       );
 
-      let createdTender = await savePO(tenderToCreate);
-      response.status(201).send(createdTender);
+      if (b1Response?.error) {
+        response.status(201).send(b1Response);
+      } else {
+        let number = await generatePONumber();
+
+        let tenderToCreate = new PurchaseOrder(
+          number,
+          vendor,
+          tender,
+          request,
+          createdBy,
+          sections,
+          items,
+          status,
+          deliveryProgress,
+          signatories
+        );
+
+        let createdTender = await savePO(tenderToCreate);
+        response.status(201).send({ createdTender });
+      }
     } else {
-      console.log(B1Data.CardName, "Business Partner not found!");
+     
       response
         .status(500)
         .send({ error: true, message: "Business Partner not found!" });
@@ -89,4 +100,13 @@ poRouter.put("/progress/:id", async (req, res) => {
   let { id } = req.params;
   let { deliveryProgress } = req.body;
   res.send(await updateProgress(id, deliveryProgress));
+});
+
+poRouter.put("/:id", async (req, res) => {
+  let { id } = req.params;
+  let { newPo } = req.body;
+
+  let updated = await updatePo(id, newPo);
+
+  res.status(200).send(updated);
 });

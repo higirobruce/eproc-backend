@@ -29,6 +29,9 @@ export class User implements IUser {
     permissions: Object;
     rdbCertId: String;
     vatCertId: String;
+    bankName: String;
+    bankAccountNumber: String;
+    
 
     constructor(
         userType: UserType,
@@ -56,6 +59,8 @@ export class User implements IUser {
         permissions: Object,
         rdbCertId: string,
         vatCertId: string,
+        bankName: string,
+        bankAccountNumber: string
     ) {
         this.userType = userType;
         this.email = email;
@@ -82,6 +87,8 @@ export class User implements IUser {
         this.permissions = permissions
         this.rdbCertId = rdbCertId
         this.vatCertId = vatCertId
+        this.bankName= bankName
+        this.bankAccountNumber = bankAccountNumber
 
     }
     

@@ -56,8 +56,10 @@ requetsRouter.post("/", async (req, res) => {
     declinedBy,
     budgeted,
     budgetLine,
-    approvalDate,
     title,
+    hod_approvalDate,
+    hof_approvalDate,
+    pm_approvalDate,
   } = req.body;
   let number = await generateReqNumber();
   let itemObjects = items.map((i: PoLineItem) => {
@@ -78,8 +80,10 @@ requetsRouter.post("/", async (req, res) => {
     declinedBy,
     budgeted,
     budgetLine,
-    approvalDate,
-    title
+    title,
+    hod_approvalDate,
+    hof_approvalDate,
+    pm_approvalDate
   );
 
   let createdRequest = await saveRequest(requestToCreate);

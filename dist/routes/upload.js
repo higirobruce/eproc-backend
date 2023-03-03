@@ -27,8 +27,6 @@ exports.uploadRouter.post("/termsOfReference/", (req, res) => {
             console.log(err);
             return res.status(500);
         }
-        console.log(req.files);
-        console.log(req.query);
         return res.status(200).send(req.file);
     });
 });
@@ -51,8 +49,6 @@ exports.uploadRouter.post("/rdbCerts/", (req, res) => {
             console.log(err);
             return res.status(500);
         }
-        console.log(req.files);
-        console.log(req.query);
         return res.status(200).send(req.file);
     });
 });
@@ -75,8 +71,72 @@ exports.uploadRouter.post("/vatCerts/", (req, res) => {
             console.log(err);
             return res.status(500);
         }
-        console.log(req.files);
-        console.log(req.query);
+        return res.status(200).send(req.file);
+    });
+});
+exports.uploadRouter.post("/tenderDocs/", (req, res) => {
+    var storage = multer_1.default.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, "dist/public/tenderDocs");
+        },
+        filename: function (req, file, cb) {
+            cb(null, req.query.id + '.pdf');
+        },
+    });
+    var upload = (0, multer_1.default)({ storage: storage }).single("file");
+    upload(req, res, function (err) {
+        if (err instanceof multer_1.default.MulterError) {
+            console.log(err);
+            return res.status(500);
+        }
+        else if (err) {
+            console.log(err);
+            return res.status(500);
+        }
+        return res.status(200).send(req.file);
+    });
+});
+exports.uploadRouter.post("/bidDocs/", (req, res) => {
+    var storage = multer_1.default.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, "dist/public/bidDocs");
+        },
+        filename: function (req, file, cb) {
+            cb(null, req.query.id + '.pdf');
+        },
+    });
+    var upload = (0, multer_1.default)({ storage: storage }).single("file");
+    upload(req, res, function (err) {
+        if (err instanceof multer_1.default.MulterError) {
+            console.log(err);
+            return res.status(500);
+        }
+        else if (err) {
+            console.log(err);
+            return res.status(500);
+        }
+        return res.status(200).send(req.file);
+    });
+});
+exports.uploadRouter.post("/evaluationReports/", (req, res) => {
+    var storage = multer_1.default.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, "dist/public/evaluationReports");
+        },
+        filename: function (req, file, cb) {
+            cb(null, req.query.id + '.pdf');
+        },
+    });
+    var upload = (0, multer_1.default)({ storage: storage }).single("file");
+    upload(req, res, function (err) {
+        if (err instanceof multer_1.default.MulterError) {
+            console.log(err);
+            return res.status(500);
+        }
+        else if (err) {
+            console.log(err);
+            return res.status(500);
+        }
         return res.status(200).send(req.file);
     });
 });

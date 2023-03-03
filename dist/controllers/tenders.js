@@ -9,30 +9,52 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTender = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByServiceCategoryList = exports.getTendersByRequest = exports.getAllTenders = void 0;
+exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTender = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByServiceCategoryList = exports.getTendersByRequest = exports.getTendersById = exports.getAllTenders = void 0;
 const tenders_1 = require("../models/tenders");
 function getAllTenders() {
     return __awaiter(this, void 0, void 0, function* () {
-        let reqs = yield tenders_1.TenderModel.find().populate('createdBy').populate({
+        let reqs = yield tenders_1.TenderModel.find()
+            .populate("createdBy")
+            .populate({
             path: "createdBy",
             populate: {
-                path: 'department',
-                model: 'Department'
-            }
-        }).populate('purchaseRequest');
+                path: "department",
+                model: "Department",
+            },
+        })
+            .populate("purchaseRequest");
         return reqs;
     });
 }
 exports.getAllTenders = getAllTenders;
-function getTendersByRequest(requestId) {
+function getTendersById(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let reqs = yield tenders_1.TenderModel.find({ purchaseRequest: requestId }).populate('createdBy').populate({
+        let req = yield tenders_1.TenderModel.findById({ id })
+            .populate("createdBy")
+            .populate({
             path: "createdBy",
             populate: {
-                path: 'department',
-                model: 'Department'
-            }
-        }).populate('purchaseRequest');
+                path: "department",
+                model: "Department",
+            },
+        })
+            .populate("purchaseRequest");
+        return req;
+    });
+}
+exports.getTendersById = getTendersById;
+function getTendersByRequest(requestId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let reqs = yield tenders_1.TenderModel.find({ purchaseRequest: requestId })
+            .populate("createdBy")
+            .populate({
+            path: "createdBy",
+            populate: {
+                path: "department",
+                model: "Department",
+            },
+        })
+            .populate("purchaseRequest");
         return reqs;
     });
 }
@@ -41,48 +63,54 @@ function getTendersByServiceCategoryList(serviceCategories) {
     return __awaiter(this, void 0, void 0, function* () {
         let pipeline = [
             {
-                '$lookup': {
-                    'from': 'requests',
-                    'localField': 'purchaseRequest',
-                    'foreignField': '_id',
-                    'as': 'purchaseRequest'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$purchaseRequest',
-                    'preserveNullAndEmptyArrays': true
-                }
-            }, {
-                '$lookup': {
-                    'from': 'users',
-                    'localField': 'createdBy',
-                    'foreignField': '_id',
-                    'as': 'createdBy'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$createdBy',
-                    'preserveNullAndEmptyArrays': false
-                }
-            }, {
-                '$lookup': {
-                    'from': 'departments',
-                    'localField': 'createdBy.department',
-                    'foreignField': '_id',
-                    'as': 'createdBy.department'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$createdBy.department',
-                    'preserveNullAndEmptyArrays': false
-                }
-            }, {
-                '$match': {
-                    'purchaseRequest.serviceCategory': {
-                        '$in': serviceCategories
-                    }
-                }
-            }
+                $lookup: {
+                    from: "requests",
+                    localField: "purchaseRequest",
+                    foreignField: "_id",
+                    as: "purchaseRequest",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$purchaseRequest",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "createdBy",
+                    foreignField: "_id",
+                    as: "createdBy",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$createdBy",
+                    preserveNullAndEmptyArrays: false,
+                },
+            },
+            {
+                $lookup: {
+                    from: "departments",
+                    localField: "createdBy.department",
+                    foreignField: "_id",
+                    as: "createdBy.department",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$createdBy.department",
+                    preserveNullAndEmptyArrays: false,
+                },
+            },
+            {
+                $match: {
+                    "purchaseRequest.serviceCategory": {
+                        $in: serviceCategories,
+                    },
+                },
+            },
         ];
         // let reqs = await TenderModel.find({ purchaseRequest: requestId }).populate('createdBy').populate({
         //     path: "createdBy",
@@ -98,25 +126,30 @@ function getTendersByServiceCategoryList(serviceCategories) {
 exports.getTendersByServiceCategoryList = getTendersByServiceCategoryList;
 function getOpenTenders() {
     return __awaiter(this, void 0, void 0, function* () {
-        let reqs = yield tenders_1.TenderModel.find({ status: 'open' }).populate('createdBy').populate({
+        let reqs = yield tenders_1.TenderModel.find({ status: "open" })
+            .populate("createdBy")
+            .populate({
             path: "createdBy",
             populate: {
-                path: 'department',
-                model: 'Department'
-            }
-        }).populate('purchaseRequest');
+                path: "department",
+                model: "Department",
+            },
+        })
+            .populate("purchaseRequest");
         return reqs;
     });
 }
 exports.getOpenTenders = getOpenTenders;
 function getClosedTenders() {
     return __awaiter(this, void 0, void 0, function* () {
-        let reqs = yield tenders_1.TenderModel.find({ status: 'closed' }).populate('createdBy').populate({
+        let reqs = yield tenders_1.TenderModel.find({ status: "closed" })
+            .populate("createdBy")
+            .populate({
             path: "createdBy",
             populate: {
-                path: 'department',
-                model: 'Department'
-            }
+                path: "department",
+                model: "Department",
+            },
         });
         return reqs;
     });
@@ -133,12 +166,12 @@ function updateTenderStatus(id, newStatus) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield tenders_1.TenderModel.findByIdAndUpdate(id, { $set: { status: newStatus } });
-            return { message: 'done' };
+            return { message: "done" };
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -147,13 +180,21 @@ exports.updateTenderStatus = updateTenderStatus;
 function updateTender(id, newTender) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let updatedTender = yield tenders_1.TenderModel.findOneAndUpdate({ _id: id }, newTender, { upsert: true });
-            return { message: 'done' };
+            let updatedTender = yield tenders_1.TenderModel.findOneAndUpdate({ _id: id }, newTender, { new: true }).populate("createdBy")
+                .populate({
+                path: "createdBy",
+                populate: {
+                    path: "department",
+                    model: "Department",
+                },
+            })
+                .populate("purchaseRequest");
+            return updatedTender;
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -163,52 +204,58 @@ function getTendCountsByDepartment() {
     return __awaiter(this, void 0, void 0, function* () {
         let lookup = [
             {
-                '$lookup': {
-                    'from': 'requests',
-                    'localField': 'purchaseRequest',
-                    'foreignField': '_id',
-                    'as': 'purchaseRequest'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$purchaseRequest',
-                    'includeArrayIndex': 'string',
-                    'preserveNullAndEmptyArrays': false
-                }
-            }, {
-                '$lookup': {
-                    'from': 'users',
-                    'localField': 'purchaseRequest.createdBy',
-                    'foreignField': '_id',
-                    'as': 'createdBy'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$createdBy',
-                    'includeArrayIndex': 'string',
-                    'preserveNullAndEmptyArrays': true
-                }
-            }, {
-                '$lookup': {
-                    'from': 'departments',
-                    'localField': 'createdBy.department',
-                    'foreignField': '_id',
-                    'as': 'department'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$department',
-                    'includeArrayIndex': 'string',
-                    'preserveNullAndEmptyArrays': false
-                }
-            }, {
-                '$group': {
-                    '_id': '$department.description',
-                    'totalCount': {
-                        '$count': {}
-                    }
-                }
-            }
+                $lookup: {
+                    from: "requests",
+                    localField: "purchaseRequest",
+                    foreignField: "_id",
+                    as: "purchaseRequest",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$purchaseRequest",
+                    includeArrayIndex: "string",
+                    preserveNullAndEmptyArrays: false,
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "purchaseRequest.createdBy",
+                    foreignField: "_id",
+                    as: "createdBy",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$createdBy",
+                    includeArrayIndex: "string",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $lookup: {
+                    from: "departments",
+                    localField: "createdBy.department",
+                    foreignField: "_id",
+                    as: "department",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$department",
+                    includeArrayIndex: "string",
+                    preserveNullAndEmptyArrays: false,
+                },
+            },
+            {
+                $group: {
+                    _id: "$department.description",
+                    totalCount: {
+                        $count: {},
+                    },
+                },
+            },
         ];
         let result = yield tenders_1.TenderModel.aggregate(lookup);
         return result;
@@ -219,52 +266,58 @@ function getTendCountsByCategory() {
     return __awaiter(this, void 0, void 0, function* () {
         let lookup = [
             {
-                '$lookup': {
-                    'from': 'requests',
-                    'localField': 'purchaseRequest',
-                    'foreignField': '_id',
-                    'as': 'purchaseRequest'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$purchaseRequest',
-                    'includeArrayIndex': 'string',
-                    'preserveNullAndEmptyArrays': false
-                }
-            }, {
-                '$lookup': {
-                    'from': 'users',
-                    'localField': 'purchaseRequest.createdBy',
-                    'foreignField': '_id',
-                    'as': 'createdBy'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$createdBy',
-                    'includeArrayIndex': 'string',
-                    'preserveNullAndEmptyArrays': true
-                }
-            }, {
-                '$lookup': {
-                    'from': 'departments',
-                    'localField': 'createdBy.department',
-                    'foreignField': '_id',
-                    'as': 'department'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$department',
-                    'includeArrayIndex': 'string',
-                    'preserveNullAndEmptyArrays': false
-                }
-            }, {
-                '$group': {
-                    '_id': '$purchaseRequest.serviceCategory',
-                    'totalCount': {
-                        '$count': {}
-                    }
-                }
-            }
+                $lookup: {
+                    from: "requests",
+                    localField: "purchaseRequest",
+                    foreignField: "_id",
+                    as: "purchaseRequest",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$purchaseRequest",
+                    includeArrayIndex: "string",
+                    preserveNullAndEmptyArrays: false,
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "purchaseRequest.createdBy",
+                    foreignField: "_id",
+                    as: "createdBy",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$createdBy",
+                    includeArrayIndex: "string",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $lookup: {
+                    from: "departments",
+                    localField: "createdBy.department",
+                    foreignField: "_id",
+                    as: "department",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$department",
+                    includeArrayIndex: "string",
+                    preserveNullAndEmptyArrays: false,
+                },
+            },
+            {
+                $group: {
+                    _id: "$purchaseRequest.serviceCategory",
+                    totalCount: {
+                        $count: {},
+                    },
+                },
+            },
         ];
         let result = yield tenders_1.TenderModel.aggregate(lookup);
         return result;

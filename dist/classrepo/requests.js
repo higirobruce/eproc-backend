@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Request = void 0;
 const mongoose_1 = require("mongoose");
 class Request {
-    constructor(createdBy, items, dueDate, status, attachementUrls, number, description, serviceCategory, reasonForRejection, declinedBy, budgeted, budgetLine, approvalDate, title) {
+    constructor(createdBy, items, dueDate, status, attachementUrls, number, description, serviceCategory, reasonForRejection, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate) {
         this.createdBy = createdBy ? new mongoose_1.Types.ObjectId(createdBy) : new mongoose_1.Types.ObjectId();
         this.items = items;
         this.dueDate = dueDate;
@@ -16,8 +16,10 @@ class Request {
         this.declinedBy = declinedBy;
         this.budgeted = budgeted;
         this.budgetLine = budgetLine;
-        this.approvalDate = approvalDate;
         this.title = title;
+        this.hod_approvalDate = hod_approvalDate;
+        this.hof_approvalDate = hof_approvalDate;
+        this.pm_approvalDate = pm_approvalDate;
     }
     ;
 }

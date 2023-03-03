@@ -15,8 +15,10 @@ export interface IRequest {
     declinedBy: String,
     budgeted: boolean,
     budgetLine: String,
-    approvalDate: Date,
-    title: String
+    hod_approvalDate: Date,
+    hof_approvalDate: Date,
+    pm_approvalDate: Date,
+    title: String,
 }
 
 export interface IRequestDocument extends IRequest, Document {

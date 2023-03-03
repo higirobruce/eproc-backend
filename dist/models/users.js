@@ -9,10 +9,10 @@ const crypto_1 = __importDefault(require("crypto"));
 exports.UserSchema = new mongoose_1.Schema({
     userType: {
         type: String,
-        defaul: "VENDOR"
+        defaul: "VENDOR",
     },
     contactPersonNames: {
-        type: String
+        type: String,
     },
     email: {
         type: String,
@@ -21,50 +21,51 @@ exports.UserSchema = new mongoose_1.Schema({
         dropDups: true,
     },
     telephone: {
-        type: String
+        type: String,
     },
     experienceDurationInYears: {
-        type: Number
+        type: Number,
     },
     experienceDurationInMonths: {
-        type: Number
+        type: Number,
     },
     webSite: {
-        type: String
+        type: String,
     },
     status: {
-        type: String
+        type: String,
     },
     password: {
-        type: String
+        type: String,
     },
     createdOn: Date,
     createdBy: mongoose_1.Types.ObjectId,
     rating: {
-        type: Number
+        type: Number,
     },
     tin: {
-        type: Number
+        type: Number,
     },
     number: {
-        type: Number, unique: true,
+        type: Number,
+        unique: true,
         dropDups: true,
     },
     passportNid: {
-        type: String
+        type: String,
     },
     hqAddress: {
-        type: String
+        type: String,
     },
     country: {
-        type: String
+        type: String,
     },
     notes: {
-        type: String
+        type: String,
     },
     department: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'Department'
+        ref: "Department",
     },
     companyName: {
         type: String,
@@ -73,25 +74,35 @@ exports.UserSchema = new mongoose_1.Schema({
     services: Array,
     permissions: Object,
     title: {
-        type: String
+        type: String,
     },
     rdbCertId: {
-        type: String
+        type: String,
     },
     vatCertId: {
-        type: String
-    }
+        type: String,
+    },
+    bankName: {
+        type: String,
+    },
+    bankAccountNumber: {
+        type: String,
+    },
 });
-// Method to set salt and hash the password for a user 
+// Method to set salt and hash the password for a user
 exports.UserSchema.methods.setPassword = function (password) {
-    // Creating a unique salt for a particular user 
-    this.salt = crypto_1.default.randomBytes(16).toString('hex');
-    // Hashing user's salt and password with 1000 iterations, 
-    this.hash = crypto_1.default.pbkdf2Sync(password, this.salt, 1000, 64, `sha512`).toString(`hex`);
+    // Creating a unique salt for a particular user
+    this.salt = crypto_1.default.randomBytes(16).toString("hex");
+    // Hashing user's salt and password with 1000 iterations,
+    this.hash = crypto_1.default
+        .pbkdf2Sync(password, this.salt, 1000, 64, `sha512`)
+        .toString(`hex`);
 };
-// Method to check the entered password is correct or not 
+// Method to check the entered password is correct or not
 exports.UserSchema.methods.validPassword = function (password) {
-    var hash = crypto_1.default.pbkdf2Sync(password, this.salt, 1000, 64, `sha512`).toString(`hex`);
+    var hash = crypto_1.default
+        .pbkdf2Sync(password, this.salt, 1000, 64, `sha512`)
+        .toString(`hex`);
     return this.hash === hash;
 };
-exports.UserModel = (0, mongoose_1.model)('User', exports.UserSchema);
+exports.UserModel = (0, mongoose_1.model)("User", exports.UserSchema);

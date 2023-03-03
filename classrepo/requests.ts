@@ -17,8 +17,11 @@ export class Request implements IRequest {
     declinedBy: string;
     budgeted: boolean;
     budgetLine: String;
-    approvalDate: Date;
-    title: string
+    title: string;
+    hod_approvalDate: Date;
+    hof_approvalDate: Date;
+    pm_approvalDate: Date;
+    
 
 
     constructor(
@@ -34,8 +37,11 @@ export class Request implements IRequest {
         declinedBy: string,
         budgeted: boolean,
         budgetLine: string,
-        approvalDate: Date,
-        title: string
+        title: string,
+        hod_approvalDate: Date,
+    hof_approvalDate: Date,
+    pm_approvalDate: Date,
+    
     ) {
         this.createdBy = createdBy ? new Types.ObjectId(createdBy) : new Types.ObjectId()
         this.items = items
@@ -49,8 +55,10 @@ export class Request implements IRequest {
         this.declinedBy = declinedBy
         this.budgeted = budgeted
         this.budgetLine = budgetLine
-        this.approvalDate = approvalDate
         this.title = title
+        this.hod_approvalDate = hod_approvalDate
+        this.hof_approvalDate = hof_approvalDate
+        this.pm_approvalDate = pm_approvalDate
     }
     
 ;

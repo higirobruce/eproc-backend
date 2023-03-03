@@ -29,6 +29,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
 const node_localstorage_1 = require("node-localstorage");
 const path_1 = __importDefault(require("path"));
+const sendEmailNode_1 = require("./utils/sendEmailNode");
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999;
 const DB_USER = process.env.EPROC_DB_USER;
@@ -77,7 +78,6 @@ app.use("/uploads", upload_1.uploadRouter);
 app.use("/b1", b1_1.default);
 app.get("/file/:folder/:name", function (req, res, next) {
     var folder = req.params.folder;
-    console.log(folder);
     var options = {
         root: path_1.default.join(__dirname, "public/", folder),
         dotfiles: "deny",
@@ -87,18 +87,17 @@ app.get("/file/:folder/:name", function (req, res, next) {
         },
     };
     var fileName = req.params.name;
-    console.log(fileName);
     res.sendFile(fileName, options, function (err) {
         if (err) {
             next("File not found! 😏");
         }
         else {
-            console.log("Sent:", fileName);
         }
     });
 });
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(localstorage.getItem('cookie'))
     // await sapLogin()
+    yield (0, sendEmailNode_1.send)('bhigiro@shapeherd.rw', 'higirobru@gmail.com', 'subject', 'text', 'html', 'newTender');
     console.log(`App listening on port ${PORT}`);
 }));

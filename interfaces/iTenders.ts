@@ -12,7 +12,9 @@ export interface ITender {
     torsUrl: String,
     number: number,
     invitationSent: Boolean,
-    invitees: []
+    invitees: [],
+    docId: string
+    evaluationReportId: string
 
 }
 

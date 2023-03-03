@@ -57,7 +57,9 @@ userRouter.post("/", async (req, res) => {
     services,
     permissions,
     rdbCertId,
-    vatCertId
+    vatCertId,
+    bankName,
+    bankAccountNumber
   } = req.body;
   let number = await generateUserNumber();
 
@@ -86,7 +88,9 @@ userRouter.post("/", async (req, res) => {
     services,
     permissions,
     rdbCertId,
-    vatCertId
+    vatCertId,
+    bankName,
+    bankAccountNumber
   );
 
   let createdUser = await saveUser(userToCreate);

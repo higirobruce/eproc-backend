@@ -6,6 +6,7 @@ import {
   getContractByTenderId,
   getContractByVendorId,
   saveContract,
+  updateContract,
 } from "../controllers/contracts";
 import {
   getPOByTenderId,
@@ -43,6 +44,7 @@ contractRouter.post("/", async (req, res) => {
     deliveryProgress,
     contractStartDate,
     contractEndDate,
+    signatories
   } = req.body;
 
   let number = await generateContractNumber();
@@ -57,9 +59,20 @@ contractRouter.post("/", async (req, res) => {
     status,
     deliveryProgress,
     contractStartDate,
-    contractEndDate
+    contractEndDate,
+    signatories
   );
 
   let createdContract = await saveContract(contractToCreate);
   res.status(201).send(createdContract);
 });
+
+contractRouter.put('/:id',async (req,res)=>{
+  let {id} = req.params;
+  let {newContract} = req.body
+
+  let updated = await updateContract(id, newContract)
+
+  res.status(200).send(updated)
+
+})

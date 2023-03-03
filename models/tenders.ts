@@ -27,6 +27,8 @@ export const TenderSchema = new Schema<ITenderDocument>({
     default: false,
   },
   invitees: [],
+  docId: String,
+  evaluationReportId: String
 });
 
 export const TenderModel = model<ITenderDocument>("Tender", TenderSchema);

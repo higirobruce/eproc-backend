@@ -7,6 +7,7 @@ export interface IContract {
   deliveryProgress: number;
   startDate: Date;
   endDate: Date;
+  signatories: [];
 }
 
 export interface IContractDocument extends IContract, Document {

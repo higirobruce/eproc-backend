@@ -28,5 +28,7 @@ exports.TenderSchema = new mongoose_1.Schema({
         default: false,
     },
     invitees: [],
+    docId: String,
+    evaluationReportId: String
 });
 exports.TenderModel = (0, mongoose_1.model)("Tender", exports.TenderSchema);

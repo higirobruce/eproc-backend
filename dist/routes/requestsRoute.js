@@ -26,14 +26,14 @@ exports.requetsRouter.get("/countsByDep", (req, res) => __awaiter(void 0, void 0
     res.send(yield (0, requests_2.getReqCountsByDepartment)());
 }));
 exports.requetsRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { createdBy, items, dueDate, status, attachementUrls, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, approvalDate, title, } = req.body;
+    let { createdBy, items, dueDate, status, attachementUrls, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, } = req.body;
     let number = yield (0, requests_3.generateReqNumber)();
     let itemObjects = items.map((i) => {
         if (!i.currency)
             i.currency = "RWF";
         return i;
     });
-    let requestToCreate = new requests_1.Request(createdBy, itemObjects, dueDate, status, attachementUrls, number, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, approvalDate, title);
+    let requestToCreate = new requests_1.Request(createdBy, itemObjects, dueDate, status, attachementUrls, number, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate);
     let createdRequest = yield (0, requests_2.saveRequest)(requestToCreate);
     res.status(201).send(createdRequest);
 }));

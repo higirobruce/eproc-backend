@@ -13,12 +13,14 @@ exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequest
 const requests_1 = require("../models/requests");
 function getAllRequests() {
     return __awaiter(this, void 0, void 0, function* () {
-        let reqs = yield requests_1.RequestModel.find().populate('createdBy').populate({
+        let reqs = yield requests_1.RequestModel.find()
+            .populate("createdBy")
+            .populate({
             path: "createdBy",
             populate: {
-                path: 'department',
-                model: 'Department'
-            }
+                path: "department",
+                model: "Department",
+            },
         });
         return reqs;
     });
@@ -26,12 +28,14 @@ function getAllRequests() {
 exports.getAllRequests = getAllRequests;
 function getAllRequestsByCreator(createdBy) {
     return __awaiter(this, void 0, void 0, function* () {
-        let reqs = yield requests_1.RequestModel.find({ createdBy }).populate('createdBy').populate({
+        let reqs = yield requests_1.RequestModel.find({ createdBy })
+            .populate("createdBy")
+            .populate({
             path: "createdBy",
             populate: {
-                path: 'department',
-                model: 'Department'
-            }
+                path: "department",
+                model: "Department",
+            },
         });
         return reqs;
     });
@@ -48,12 +52,12 @@ function approveRequest(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: { status: "approved" } });
-            return { message: 'done' };
+            return { message: "done" };
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -62,13 +66,19 @@ exports.approveRequest = approveRequest;
 function declineRequest(id, reason, declinedBy) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: { status: "declined", reasonForRejection: reason, declinedBy: declinedBy } });
-            return { message: 'done' };
+            yield requests_1.RequestModel.findByIdAndUpdate(id, {
+                $set: {
+                    status: "declined",
+                    reasonForRejection: reason,
+                    declinedBy: declinedBy,
+                },
+            });
+            return { message: "done" };
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -77,13 +87,22 @@ exports.declineRequest = declineRequest;
 function updateRequestStatus(id, newStatus) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: { status: newStatus, approvalDate: Date.now() } });
-            return { message: 'done' };
+            let update = {};
+            if (newStatus === "approved (hod)")
+                update = { status: newStatus, hod_approvalDate: Date.now() };
+            else if (newStatus === "approved (fd)")
+                update = { status: newStatus, hof_approvalDate: Date.now() };
+            else if (newStatus === "approved (pm)")
+                update = { status: newStatus, pm_approvalDate: Date.now() };
+            else
+                update = { status: newStatus };
+            yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: update });
+            return { message: "done" };
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -93,12 +112,12 @@ function updateRequest(id, update) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield requests_1.RequestModel.findByIdAndUpdate(id, update);
-            return { message: 'done' };
+            return { message: "done" };
         }
         catch (err) {
             return {
                 error: true,
-                errorMessage: `Error :${err}`
+                errorMessage: `Error :${err}`,
             };
         }
     });
@@ -108,39 +127,43 @@ function getReqCountsByDepartment() {
     return __awaiter(this, void 0, void 0, function* () {
         let lookup = [
             {
-                '$lookup': {
-                    'from': 'users',
-                    'localField': 'createdBy',
-                    'foreignField': '_id',
-                    'as': 'createdBy'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$createdBy',
-                    'includeArrayIndex': 'string',
-                    'preserveNullAndEmptyArrays': true
-                }
-            }, {
-                '$lookup': {
-                    'from': 'departments',
-                    'localField': 'createdBy.department',
-                    'foreignField': '_id',
-                    'as': 'department'
-                }
-            }, {
-                '$unwind': {
-                    'path': '$department',
-                    'includeArrayIndex': 'string',
-                    'preserveNullAndEmptyArrays': false
-                }
-            }, {
-                '$group': {
-                    '_id': '$department.description',
-                    'totalCount': {
-                        '$count': {}
-                    }
-                }
-            }
+                $lookup: {
+                    from: "users",
+                    localField: "createdBy",
+                    foreignField: "_id",
+                    as: "createdBy",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$createdBy",
+                    includeArrayIndex: "string",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $lookup: {
+                    from: "departments",
+                    localField: "createdBy.department",
+                    foreignField: "_id",
+                    as: "department",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$department",
+                    includeArrayIndex: "string",
+                    preserveNullAndEmptyArrays: false,
+                },
+            },
+            {
+                $group: {
+                    _id: "$department.description",
+                    totalCount: {
+                        $count: {},
+                    },
+                },
+            },
         ];
         let result = yield requests_1.RequestModel.aggregate(lookup);
         return result;

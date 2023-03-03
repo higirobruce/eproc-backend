@@ -28,7 +28,8 @@ export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
     deliveryProgress:{
         type:Number,
         default: 0
-    }
+    },
+    signatories:[]
 })
 
 export const PurchaseOrderModel = model<IPurchaseOrderDocument>('PurchaseOrder', PurchaseOrderSchema);

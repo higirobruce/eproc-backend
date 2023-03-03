@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.saveBankDetails = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getVendorById = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
 const series_1 = require("./series");
@@ -45,6 +45,21 @@ function getAllVendors() {
     });
 }
 exports.getAllVendors = getAllVendors;
+function getVendorById(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let users = yield users_1.UserModel.findOne({ userType: "VENDOR", _id: id }).populate("department");
+            return users;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.getVendorById = getVendorById;
 function getAllInternalUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -81,7 +96,6 @@ function createSupplierinB1(CardName, CardType, Series) {
             })
                 .then((res) => res.json())
                 .then((res) => __awaiter(this, void 0, void 0, function* () {
-                console.log(res);
                 if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
                     console.log("Tried many times, we cant login");
                     return false;
@@ -202,7 +216,6 @@ function activateUser(id) {
 exports.activateUser = activateUser;
 function updateUser(id, newUser) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(newUser);
         try {
             let user = yield users_1.UserModel.findByIdAndUpdate(id, newUser, { new: true });
             return user;
@@ -216,3 +229,18 @@ function updateUser(id, newUser) {
     });
 }
 exports.updateUser = updateUser;
+function saveBankDetails(id, bankName, bankAccountNumber) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { bankName, bankAccountNumber } }, { new: true });
+            return user;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.saveBankDetails = saveBankDetails;

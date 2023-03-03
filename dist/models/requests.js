@@ -35,7 +35,15 @@ exports.RequestSchema = new mongoose_1.Schema({
     budgetLine: {
         type: String
     },
-    approvalDate: {
+    hod_approvalDate: {
+        type: Date,
+        default: Date.now()
+    },
+    hof_approvalDate: {
+        type: Date,
+        default: Date.now()
+    },
+    pm_approvalDate: {
         type: Date,
         default: Date.now()
     },
