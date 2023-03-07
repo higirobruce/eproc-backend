@@ -32,7 +32,7 @@ exports.poRouter.get("/byVendorId/:vendorId", (req, res) => __awaiter(void 0, vo
     res.send(yield (0, purchaseOrders_2.getPOByVendorId)(vendorId));
 }));
 exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, function* () {
-    let { vendor, tender, request, createdBy, sections, items, status, deliveryProgress, B1Data, signatories, } = req.body;
+    let { vendor, tender, request, createdBy, sections, items, status, deliveryProgress, B1Data, signatories, reqAttachmentDocId } = req.body;
     let CardCode;
     yield (0, b1_1.getBusinessPartnerByName)(B1Data === null || B1Data === void 0 ? void 0 : B1Data.CardName).then((res) => __awaiter(void 0, void 0, void 0, function* () {
         let bp = res.value;
@@ -44,7 +44,7 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
             }
             else {
                 let number = yield (0, purchaseOrders_3.generatePONumber)();
-                let tenderToCreate = new purchaseOrders_1.PurchaseOrder(number, vendor, tender, request, createdBy, sections, items, status, deliveryProgress, signatories);
+                let tenderToCreate = new purchaseOrders_1.PurchaseOrder(number, vendor, tender, request, createdBy, sections, items, status, deliveryProgress, signatories, reqAttachmentDocId);
                 let createdTender = yield (0, purchaseOrders_2.savePO)(tenderToCreate);
                 response.status(201).send({ createdTender });
             }

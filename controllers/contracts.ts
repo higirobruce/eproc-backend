@@ -70,9 +70,16 @@ export async function getContractByTenderId(tenderId: String) {
 export async function getContractByVendorId(vendorId: String) {
   let pos = await ContractModel.find({ vendor: vendorId })
     .populate("tender")
-    .populate("tender")
+    .populate("request")
     .populate("vendor")
-    .populate("createdBy");
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+      },
+    });
   return pos;
 }
 

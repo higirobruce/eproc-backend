@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveBankDetails = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getVendorById = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.saveBankDetails = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getVendorById = exports.getAllLevel1Approvers = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
 const series_1 = require("./series");
@@ -45,10 +45,33 @@ function getAllVendors() {
     });
 }
 exports.getAllVendors = getAllVendors;
+function getAllLevel1Approvers() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let users = yield users_1.UserModel.find({
+                "permissions.canApproveAsHod": true,
+            }, {
+                'firstName': 1,
+                'lastName': 1
+            }).populate("department");
+            return users;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.getAllLevel1Approvers = getAllLevel1Approvers;
 function getVendorById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.findOne({ userType: "VENDOR", _id: id }).populate("department");
+            let users = yield users_1.UserModel.findOne({
+                userType: "VENDOR",
+                _id: id,
+            }).populate("department");
             return users;
         }
         catch (err) {

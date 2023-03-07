@@ -27,14 +27,14 @@ exports.requetsRouter.get("/countsByDep", (req, res) => __awaiter(void 0, void 0
     res.send(yield (0, requests_2.getReqCountsByDepartment)());
 }));
 exports.requetsRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { createdBy, items, dueDate, status, attachementUrls, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, } = req.body;
+    let { createdBy, items, dueDate, status, attachementUrls, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, level1Approver } = req.body;
     let number = yield (0, requests_3.generateReqNumber)();
     let itemObjects = items.map((i) => {
         if (!i.currency)
             i.currency = "RWF";
         return i;
     });
-    let requestToCreate = new requests_1.Request(createdBy, itemObjects, dueDate, status, attachementUrls, number, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate);
+    let requestToCreate = new requests_1.Request(createdBy, itemObjects, dueDate, status, attachementUrls, number, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, level1Approver);
     let createdRequest = yield (0, requests_2.saveRequest)(requestToCreate);
     res.status(201).send(createdRequest);
 }));
@@ -50,8 +50,14 @@ exports.requetsRouter.post("/decline/:id", (req, res) => __awaiter(void 0, void 
 exports.requetsRouter.put("/status/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     let { status } = req.body;
-    if (status === "approved (fd)")
-        (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "higirobru@gmail.com", "Your approval is needed", "A purchase request has reached your level of approval.", "", "pmApproval");
+    if (status === "approved (fd)") {
+        try {
+            (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "waroji2460@pubpng.com", "Your approval is needed", "A purchase request has reached your level of approval.", "", "pmApproval");
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
     res.send(yield (0, requests_2.updateRequestStatus)(id, status));
 }));
 exports.requetsRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

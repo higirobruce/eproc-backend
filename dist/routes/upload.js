@@ -140,6 +140,28 @@ exports.uploadRouter.post("/evaluationReports/", (req, res) => {
         return res.status(200).send(req.file);
     });
 });
+exports.uploadRouter.post("/reqAttachments/", (req, res) => {
+    var storage = multer_1.default.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, "dist/public/reqAttachments");
+        },
+        filename: function (req, file, cb) {
+            cb(null, req.query.id + '.pdf');
+        },
+    });
+    var upload = (0, multer_1.default)({ storage: storage }).single("file");
+    upload(req, res, function (err) {
+        if (err instanceof multer_1.default.MulterError) {
+            console.log(err);
+            return res.status(500);
+        }
+        else if (err) {
+            console.log(err);
+            return res.status(500);
+        }
+        return res.status(200).send(req.file);
+    });
+});
 exports.uploadRouter.get("/:path", (req, res) => {
     let { path } = req.params;
     fs_1.default.stat(`public/termsOfReference/${path}`, (err, stats) => {

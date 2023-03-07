@@ -61,7 +61,9 @@ requetsRouter.post("/", async (req, res) => {
     hod_approvalDate,
     hof_approvalDate,
     pm_approvalDate,
+    level1Approver
   } = req.body;
+
   let number = await generateReqNumber();
   let itemObjects = items.map((i: PoLineItem) => {
     if (!i.currency) i.currency = "RWF";
@@ -84,7 +86,8 @@ requetsRouter.post("/", async (req, res) => {
     title,
     hod_approvalDate,
     hof_approvalDate,
-    pm_approvalDate
+    pm_approvalDate,
+    level1Approver
   );
 
   let createdRequest = await saveRequest(requestToCreate);
@@ -106,15 +109,21 @@ requetsRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
 
-  if (status === "approved (fd)")
-    send(
-      "bhigiro@shapeherd.rw",
-      "higirobru@gmail.com",
-      "Your approval is needed",
-      "A purchase request has reached your level of approval.",
-      "",
-      "pmApproval"
-    );
+  if (status === "approved (fd)"){
+    try{
+      send(
+        "bhigiro@shapeherd.rw",
+        "waroji2460@pubpng.com",
+        "Your approval is needed",
+        "A purchase request has reached your level of approval.",
+        "",
+        "pmApproval"
+      );
+    } catch(err){
+      console.log(err)
+    }
+  }
+    
   res.send(await updateRequestStatus(id, status));
 });
 

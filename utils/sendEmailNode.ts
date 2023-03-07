@@ -6,8 +6,8 @@ const transporter = nodemailer.createTransport({
   host: "mail.shapeherd.rw",
   port: 465,
   auth: {
-    user: "bhigiro@shapeherd.rw",
-    pass: "Blessings_19891",
+    user: process.env.IRMB_SENDER_EMAIL,
+    pass: process.env.IRMB_SENDER_PASSWORD,
   },
   from:"bhigiro@shapeherd.rw"
 });
@@ -152,7 +152,7 @@ export async function send(
       to: to,
       subject: 'New Tender Published',
       text: text,
-      html: mjml(newTender).html,
+      html: mjml(html).html,
     });
   else if (type === "invitation")
     return await transporter.sendMail({

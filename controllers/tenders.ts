@@ -138,7 +138,7 @@ export async function getClosedTenders() {
 
 export async function saveTender(tender: Tender) {
   let newTender = await TenderModel.create(tender);
-  return newTender._id;
+  return newTender;
 }
 
 export async function updateTenderStatus(id: String, newStatus: String) {

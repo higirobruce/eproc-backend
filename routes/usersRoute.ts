@@ -6,6 +6,7 @@ import {
   banUser,
   declineUser,
   getAllInternalUsers,
+  getAllLevel1Approvers,
   getAllUsers,
   getAllVendors,
   getUserByEmail,
@@ -26,6 +27,10 @@ userRouter.get("/", async (req, res) => {
 
 userRouter.get("/vendors", async (req, res) => {
   res.send(await getAllVendors());
+});
+
+userRouter.get("/level1Approvers", async (req, res) => {
+  res.send(await getAllLevel1Approvers());
 });
 
 userRouter.get("/internal", async (req, res) => {

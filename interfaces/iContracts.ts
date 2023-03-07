@@ -8,6 +8,7 @@ export interface IContract {
   startDate: Date;
   endDate: Date;
   signatories: [];
+  reqAttachmentDocId: String
 }
 
 export interface IContractDocument extends IContract, Document {

@@ -47,6 +47,7 @@ poRouter.post("/", async (req, response) => {
     deliveryProgress,
     B1Data,
     signatories,
+    reqAttachmentDocId
   } = req.body;
 
   let CardCode;
@@ -75,7 +76,8 @@ poRouter.post("/", async (req, response) => {
           items,
           status,
           deliveryProgress,
-          signatories
+          signatories,
+          reqAttachmentDocId
         );
 
         let createdTender = await savePO(tenderToCreate);

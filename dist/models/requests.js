@@ -5,50 +5,54 @@ const mongoose_1 = require("mongoose");
 exports.RequestSchema = new mongoose_1.Schema({
     createdBy: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     attachementUrls: Array,
     dueDate: Date,
     items: Array,
     status: {
         type: String,
-        default: 'pending'
+        default: "pending",
     },
     number: {
-        type: Number
+        type: Number,
     },
     description: {
-        type: String
+        type: String,
     },
     serviceCategory: {
-        type: String
+        type: String,
     },
     reasonForRejection: {
-        type: String
+        type: String,
     },
     declinedBy: {
-        type: String
+        type: String,
     },
     budgeted: {
-        type: Boolean
+        type: Boolean,
     },
     budgetLine: {
-        type: String
+        type: String,
     },
     hod_approvalDate: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
     },
     hof_approvalDate: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
     },
     pm_approvalDate: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
     },
     title: {
-        type: String
-    }
+        type: String,
+    },
+    level1Approver: {
+        type: mongoose_1.Types.ObjectId,
+        ref: "User",
+    },
 });
-exports.RequestModel = (0, mongoose_1.model)('Request', exports.RequestSchema);
+exports.RequestModel = (0, mongoose_1.model)("Request", exports.RequestSchema);

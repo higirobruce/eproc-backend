@@ -158,7 +158,7 @@ exports.getClosedTenders = getClosedTenders;
 function saveTender(tender) {
     return __awaiter(this, void 0, void 0, function* () {
         let newTender = yield tenders_1.TenderModel.create(tender);
-        return newTender._id;
+        return newTender;
     });
 }
 exports.saveTender = saveTender;

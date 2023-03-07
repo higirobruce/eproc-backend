@@ -14,6 +14,7 @@ const express_1 = require("express");
 const tenders_1 = require("../classrepo/tenders");
 const tenders_2 = require("../controllers/tenders");
 const tenders_3 = require("../services/tenders");
+const notificationMessages_1 = require("../utils/notificationMessages");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.tenderRouter = (0, express_1.Router)();
 exports.tenderRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -52,8 +53,13 @@ exports.tenderRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, f
         return i;
     });
     let tenderToCreate = new tenders_1.Tender(createdBy, itemObjects, dueDate, status, attachementUrls, number, submissionDeadLine, torsUrl, purchaseRequest, invitationSent, invitees, docId, evaluationReportId);
-    (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "higirobru@gmail.com", "NEW TENDER created", "Please check on the new Tender", "", "newTender");
     let createdTender = yield (0, tenders_2.saveTender)(tenderToCreate);
+    try {
+        let a = yield (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "waroji2460@pubpng.com", (0, notificationMessages_1.tenderPublished)(`${createdTender.number}`).subject, "Please check on the new Tender", (0, notificationMessages_1.tenderPublished)(`${createdTender.number}`).body, "newTender");
+    }
+    catch (err) {
+        console.log(err);
+    }
     res.status(201).send(createdTender);
 }));
 exports.tenderRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,7 +67,7 @@ exports.tenderRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0,
     let { newTender, sendInvitation } = req.body;
     let updatedTender = yield (0, tenders_2.updateTender)(id, newTender);
     if (sendInvitation)
-        (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "higirobru@gmail.com", "Invitation in Tender awarding", `${JSON.stringify(updatedTender)}`, "", "invitation");
+        (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "waroji2460@pubpng.com", "Invitation in Tender awarding", `${JSON.stringify(updatedTender)}`, "", "invitation");
     res.send(updatedTender);
 }));
 exports.tenderRouter.put("/status/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

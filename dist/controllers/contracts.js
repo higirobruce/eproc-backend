@@ -87,9 +87,16 @@ function getContractByVendorId(vendorId) {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield contracts_1.ContractModel.find({ vendor: vendorId })
             .populate("tender")
-            .populate("tender")
+            .populate("request")
             .populate("vendor")
-            .populate("createdBy");
+            .populate("createdBy")
+            .populate({
+            path: "tender",
+            populate: {
+                path: "purchaseRequest",
+                model: "Request",
+            },
+        });
         return pos;
     });
 }

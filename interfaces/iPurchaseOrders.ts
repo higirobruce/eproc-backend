@@ -7,6 +7,7 @@ export interface IPurchaseOrder {
   status: String;
   deliveryProgress: number;
   signatories: [];
+  reqAttachmentDocId: String
 }
 
 export interface IPurchaseOrderDocument

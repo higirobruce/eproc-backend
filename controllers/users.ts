@@ -32,11 +32,29 @@ export async function getAllVendors() {
   }
 }
 
+export async function getAllLevel1Approvers() {
+  try {
+    let users = await UserModel.find({
+      "permissions.canApproveAsHod": true,
+    },{
+      'firstName':1,
+      'lastName':1
+    }).populate("department")
+    return users;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
 export async function getVendorById(id: string) {
   try {
-    let users = await UserModel.findOne({ userType: "VENDOR", _id: id}).populate(
-      "department"
-    );
+    let users = await UserModel.findOne({
+      userType: "VENDOR",
+      _id: id,
+    }).populate("department");
     return users;
   } catch (err) {
     return {
@@ -197,7 +215,6 @@ export async function activateUser(id: String) {
 }
 
 export async function updateUser(id: String, newUser: User) {
-
   try {
     let user = await UserModel.findByIdAndUpdate(id, newUser, { new: true });
     return user;
@@ -209,7 +226,11 @@ export async function updateUser(id: String, newUser: User) {
   }
 }
 
-export async function saveBankDetails(id: String, bankName: String, bankAccountNumber:String) {
+export async function saveBankDetails(
+  id: String,
+  bankName: String,
+  bankAccountNumber: String
+) {
   try {
     let user = await UserModel.findByIdAndUpdate(
       id,

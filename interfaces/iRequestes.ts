@@ -19,10 +19,15 @@ export interface IRequest {
     hof_approvalDate: Date,
     pm_approvalDate: Date,
     title: String,
+
 }
 
 export interface IRequestDocument extends IRequest, Document {
     createdBy: {
+        type: Types.ObjectId,
+        ref: 'User'
+    },
+    level1Approver: {
         type: Types.ObjectId,
         ref: 'User'
     },

@@ -29,7 +29,10 @@ export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
         type:Number,
         default: 0
     },
-    signatories:[]
+    signatories:[],
+    reqAttachmentDocId: {
+        type: String
+    }
 })
 
 export const PurchaseOrderModel = model<IPurchaseOrderDocument>('PurchaseOrder', PurchaseOrderSchema);

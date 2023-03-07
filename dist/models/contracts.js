@@ -6,34 +6,38 @@ exports.Contract = new mongoose_1.Schema({
     number: Number,
     vendor: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     tender: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'Tender'
+        ref: "Tender",
     },
     request: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'Request'
+        ref: "Request",
     },
     createdBy: {
         type: mongoose_1.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     sections: Array,
     status: {
-        type: String
+        type: String,
+        default: "draft",
     },
     deliveryProgress: {
         type: Number,
-        default: 0
+        default: 0,
     },
     startDate: {
-        type: Date
+        type: Date,
     },
     endDate: {
-        type: Date
+        type: Date,
     },
-    signatories: []
+    signatories: [],
+    reqAttachmentDocId: {
+        type: String,
+    },
 });
-exports.ContractModel = (0, mongoose_1.model)('Contract', exports.Contract);
+exports.ContractModel = (0, mongoose_1.model)("Contract", exports.Contract);

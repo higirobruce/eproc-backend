@@ -21,6 +21,9 @@ exports.userRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.userRouter.get("/vendors", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllVendors)());
 }));
+exports.userRouter.get("/level1Approvers", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(yield (0, users_2.getAllLevel1Approvers)());
+}));
 exports.userRouter.get("/internal", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllInternalUsers)());
 }));

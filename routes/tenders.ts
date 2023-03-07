@@ -25,6 +25,7 @@ import {
 } from "../controllers/tenders";
 import { generateReqNumber } from "../services/requests";
 import { generateTenderNumber } from "../services/tenders";
+import { tenderPublished } from "../utils/notificationMessages";
 import { send } from "../utils/sendEmailNode";
 
 export const tenderRouter = Router();
@@ -99,16 +100,21 @@ tenderRouter.post("/", async (req, res) => {
     evaluationReportId
   );
 
-  send(
-    "bhigiro@shapeherd.rw",
-    "higirobru@gmail.com",
-    "NEW TENDER created",
-    "Please check on the new Tender",
-    "",
-    "newTender"
-  );
+  
 
   let createdTender = await saveTender(tenderToCreate);
+  try{
+    let a = await send(
+      "bhigiro@shapeherd.rw",
+      "waroji2460@pubpng.com",
+      tenderPublished(`${createdTender.number}`).subject,
+      "Please check on the new Tender",
+      tenderPublished(`${createdTender.number}`).body,
+      "newTender"
+    );
+  }catch(err){
+    console.log(err)
+  }
 
   res.status(201).send(createdTender);
 });
@@ -122,7 +128,7 @@ tenderRouter.put("/:id", async (req, res) => {
   if (sendInvitation)
     send(
       "bhigiro@shapeherd.rw",
-      "higirobru@gmail.com",
+      "waroji2460@pubpng.com",
       "Invitation in Tender awarding",
       `${JSON.stringify(updatedTender)}`,
       "",
