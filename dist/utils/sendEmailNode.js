@@ -148,30 +148,31 @@ const pmApproval = `<mjml>
 // send email
 function send(from, to, subject, text, html, type) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (type === "newTender")
-            return yield transporter.sendMail({
-                from: from,
-                to: to,
-                subject: 'New Tender Published',
-                text: text,
-                html: mjml(html).html,
-            });
-        else if (type === "invitation")
-            return yield transporter.sendMail({
-                from: from,
-                to: to,
-                subject: 'Tender Award Invitation',
-                text: text,
-                html: mjml(invitation(JSON.parse(text))).html,
-            });
-        else if (type === "pmApproval")
-            return yield transporter.sendMail({
-                from: from,
-                to: to,
-                subject: 'Irembo Procure - Procurement Manager Approval',
-                text: text,
-                html: mjml(pmApproval).html,
-            });
+        console.log('sent');
+        // if (type === "newTender")
+        //   return await transporter.sendMail({
+        //     from: from,
+        //     to: to,
+        //     subject: 'New Tender Published',
+        //     text: text,
+        //     html: mjml(html).html,
+        //   });
+        // else if (type === "invitation")
+        //   return await transporter.sendMail({
+        //     from: from,
+        //     to: to,
+        //     subject: 'Tender Award Invitation',
+        //     text: text,
+        //     html: mjml(invitation(JSON.parse(text))).html,
+        //   });
+        //   else if (type === "pmApproval")
+        //   return await transporter.sendMail({
+        //     from: from,
+        //     to: to,
+        //     subject: 'Irembo Procure - Procurement Manager Approval',
+        //     text: text,
+        //     html: mjml(pmApproval).html,
+        //   });
     });
 }
 exports.send = send;

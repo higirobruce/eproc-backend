@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
+exports.getReqCountsByCategory = exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
 const requests_1 = require("../models/requests");
 function getAllRequests() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -170,3 +170,35 @@ function getReqCountsByDepartment() {
     });
 }
 exports.getReqCountsByDepartment = getReqCountsByDepartment;
+function getReqCountsByCategory() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let lookup = [
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "createdBy",
+                    foreignField: "_id",
+                    as: "createdBy",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$createdBy",
+                    includeArrayIndex: "string",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $group: {
+                    _id: "$serviceCategory",
+                    totalCount: {
+                        $count: {},
+                    },
+                },
+            },
+        ];
+        let result = yield requests_1.RequestModel.aggregate(lookup);
+        return result;
+    });
+}
+exports.getReqCountsByCategory = getReqCountsByCategory;

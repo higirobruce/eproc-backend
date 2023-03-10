@@ -160,7 +160,7 @@ function saveUser(user) {
 exports.saveUser = saveUser;
 function getUserByEmail(userEmail) {
     return __awaiter(this, void 0, void 0, function* () {
-        let user = yield users_1.UserModel.findOne({ email: userEmail });
+        let user = yield users_1.UserModel.findOne({ email: userEmail }).populate("department");
         return user;
     });
 }

@@ -136,7 +136,7 @@ export async function saveUser(user: User) {
 }
 
 export async function getUserByEmail(userEmail: String) {
-  let user = await UserModel.findOne({ email: userEmail });
+  let user = await UserModel.findOne({ email: userEmail }).populate("department");
   return user;
 }
 

@@ -22,6 +22,10 @@ exports.contractRouter.get("/byTenderId/:tenderId", (req, res) => __awaiter(void
     let { tenderId } = req.params;
     res.send(yield (0, contracts_2.getContractByTenderId)(tenderId));
 }));
+exports.contractRouter.get("/byRequestId/:requestId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { requestId } = req.params;
+    res.send(yield (0, contracts_2.getContractByRequestId)(requestId));
+}));
 exports.contractRouter.get("/byVendorId/:vendorId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { vendorId } = req.params;
     res.send(yield (0, contracts_2.getContractByVendorId)(vendorId));

@@ -3,6 +3,7 @@ import { Contract } from "../classrepo/contracts";
 import { PurchaseOrder } from "../classrepo/purchaseOrders";
 import {
   getAllContracts,
+  getContractByRequestId,
   getContractByTenderId,
   getContractByVendorId,
   saveContract,
@@ -26,6 +27,11 @@ contractRouter.get("/", async (req, res) => {
 contractRouter.get("/byTenderId/:tenderId", async (req, res) => {
   let { tenderId } = req.params;
   res.send(await getContractByTenderId(tenderId));
+});
+
+contractRouter.get("/byRequestId/:requestId", async (req, res) => {
+  let { requestId } = req.params;
+  res.send(await getContractByRequestId(requestId));
 });
 
 contractRouter.get("/byVendorId/:vendorId", async (req, res) => {

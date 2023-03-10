@@ -7,6 +7,7 @@ import {
   declineRequest,
   getAllRequests,
   getAllRequestsByCreator,
+  getReqCountsByCategory,
   getReqCountsByDepartment,
   saveRequest,
   updateRequest,
@@ -35,13 +36,18 @@ requetsRouter.get("/", async (req, res) => {
   res.send(await getAllRequests());
 });
 
-requetsRouter.get("/:createdBy", async (req, res) => {
-  let { createdBy } = req.params;
-  res.send(await getAllRequestsByCreator(createdBy));
-});
 
 requetsRouter.get("/countsByDep", async (req, res) => {
   res.send(await getReqCountsByDepartment());
+});
+
+requetsRouter.get("/countsByCat", async (req, res) => {
+  res.send(await getReqCountsByCategory());
+});
+
+requetsRouter.get("/:createdBy", async (req, res) => {
+  let { createdBy } = req.params;
+  res.send(await getAllRequestsByCreator(createdBy));
 });
 
 requetsRouter.post("/", async (req, res) => {

@@ -146,29 +146,30 @@ export async function send(
   html: string,
   type: string
 ) {
-  if (type === "newTender")
-    return await transporter.sendMail({
-      from: from,
-      to: to,
-      subject: 'New Tender Published',
-      text: text,
-      html: mjml(html).html,
-    });
-  else if (type === "invitation")
-    return await transporter.sendMail({
-      from: from,
-      to: to,
-      subject: 'Tender Award Invitation',
-      text: text,
-      html: mjml(invitation(JSON.parse(text))).html,
-    });
+  console.log('sent')
+  // if (type === "newTender")
+  //   return await transporter.sendMail({
+  //     from: from,
+  //     to: to,
+  //     subject: 'New Tender Published',
+  //     text: text,
+  //     html: mjml(html).html,
+  //   });
+  // else if (type === "invitation")
+  //   return await transporter.sendMail({
+  //     from: from,
+  //     to: to,
+  //     subject: 'Tender Award Invitation',
+  //     text: text,
+  //     html: mjml(invitation(JSON.parse(text))).html,
+  //   });
 
-    else if (type === "pmApproval")
-    return await transporter.sendMail({
-      from: from,
-      to: to,
-      subject: 'Irembo Procure - Procurement Manager Approval',
-      text: text,
-      html: mjml(pmApproval).html,
-    });
+  //   else if (type === "pmApproval")
+  //   return await transporter.sendMail({
+  //     from: from,
+  //     to: to,
+  //     subject: 'Irembo Procure - Procurement Manager Approval',
+  //     text: text,
+  //     html: mjml(pmApproval).html,
+  //   });
 }

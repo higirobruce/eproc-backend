@@ -59,6 +59,22 @@ export async function getContractByTenderId(tenderId: String) {
   return pos;
 }
 
+export async function getContractByRequestId(requestId: String) {
+  let pos = await ContractModel.find({ request: requestId })
+    .populate("tender")
+    .populate("request")
+    .populate("vendor")
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+      },
+    });
+  return pos;
+}
+
 /**
  * Get a contract by vendor id. This is used to create a list of contract in order to display the list
  *

@@ -101,6 +101,7 @@ export async function updateRequest(id: String, update: Request) {
   }
 }
 
+
 export async function getReqCountsByDepartment() {
   let lookup = [
     {
@@ -136,6 +137,37 @@ export async function getReqCountsByDepartment() {
     {
       $group: {
         _id: "$department.description",
+        totalCount: {
+          $count: {},
+        },
+      },
+    },
+  ];
+
+  let result = await RequestModel.aggregate(lookup);
+  return result;
+}
+
+export async function getReqCountsByCategory() {
+  let lookup = [
+    {
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "createdBy",
+      },
+    },
+    {
+      $unwind: {
+        path: "$createdBy",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $group: {
+        _id: "$serviceCategory",
         totalCount: {
           $count: {},
         },

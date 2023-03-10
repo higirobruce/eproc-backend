@@ -19,12 +19,15 @@ exports.requetsRouter = (0, express_1.Router)();
 exports.requetsRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, requests_2.getAllRequests)());
 }));
+exports.requetsRouter.get("/countsByDep", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(yield (0, requests_2.getReqCountsByDepartment)());
+}));
+exports.requetsRouter.get("/countsByCat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(yield (0, requests_2.getReqCountsByCategory)());
+}));
 exports.requetsRouter.get("/:createdBy", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { createdBy } = req.params;
     res.send(yield (0, requests_2.getAllRequestsByCreator)(createdBy));
-}));
-exports.requetsRouter.get("/countsByDep", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send(yield (0, requests_2.getReqCountsByDepartment)());
 }));
 exports.requetsRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { createdBy, items, dueDate, status, attachementUrls, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, level1Approver } = req.body;
