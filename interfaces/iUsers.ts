@@ -27,8 +27,8 @@ export interface IUser {
     permissions: Object,
     rdbCertId: String,
     vatCertId: String,
-    bankName: String,
-    bankAccountNumber: String
+    firstName: String,
+    lastName: String
 
 }
 

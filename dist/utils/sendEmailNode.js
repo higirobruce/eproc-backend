@@ -14,13 +14,14 @@ const nodemailer = require("nodemailer");
 const mjml = require("mjml");
 // create transporter object with smtp server details
 const transporter = nodemailer.createTransport({
-    host: "mail.shapeherd.rw",
+    host: process.env.SMTP_HOST,
     port: 465,
+    secure: true,
     auth: {
         user: process.env.IRMB_SENDER_EMAIL,
         pass: process.env.IRMB_SENDER_PASSWORD,
     },
-    from: "bhigiro@shapeherd.rw"
+    from: process.env.IRMB_SENDER_EMAIL,
 });
 const newTender = `<mjml>
 <mj-body>
@@ -46,12 +47,12 @@ const newTender = `<mjml>
     <mj-column width="400px">
 
       <mj-text color="#525252">
-        Good day, <br /><br />
-        This is to notify you that a new tender has been published. We believe you are among those that can do the work. Please have a look by clicking on the below button.<br>
+        Greetings, <br />
+        We trust that you are keeping well. <br/>
+        We would like to inform you that a new tender has been published. <br/>
+        For more information on this tender and the related bid submission requirements, 
+        please proceed to the e-procurement application by clicking the button below.<br>
       </mj-text>
-
-
-
 
       <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
     </mj-column>
@@ -63,48 +64,91 @@ const newTender = `<mjml>
 </mj-body>
 </mjml>`;
 const invitation = (tender) => {
-    var _a;
+    return `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Bid evaluation invite</mj-text>
+    </mj-column>
+  </mj-section>
+
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="400px">
+
+      <mj-text color="#525252">
+        Hi there, <br/><br/>
+        Please be informed that you have been selected to be part of the team that will be 
+        evaluating the bids submitted in response to ${tender === null || tender === void 0 ? void 0 : tender.number}.<br/>
+        For details on these bids, please proceed to the e-procurement application by clicking the button below.<br/>
+            
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>
+`;
+};
+const bidSelectionConfirmation = (tender) => {
     return `<mjml>
   <mj-body>
     <!-- Company Header -->
     <mj-section>
       <mj-column>
       <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
-        <mj-text>    
           Irembo Procure
         </mj-text>
       </mj-column>
     </mj-section>
-
+  
     <!-- Image Header -->
     <mj-section>
       <mj-column width="600px">
-        <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">You have been invited to a tender award process.</mj-text>
+        <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Bid selection confirmation</mj-text>
       </mj-column>
     </mj-section>
-
-
+  
+  
     <!-- Intro text -->
     <mj-section background-color="">
       <mj-column width="400px">
-
+  
         <mj-text color="#525252">
-          Good day, <br/><br/>
-                  This is to notify you that you have been invited to the awarding process of the tender ${tender === null || tender === void 0 ? void 0 : tender.number} - ${(_a = tender === null || tender === void 0 ? void 0 : tender.purchaseRequest) === null || _a === void 0 ? void 0 : _a.title}<br>
-              
+          Greetings, <br />
+          Subsequent to the bids evaluation activities, please be informed that a bid has now been selected for ${tender === null || tender === void 0 ? void 0 : tender.number}<br/>
+          As part of the bid selection team for this tender, you are requested to review the now available tender award recommendations. 
+          Once all relevant stakeholders approve of these recommendations, the selected vendor will be informed of the tender award decision<br>
         </mj-text>
-
+  
         <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
       </mj-column>
     </mj-section>
-
+  
     <!-- Social icons -->
     <mj-section background-color=""></mj-section>
-
+  
   </mj-body>
-</mjml>`;
+  </mjml>`;
 };
-const pmApproval = `<mjml>
+const approval = `<mjml>
 <mj-body>
   <!-- Company Header -->
   <mj-section>
@@ -129,12 +173,51 @@ const pmApproval = `<mjml>
     <mj-column width="400px">
 
       <mj-text color="#525252">
-        Good day, <br /><br />
-        This is to notify you that a purchase request has reached your approval level.<br>
+        Hi there, <br />
+        I hope that you are well. <br/>
+        I am reaching out to inform you that a new purchase request has been submitted for your approval.<br/>
+        To review the request, please proceed to the e-procurement portal application by clicking the button below.<br>
       </mj-text>
 
+      <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+const rejection = `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your Approval is needed</mj-text>
+    </mj-column>
+  </mj-section>
 
 
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="400px">
+
+      <mj-text color="#525252">
+        Hi there, <br />
+        I hope that you are well. <br/>
+        I regret to inform you that your previously submitted request has been declined.<br/>
+        For more information on this decision, please proceed to the e-procurement application by clicking the button below.<br>
+      </mj-text>
 
       <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
     </mj-column>
@@ -148,31 +231,47 @@ const pmApproval = `<mjml>
 // send email
 function send(from, to, subject, text, html, type) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('sent');
-        // if (type === "newTender")
-        //   return await transporter.sendMail({
-        //     from: from,
-        //     to: to,
-        //     subject: 'New Tender Published',
-        //     text: text,
-        //     html: mjml(html).html,
-        //   });
-        // else if (type === "invitation")
-        //   return await transporter.sendMail({
-        //     from: from,
-        //     to: to,
-        //     subject: 'Tender Award Invitation',
-        //     text: text,
-        //     html: mjml(invitation(JSON.parse(text))).html,
-        //   });
-        //   else if (type === "pmApproval")
-        //   return await transporter.sendMail({
-        //     from: from,
-        //     to: to,
-        //     subject: 'Irembo Procure - Procurement Manager Approval',
-        //     text: text,
-        //     html: mjml(pmApproval).html,
-        //   });
+        // console.log("sent");
+        if (type === "newTender")
+            return yield transporter.sendMail({
+                from: process.env.IRMB_SENDER_EMAIL,
+                to: to,
+                subject,
+                text,
+                html: mjml(newTender).html,
+            });
+        else if (type === "bidEvaluationInvite")
+            return yield transporter.sendMail({
+                from: process.env.IRMB_SENDER_EMAIL,
+                to,
+                subject,
+                text,
+                html: mjml(bidSelectionConfirmation(JSON.parse(text))).html,
+            });
+        else if (type === "bidSelectionConfirmation")
+            return yield transporter.sendMail({
+                from: process.env.IRMB_SENDER_EMAIL,
+                to,
+                subject,
+                text,
+                html: mjml(invitation(JSON.parse(text))).html,
+            });
+        else if (type === "approval")
+            return yield transporter.sendMail({
+                from: process.env.IRMB_SENDER_EMAIL,
+                to,
+                subject,
+                text,
+                html: mjml(approval).html,
+            });
+        else if (type === "rejection")
+            return yield transporter.sendMail({
+                from: process.env.IRMB_SENDER_EMAIL,
+                to,
+                subject,
+                text,
+                html: mjml(rejection).html,
+            });
     });
 }
 exports.send = send;

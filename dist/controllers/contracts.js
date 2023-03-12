@@ -121,7 +121,19 @@ function getContractByVendorId(vendorId) {
 exports.getContractByVendorId = getContractByVendorId;
 function updateContract(id, contract) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield contracts_1.ContractModel.findByIdAndUpdate(id, contract, { new: true });
+        let newContract = yield contracts_1.ContractModel.findByIdAndUpdate(id, contract, {
+            new: true,
+        });
+        if ((newContract === null || newContract === void 0 ? void 0 : newContract.status) === "reviewed") {
+            let internallyNotSigned = yield contracts_1.ContractModel.find({
+                "signatories.onBehalfOf": "Irembo Ltd",
+                "signatories.signed": false,
+                tender: "640ad9b09058d32c4efacc15",
+            });
+            if (internallyNotSigned.length === 0) {
+            }
+        }
+        return newContract;
     });
 }
 exports.updateContract = updateContract;

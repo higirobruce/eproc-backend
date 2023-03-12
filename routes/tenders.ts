@@ -76,7 +76,7 @@ tenderRouter.post("/", async (req, res) => {
     invitationSent,
     invitees,
     docId,
-    evaluationReportId
+    evaluationReportId,
   } = req.body;
   let number = await generateTenderNumber();
   let itemObjects = items.map((i: PoLineItem) => {
@@ -100,22 +100,7 @@ tenderRouter.post("/", async (req, res) => {
     evaluationReportId
   );
 
-  
-
   let createdTender = await saveTender(tenderToCreate);
-  try{
-    let a = await send(
-      "bhigiro@shapeherd.rw",
-      "waroji2460@pubpng.com",
-      tenderPublished(`${createdTender.number}`).subject,
-      "Please check on the new Tender",
-      tenderPublished(`${createdTender.number}`).body,
-      "newTender"
-    );
-  }catch(err){
-    console.log(err)
-  }
-
   res.status(201).send(createdTender);
 });
 
@@ -125,15 +110,21 @@ tenderRouter.put("/:id", async (req, res) => {
 
   let updatedTender = await updateTender(id, newTender);
 
-  if (sendInvitation)
+  if (sendInvitation) {
+    let invitees = newTender?.invitees;
+    let inviteesEmails = invitees?.map((i: any) => {
+     return i?.approver
+    });
+
     send(
-      "bhigiro@shapeherd.rw",
-      "waroji2460@pubpng.com",
-      "Invitation in Tender awarding",
-      `${JSON.stringify(updatedTender)}`,
       "",
-      "invitation"
+      inviteesEmails,
+      "Bid Evaluation Invite",
+      JSON.stringify(updatedTender),
+      "",
+      "bidEvaluationInvite"
     );
+  }
   res.send(updatedTender);
 });
 
@@ -142,4 +133,3 @@ tenderRouter.put("/status/:id", async (req, res) => {
   let { status } = req.body;
   res.send(await updateTenderStatus(id, status));
 });
-

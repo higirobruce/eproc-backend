@@ -1,6 +1,8 @@
 import { ObjectId } from "mongoose";
 import { Request } from "../classrepo/requests";
 import { RequestModel } from "../models/requests";
+import { UserModel } from "../models/users";
+import { send } from "../utils/sendEmailNode";
 
 export async function getAllRequests() {
   let reqs = await RequestModel.find()
@@ -30,7 +32,12 @@ export async function getAllRequestsByCreator(createdBy: String) {
 
 export async function saveRequest(request: Request) {
   let newReq = await RequestModel.create(request);
-  return newReq._id;
+
+  //Sending Email notification
+  let approver = await UserModel.findById(request.level1Approver);
+  send("", approver?.email, "Purchase request approval", "", "", "approval");
+
+  return newReq;
 }
 
 export async function approveRequest(id: String) {
@@ -51,14 +58,26 @@ export async function declineRequest(
   declinedBy: String
 ) {
   try {
-    await RequestModel.findByIdAndUpdate(id, {
+    let response = await RequestModel.findByIdAndUpdate(id, {
       $set: {
         status: "declined",
         reasonForRejection: reason,
         declinedBy: declinedBy,
       },
     });
-    return { message: "done" };
+
+    //Sending email notification
+    let requestor = await UserModel.findById(response?.createdBy);
+    send(
+      "",
+      requestor?.email,
+      "Your Purchase request was rejected",
+      "",
+      "",
+      "rejection"
+    );
+
+    return response;
   } catch (err) {
     return {
       error: true,
@@ -76,10 +95,45 @@ export async function updateRequestStatus(id: String, newStatus: String) {
       update = { status: newStatus, hof_approvalDate: Date.now() };
     else if (newStatus === "approved (pm)")
       update = { status: newStatus, pm_approvalDate: Date.now() };
-    else 
-      update = {status: newStatus}
+    else update = { status: newStatus };
 
     await RequestModel.findByIdAndUpdate(id, { $set: update });
+
+    //Sending email notifications
+    if (newStatus === "approved (hod)") {
+      let level2Approvers = await UserModel.find({
+        "permissions.canApproveAsHof": true,
+      });
+      let approversEmails = level2Approvers?.map((l2) => {
+        return l2?.email;
+      });
+      send(
+        "",
+        approversEmails,
+        "Purchase request approval",
+        "",
+        "",
+        "approval"
+      );
+    } 
+
+    if(newStatus === 'approved (fd)'){
+      let level3Approvers = await UserModel.find({
+        "permissions.canApproveAsPM": true,
+      });
+      let approversEmails = level3Approvers?.map((l3)=>{
+        return l3?.email
+      })
+      send(
+        "",
+        approversEmails,
+        "Purchase request approval",
+        "",
+        "",
+        "approval"
+      );
+    }
+
     return { message: "done" };
   } catch (err) {
     return {
@@ -100,7 +154,6 @@ export async function updateRequest(id: String, update: Request) {
     };
   }
 }
-
 
 export async function getReqCountsByDepartment() {
   let lookup = [

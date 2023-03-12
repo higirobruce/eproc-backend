@@ -13,6 +13,8 @@ export interface IBidSubmission {
   number: number;
   proposalDocId: String;
   otherDocId: String;
+  bankName: String;
+  bankAccountNumber: String;
 }
 
 export interface IBidSubmissionDocument extends IBidSubmission, Document {

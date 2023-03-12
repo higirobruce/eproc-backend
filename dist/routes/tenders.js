@@ -14,7 +14,6 @@ const express_1 = require("express");
 const tenders_1 = require("../classrepo/tenders");
 const tenders_2 = require("../controllers/tenders");
 const tenders_3 = require("../services/tenders");
-const notificationMessages_1 = require("../utils/notificationMessages");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.tenderRouter = (0, express_1.Router)();
 exports.tenderRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,7 +44,7 @@ exports.tenderRouter.get("/stats", (req, res) => __awaiter(void 0, void 0, void 
     });
 }));
 exports.tenderRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { createdBy, items, dueDate, status, attachementUrls, submissionDeadLine, torsUrl, purchaseRequest, invitationSent, invitees, docId, evaluationReportId } = req.body;
+    let { createdBy, items, dueDate, status, attachementUrls, submissionDeadLine, torsUrl, purchaseRequest, invitationSent, invitees, docId, evaluationReportId, } = req.body;
     let number = yield (0, tenders_3.generateTenderNumber)();
     let itemObjects = items.map((i) => {
         if (!i.currency)
@@ -54,20 +53,19 @@ exports.tenderRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, f
     });
     let tenderToCreate = new tenders_1.Tender(createdBy, itemObjects, dueDate, status, attachementUrls, number, submissionDeadLine, torsUrl, purchaseRequest, invitationSent, invitees, docId, evaluationReportId);
     let createdTender = yield (0, tenders_2.saveTender)(tenderToCreate);
-    try {
-        let a = yield (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "waroji2460@pubpng.com", (0, notificationMessages_1.tenderPublished)(`${createdTender.number}`).subject, "Please check on the new Tender", (0, notificationMessages_1.tenderPublished)(`${createdTender.number}`).body, "newTender");
-    }
-    catch (err) {
-        console.log(err);
-    }
     res.status(201).send(createdTender);
 }));
 exports.tenderRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     let { newTender, sendInvitation } = req.body;
     let updatedTender = yield (0, tenders_2.updateTender)(id, newTender);
-    if (sendInvitation)
-        (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "waroji2460@pubpng.com", "Invitation in Tender awarding", `${JSON.stringify(updatedTender)}`, "", "invitation");
+    if (sendInvitation) {
+        let invitees = newTender === null || newTender === void 0 ? void 0 : newTender.invitees;
+        let inviteesEmails = invitees === null || invitees === void 0 ? void 0 : invitees.map((i) => {
+            return i === null || i === void 0 ? void 0 : i.approver;
+        });
+        (0, sendEmailNode_1.send)("", inviteesEmails, "Bid Evaluation Invite", JSON.stringify(updatedTender), "", "bidEvaluationInvite");
+    }
     res.send(updatedTender);
 }));
 exports.tenderRouter.put("/status/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

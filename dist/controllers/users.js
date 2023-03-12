@@ -51,8 +51,8 @@ function getAllLevel1Approvers() {
             let users = yield users_1.UserModel.find({
                 "permissions.canApproveAsHod": true,
             }, {
-                'firstName': 1,
-                'lastName': 1
+                firstName: 1,
+                lastName: 1,
             }).populate("department");
             return users;
         }
@@ -150,6 +150,7 @@ function saveUser(user) {
             return createdUser._id;
         }
         catch (err) {
+            console.log(err);
             return {
                 error: true,
                 errorMessage: `Error :${err}`,
@@ -170,18 +171,27 @@ function approveUser(id) {
         try {
             let user = yield users_1.UserModel.findById(id).populate("department");
             let name = user === null || user === void 0 ? void 0 : user.companyName;
-            let series = yield getB1SeriesFromNames(name);
-            let createdCode = yield createSupplierinB1(name, "cSupplier", series);
-            if (createdCode) {
+            if ((user === null || user === void 0 ? void 0 : user.userType) === "VENDOR") {
+                let series = yield getB1SeriesFromNames(name);
+                let createdCode = yield createSupplierinB1(name, "cSupplier", series);
+                if (createdCode) {
+                    user = yield users_1.UserModel.findByIdAndUpdate(id, {
+                        $set: { status: "approved" },
+                    }).populate("department");
+                    return user;
+                }
+                return {
+                    status: createdCode ? "approved" : "created",
+                    error: !createdCode,
+                    message: createdCode ? "" : "Could not connect to SAP B1.",
+                };
+            }
+            else {
                 user = yield users_1.UserModel.findByIdAndUpdate(id, {
                     $set: { status: "approved" },
                 }).populate("department");
+                return user;
             }
-            return {
-                status: createdCode ? "approved" : "created",
-                error: !createdCode,
-                message: createdCode ? "" : "Could not connect to SAP B1.",
-            };
         }
         catch (err) {
             return {

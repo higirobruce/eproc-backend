@@ -11,6 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTender = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByServiceCategoryList = exports.getTendersByRequest = exports.getTendersById = exports.getAllTenders = void 0;
 const tenders_1 = require("../models/tenders");
+const users_1 = require("../models/users");
+const sendEmailNode_1 = require("../utils/sendEmailNode");
 function getAllTenders() {
     return __awaiter(this, void 0, void 0, function* () {
         let reqs = yield tenders_1.TenderModel.find()
@@ -158,6 +160,14 @@ exports.getClosedTenders = getClosedTenders;
 function saveTender(tender) {
     return __awaiter(this, void 0, void 0, function* () {
         let newTender = yield tenders_1.TenderModel.create(tender);
+        //Send notifications to vendors in the tender's caterogry
+        let vendors = yield users_1.UserModel.find({
+            services: { $elemMatch: { $eq: "CLEANING SERVICES" } },
+        });
+        let vendorEmails = vendors === null || vendors === void 0 ? void 0 : vendors.map((v) => {
+            return v === null || v === void 0 ? void 0 : v.email;
+        });
+        (0, sendEmailNode_1.send)("", vendorEmails, "New Tender Notice", "", "", "newTender");
         return newTender;
     });
 }
@@ -180,7 +190,8 @@ exports.updateTenderStatus = updateTenderStatus;
 function updateTender(id, newTender) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let updatedTender = yield tenders_1.TenderModel.findOneAndUpdate({ _id: id }, newTender, { new: true }).populate("createdBy")
+            let updatedTender = yield tenders_1.TenderModel.findOneAndUpdate({ _id: id }, newTender, { new: true })
+                .populate("createdBy")
                 .populate({
                 path: "createdBy",
                 populate: {
@@ -192,10 +203,10 @@ function updateTender(id, newTender) {
             return updatedTender;
         }
         catch (err) {
-            return {
-                error: true,
-                errorMessage: `Error :${err}`,
-            };
+            // return {
+            //   error: true,
+            //   errorMessage: `Error :${err}`,
+            // };
         }
     });
 }

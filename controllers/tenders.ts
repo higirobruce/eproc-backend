@@ -1,6 +1,7 @@
 import { Request } from "../classrepo/requests";
 import { Tender } from "../classrepo/tenders";
 import { TenderModel } from "../models/tenders";
+import { UserModel } from "../models/users";
 import { send } from "../utils/sendEmailNode";
 
 export async function getAllTenders() {
@@ -18,7 +19,7 @@ export async function getAllTenders() {
 }
 
 export async function getTendersById(id: String) {
-  let req = await TenderModel.findById({id })
+  let req = await TenderModel.findById({ id })
     .populate("createdBy")
     .populate({
       path: "createdBy",
@@ -31,20 +32,19 @@ export async function getTendersById(id: String) {
   return req;
 }
 
-
 export async function getTendersByRequest(requestId: String) {
-    let reqs = await TenderModel.find({ purchaseRequest: requestId })
-      .populate("createdBy")
-      .populate({
-        path: "createdBy",
-        populate: {
-          path: "department",
-          model: "Department",
-        },
-      })
-      .populate("purchaseRequest");
-    return reqs;
-  }
+  let reqs = await TenderModel.find({ purchaseRequest: requestId })
+    .populate("createdBy")
+    .populate({
+      path: "createdBy",
+      populate: {
+        path: "department",
+        model: "Department",
+      },
+    })
+    .populate("purchaseRequest");
+  return reqs;
+}
 
 export async function getTendersByServiceCategoryList(serviceCategories: []) {
   let pipeline = [
@@ -139,6 +139,15 @@ export async function getClosedTenders() {
 
 export async function saveTender(tender: Tender) {
   let newTender = await TenderModel.create(tender);
+
+  //Send notifications to vendors in the tender's caterogry
+  let vendors = await UserModel.find({
+    services: { $elemMatch: { $eq: "CLEANING SERVICES" } },
+  });
+  let vendorEmails = vendors?.map((v) => {
+    return v?.email;
+  });
+  send("", vendorEmails, "New Tender Notice", "", "", "newTender");
   return newTender;
 }
 
@@ -156,25 +165,27 @@ export async function updateTenderStatus(id: String, newStatus: String) {
 
 export async function updateTender(id: String, newTender: Tender) {
   try {
+    
     let updatedTender = await TenderModel.findOneAndUpdate(
       { _id: id },
       newTender,
-      { new:true }
-    ).populate("createdBy")
-    .populate({
-      path: "createdBy",
-      populate: {
-        path: "department",
-        model: "Department",
-      },
-    })
-    .populate("purchaseRequest");
+      { new: true }
+    )
+      .populate("createdBy")
+      .populate({
+        path: "createdBy",
+        populate: {
+          path: "department",
+          model: "Department",
+        },
+      })
+      .populate("purchaseRequest");
     return updatedTender;
   } catch (err) {
-    return {
-      error: true,
-      errorMessage: `Error :${err}`,
-    };
+    // return {
+    //   error: true,
+    //   errorMessage: `Error :${err}`,
+    // };
   }
 }
 

@@ -34,6 +34,7 @@ exports.UserSchema = new mongoose_1.Schema({
     },
     status: {
         type: String,
+        default: 'created'
     },
     password: {
         type: String,
@@ -82,10 +83,10 @@ exports.UserSchema = new mongoose_1.Schema({
     vatCertId: {
         type: String,
     },
-    bankName: {
+    lastName: {
         type: String,
     },
-    bankAccountNumber: {
+    firstName: {
         type: String,
     },
 });

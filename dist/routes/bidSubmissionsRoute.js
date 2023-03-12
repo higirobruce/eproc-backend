@@ -14,8 +14,8 @@ const express_1 = require("express");
 const bidSubmissions_1 = require("../controllers/bidSubmissions");
 const bidSubmissions_2 = require("../classrepo/bidSubmissions");
 const bidSubmissions_3 = require("../services/bidSubmissions");
-const users_1 = require("../controllers/users");
 const tenders_1 = require("../models/tenders");
+const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.submissionsRouter = (0, express_1.Router)();
 exports.submissionsRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, bidSubmissions_1.getAllBidSubmissions)());
@@ -36,8 +36,8 @@ exports.submissionsRouter.get("/submitted/:tenderId", (req, res) => __awaiter(vo
 exports.submissionsRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, createdBy, tender, warrantyDuration, bankName, bankAccountNumber, proposalDocId, otherDocId, } = req.body;
     let number = yield (0, bidSubmissions_3.generateBidSubmissionNumber)();
-    let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration, proposalDocId, otherDocId);
-    yield (0, users_1.saveBankDetails)(createdBy, bankName, bankAccountNumber);
+    let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration, proposalDocId, otherDocId, bankName, bankAccountNumber);
+    // await saveBankDetails(createdBy, bankName, bankAccountNumber);
     let createdSubmission = yield (0, bidSubmissions_1.saveBidSubmission)(submission);
     res.status(201).send(createdSubmission);
 }));
@@ -45,9 +45,17 @@ exports.submissionsRouter.post("/select/:id", (req, res) => __awaiter(void 0, vo
     let { id } = req.params;
     let { tenderId } = req.query;
     let { evaluationReportId } = req.body;
-    yield tenders_1.TenderModel.findByIdAndUpdate(tenderId, { $set: { evaluationReportId } });
+    let tender = yield tenders_1.TenderModel.findByIdAndUpdate(tenderId, {
+        $set: { evaluationReportId },
+    });
     (0, bidSubmissions_1.selectSubmission)(id).then((r) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, bidSubmissions_1.deselectOtherSubmissions)(tenderId);
+        //Send Bid Selection confirmation
+        let invitees = tender === null || tender === void 0 ? void 0 : tender.invitees;
+        let inviteesEmails = invitees === null || invitees === void 0 ? void 0 : invitees.map((i) => {
+            return i === null || i === void 0 ? void 0 : i.approver;
+        });
+        (0, sendEmailNode_1.send)("", inviteesEmails, "Bid Selection confirmation", JSON.stringify(tender), "", "bidSelectionConfirmation");
         res.send(r);
     }));
 }));

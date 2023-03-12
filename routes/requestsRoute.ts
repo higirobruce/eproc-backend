@@ -22,6 +22,7 @@ import {
   getUserByEmail,
   saveUser,
 } from "../controllers/users";
+import { UserModel } from "../models/users";
 import { generateReqNumber } from "../services/requests";
 import {
   generateUserNumber,
@@ -35,7 +36,6 @@ export const requetsRouter = Router();
 requetsRouter.get("/", async (req, res) => {
   res.send(await getAllRequests());
 });
-
 
 requetsRouter.get("/countsByDep", async (req, res) => {
   res.send(await getReqCountsByDepartment());
@@ -67,7 +67,7 @@ requetsRouter.post("/", async (req, res) => {
     hod_approvalDate,
     hof_approvalDate,
     pm_approvalDate,
-    level1Approver
+    level1Approver,
   } = req.body;
 
   let number = await generateReqNumber();
@@ -97,6 +97,7 @@ requetsRouter.post("/", async (req, res) => {
   );
 
   let createdRequest = await saveRequest(requestToCreate);
+
   res.status(201).send(createdRequest);
 });
 
@@ -115,21 +116,6 @@ requetsRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
 
-  if (status === "approved (fd)"){
-    try{
-      send(
-        "bhigiro@shapeherd.rw",
-        "waroji2460@pubpng.com",
-        "Your approval is needed",
-        "A purchase request has reached your level of approval.",
-        "",
-        "pmApproval"
-      );
-    } catch(err){
-      console.log(err)
-    }
-  }
-    
   res.send(await updateRequestStatus(id, status));
 });
 

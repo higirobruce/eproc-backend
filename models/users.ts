@@ -27,9 +27,11 @@ export const UserSchema = new Schema<IUserDocument>({
   },
   webSite: {
     type: String,
+    
   },
   status: {
     type: String,
+    default:'created'
   },
   password: {
     type: String,
@@ -78,12 +80,13 @@ export const UserSchema = new Schema<IUserDocument>({
   vatCertId: {
     type: String,
   },
-  bankName: {
+  lastName:{
     type: String,
   },
-  bankAccountNumber: {
+  firstName:{
     type: String,
   },
+  
 });
 
 // Method to set salt and hash the password for a user

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidSubmission = void 0;
 const mongoose_1 = require("mongoose");
 class BidSubmission {
-    constructor(proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration, proposalDocId, otherDocId) {
+    constructor(proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration, proposalDocId, otherDocId, bankName, bankAccountNumber) {
         this.proposalUrls = proposalUrls;
         this.deliveryDate = deliveryDate;
         this.price = price;
@@ -20,6 +20,8 @@ class BidSubmission {
         this.warrantyDuration = warrantyDuration;
         this.proposalDocId = proposalDocId;
         this.otherDocId = otherDocId;
+        this.bankName = bankName;
+        this.bankAccountNumber = bankAccountNumber;
     }
 }
 exports.BidSubmission = BidSubmission;

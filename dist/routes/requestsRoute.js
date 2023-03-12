@@ -14,7 +14,6 @@ const express_1 = require("express");
 const requests_1 = require("../classrepo/requests");
 const requests_2 = require("../controllers/requests");
 const requests_3 = require("../services/requests");
-const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.requetsRouter = (0, express_1.Router)();
 exports.requetsRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, requests_2.getAllRequests)());
@@ -30,7 +29,7 @@ exports.requetsRouter.get("/:createdBy", (req, res) => __awaiter(void 0, void 0,
     res.send(yield (0, requests_2.getAllRequestsByCreator)(createdBy));
 }));
 exports.requetsRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { createdBy, items, dueDate, status, attachementUrls, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, level1Approver } = req.body;
+    let { createdBy, items, dueDate, status, attachementUrls, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, level1Approver, } = req.body;
     let number = yield (0, requests_3.generateReqNumber)();
     let itemObjects = items.map((i) => {
         if (!i.currency)
@@ -53,14 +52,6 @@ exports.requetsRouter.post("/decline/:id", (req, res) => __awaiter(void 0, void 
 exports.requetsRouter.put("/status/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     let { status } = req.body;
-    if (status === "approved (fd)") {
-        try {
-            (0, sendEmailNode_1.send)("bhigiro@shapeherd.rw", "waroji2460@pubpng.com", "Your approval is needed", "A purchase request has reached your level of approval.", "", "pmApproval");
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
     res.send(yield (0, requests_2.updateRequestStatus)(id, status));
 }));
 exports.requetsRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -100,9 +100,20 @@ export async function getContractByVendorId(vendorId: String) {
 }
 
 export async function updateContract(id: String, contract: Contract) {
-  return await ContractModel.findByIdAndUpdate(
-    id,
-    contract,
-    { new: true }
-  );
+  let newContract = await ContractModel.findByIdAndUpdate(id, contract, {
+    new: true,
+  });
+
+  if (newContract?.status === "reviewed") {
+    let internallyNotSigned = await ContractModel.find({
+      "signatories.onBehalfOf": "Irembo Ltd",
+      "signatories.signed": false,
+      tender: "640ad9b09058d32c4efacc15",
+    });
+
+    if(internallyNotSigned.length===0){
+      
+    }
+  }
+  return newContract;
 }

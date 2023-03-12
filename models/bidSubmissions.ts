@@ -41,6 +41,12 @@ export const BidSubmissionSchema = new Schema<IBidSubmissionDocument>({
   },
   proposalDocId: String,
   otherDocId: String,
+  bankName: {
+    type: String,
+  },
+  bankAccountNumber: {
+    type: String,
+  },
 });
 
 export const BidSubmissionModel = model<IBidSubmissionDocument>(

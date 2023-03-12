@@ -63,9 +63,10 @@ userRouter.post("/", async (req, res) => {
     permissions,
     rdbCertId,
     vatCertId,
-    bankName,
-    bankAccountNumber
+    firstName,
+    lastName,
   } = req.body;
+
   let number = await generateUserNumber();
 
   let userToCreate = new User(
@@ -94,8 +95,8 @@ userRouter.post("/", async (req, res) => {
     permissions,
     rdbCertId,
     vatCertId,
-    bankName,
-    bankAccountNumber
+    firstName,
+    lastName
   );
 
   let createdUser = await saveUser(userToCreate);
@@ -122,6 +123,7 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.post("/approve/:id", async (req, res) => {
   let { id } = req.params;
+  console.log(id)
   res.send(await approveUser(id));
 });
 
@@ -140,9 +142,9 @@ userRouter.post("/activate/:id", async (req, res) => {
   res.send(await activateUser(id));
 });
 
-userRouter.put('/:id', async (req,res)=>{
-  let {id} = req.params
-  let {newUser} = req.body;
+userRouter.put("/:id", async (req, res) => {
+  let { id } = req.params;
+  let { newUser } = req.body;
 
-  res.send(await updateUser(id,newUser))
-})
+  res.send(await updateUser(id, newUser));
+});

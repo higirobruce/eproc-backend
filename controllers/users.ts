@@ -34,12 +34,15 @@ export async function getAllVendors() {
 
 export async function getAllLevel1Approvers() {
   try {
-    let users = await UserModel.find({
-      "permissions.canApproveAsHod": true,
-    },{
-      'firstName':1,
-      'lastName':1
-    }).populate("department")
+    let users = await UserModel.find(
+      {
+        "permissions.canApproveAsHod": true,
+      },
+      {
+        firstName: 1,
+        lastName: 1,
+      }
+    ).populate("department");
     return users;
   } catch (err) {
     return {
@@ -128,6 +131,7 @@ export async function saveUser(user: User) {
     let createdUser = await UserModel.create(user);
     return createdUser._id;
   } catch (err) {
+    console.log(err);
     return {
       error: true,
       errorMessage: `Error :${err}`,
@@ -136,7 +140,9 @@ export async function saveUser(user: User) {
 }
 
 export async function getUserByEmail(userEmail: String) {
-  let user = await UserModel.findOne({ email: userEmail }).populate("department");
+  let user = await UserModel.findOne({ email: userEmail }).populate(
+    "department"
+  );
   return user;
 }
 
@@ -144,20 +150,29 @@ export async function approveUser(id: String) {
   try {
     let user = await UserModel.findById(id).populate("department");
     let name = user?.companyName;
-    let series = await getB1SeriesFromNames(name!);
-    let createdCode = await createSupplierinB1(name!, "cSupplier", series);
+    if (user?.userType === "VENDOR") {
+      let series = await getB1SeriesFromNames(name!);
+      let createdCode = await createSupplierinB1(name!, "cSupplier", series);
 
-    if (createdCode) {
+      if (createdCode) {
+        user = await UserModel.findByIdAndUpdate(id, {
+          $set: { status: "approved" },
+        }).populate("department");
+        return user;
+      }
+
+      return {
+        status: createdCode ? "approved" : "created",
+        error: !createdCode,
+        message: createdCode ? "" : "Could not connect to SAP B1.",
+      };
+    } else {
       user = await UserModel.findByIdAndUpdate(id, {
         $set: { status: "approved" },
       }).populate("department");
-    }
 
-    return {
-      status: createdCode ? "approved" : "created",
-      error: !createdCode,
-      message: createdCode ? "" : "Could not connect to SAP B1.",
-    };
+      return user;
+    }
   } catch (err) {
     return {
       error: true,

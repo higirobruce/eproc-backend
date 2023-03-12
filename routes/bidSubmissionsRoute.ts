@@ -16,6 +16,7 @@ import { BidSubmission } from "../classrepo/bidSubmissions";
 import { generateBidSubmissionNumber } from "../services/bidSubmissions";
 import { getVendorById, saveBankDetails } from "../controllers/users";
 import { TenderModel } from "../models/tenders";
+import { send } from "../utils/sendEmailNode";
 
 export const submissionsRouter = Router();
 
@@ -73,10 +74,12 @@ submissionsRouter.post("/", async (req, res) => {
     tender,
     warrantyDuration,
     proposalDocId,
-    otherDocId
+    otherDocId,
+    bankName,
+    bankAccountNumber
   );
 
-  await saveBankDetails(createdBy, bankName, bankAccountNumber);
+  // await saveBankDetails(createdBy, bankName, bankAccountNumber);
 
   let createdSubmission = await saveBidSubmission(submission);
   res.status(201).send(createdSubmission);
@@ -85,11 +88,28 @@ submissionsRouter.post("/", async (req, res) => {
 submissionsRouter.post("/select/:id", async (req, res) => {
   let { id } = req.params;
   let { tenderId } = req.query;
-  let {evaluationReportId} = req.body
+  let { evaluationReportId } = req.body;
 
-  await TenderModel.findByIdAndUpdate(tenderId,{$set:{evaluationReportId}})
+  let tender = await TenderModel.findByIdAndUpdate(tenderId, {
+    $set: { evaluationReportId },
+  });
   selectSubmission(id).then(async (r) => {
     await deselectOtherSubmissions(tenderId);
+
+    //Send Bid Selection confirmation
+    let invitees = tender?.invitees;
+    let inviteesEmails = invitees?.map((i: any) => {
+      return i?.approver;
+    });
+    send(
+      "",
+      inviteesEmails,
+      "Bid Selection confirmation",
+      JSON.stringify(tender),
+      "",
+      "bidSelectionConfirmation"
+    );
+    
     res.send(r);
   });
 });
