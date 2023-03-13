@@ -77,6 +77,7 @@ app.use("/uploads", upload_1.uploadRouter);
 app.use("/b1", b1_1.default);
 app.get("/file/:folder/:name", function (req, res, next) {
     var folder = req.params.folder;
+    console.log(folder);
     var options = {
         root: path_1.default.join(__dirname, "public/", folder),
         dotfiles: "deny",
@@ -86,11 +87,13 @@ app.get("/file/:folder/:name", function (req, res, next) {
         },
     };
     var fileName = req.params.name;
+    console.log(fileName);
     res.sendFile(fileName, options, function (err) {
         if (err) {
             next("File not found! 😏");
         }
         else {
+            console.log('Fouuuuuund!!');
         }
     });
 });
