@@ -25,6 +25,7 @@ export async function getAllVendors() {
     ).sort({createdOn:'desc'})
     return users;
   } catch (err) {
+    
     return {
       error: true,
       errorMessage: `Error :${err}`,
