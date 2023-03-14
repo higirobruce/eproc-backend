@@ -34,12 +34,12 @@ exports.UserSchema = new mongoose_1.Schema({
     },
     status: {
         type: String,
-        default: 'created'
+        default: "created",
     },
     password: {
         type: String,
     },
-    createdOn: Date,
+    createdOn: { type: Date, default: Date.now() },
     createdBy: mongoose_1.Types.ObjectId,
     rating: {
         type: Number,

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReqCountsByCategory = exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
+exports.getReqCountsByCategory = exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByStatus = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
 const requests_1 = require("../models/requests");
 const users_1 = require("../models/users");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
@@ -17,6 +17,7 @@ function getAllRequests() {
     return __awaiter(this, void 0, void 0, function* () {
         let reqs = yield requests_1.RequestModel.find()
             .populate("createdBy")
+            .populate('level1Approver')
             .populate({
             path: "createdBy",
             populate: {
@@ -32,6 +33,7 @@ function getAllRequestsByCreator(createdBy) {
     return __awaiter(this, void 0, void 0, function* () {
         let reqs = yield requests_1.RequestModel.find({ createdBy })
             .populate("createdBy")
+            .populate('level1Approver')
             .populate({
             path: "createdBy",
             populate: {
@@ -43,6 +45,34 @@ function getAllRequestsByCreator(createdBy) {
     });
 }
 exports.getAllRequestsByCreator = getAllRequestsByCreator;
+function getAllRequestsByStatus(status) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let query = status === "pending"
+            ? {
+                status: {
+                    $in: [
+                        "pending",
+                        "approved (hod)",
+                        "approved (fd)",
+                        "approved (pm)",
+                    ],
+                },
+            }
+            : { status };
+        let reqs = yield requests_1.RequestModel.find(query)
+            .populate("createdBy")
+            .populate('level1Approver')
+            .populate({
+            path: "createdBy",
+            populate: {
+                path: "department",
+                model: "Department",
+            },
+        });
+        return reqs;
+    });
+}
+exports.getAllRequestsByStatus = getAllRequestsByStatus;
 function saveRequest(request) {
     return __awaiter(this, void 0, void 0, function* () {
         let newReq = yield requests_1.RequestModel.create(request);
@@ -115,7 +145,7 @@ function updateRequestStatus(id, newStatus) {
                 });
                 (0, sendEmailNode_1.send)("", approversEmails, "Purchase request approval", "", "", "approval");
             }
-            if (newStatus === 'approved (fd)') {
+            if (newStatus === "approved (fd)") {
                 let level3Approvers = yield users_1.UserModel.find({
                     "permissions.canApproveAsPM": true,
                 });

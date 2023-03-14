@@ -33,7 +33,7 @@ exports.getAllUsers = getAllUsers;
 function getAllVendors() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find({ userType: "VENDOR" }).populate("department");
+            let users = yield users_1.UserModel.find({ userType: "VENDOR" }).populate("department").sort({ createdOn: 'desc' });
             return users;
         }
         catch (err) {

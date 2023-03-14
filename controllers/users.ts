@@ -22,7 +22,7 @@ export async function getAllVendors() {
   try {
     let users = await UserModel.find({ userType: "VENDOR" }).populate(
       "department"
-    );
+    ).sort({createdOn:'desc'})
     return users;
   } catch (err) {
     return {

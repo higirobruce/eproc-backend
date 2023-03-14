@@ -7,6 +7,7 @@ import { send } from "../utils/sendEmailNode";
 export async function getAllRequests() {
   let reqs = await RequestModel.find()
     .populate("createdBy")
+    .populate('level1Approver')
     .populate({
       path: "createdBy",
       populate: {
@@ -20,6 +21,34 @@ export async function getAllRequests() {
 export async function getAllRequestsByCreator(createdBy: String) {
   let reqs = await RequestModel.find({ createdBy })
     .populate("createdBy")
+    .populate('level1Approver')
+    .populate({
+      path: "createdBy",
+      populate: {
+        path: "department",
+        model: "Department",
+      },
+    });
+  return reqs;
+}
+
+export async function getAllRequestsByStatus(status: String) {
+  let query =
+    status === "pending"
+      ? {
+          status: {
+            $in: [
+              "pending",
+              "approved (hod)",
+              "approved (fd)",
+              "approved (pm)",
+            ],
+          },
+        }
+      : {status};
+  let reqs = await RequestModel.find(query)
+    .populate("createdBy")
+    .populate('level1Approver')
     .populate({
       path: "createdBy",
       populate: {
@@ -39,6 +68,7 @@ export async function saveRequest(request: Request) {
 
   return newReq;
 }
+
 
 export async function approveRequest(id: String) {
   try {
@@ -115,15 +145,15 @@ export async function updateRequestStatus(id: String, newStatus: String) {
         "",
         "approval"
       );
-    } 
+    }
 
-    if(newStatus === 'approved (fd)'){
+    if (newStatus === "approved (fd)") {
       let level3Approvers = await UserModel.find({
         "permissions.canApproveAsPM": true,
       });
-      let approversEmails = level3Approvers?.map((l3)=>{
-        return l3?.email
-      })
+      let approversEmails = level3Approvers?.map((l3) => {
+        return l3?.email;
+      });
       send(
         "",
         approversEmails,

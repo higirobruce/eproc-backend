@@ -24,6 +24,10 @@ exports.requetsRouter.get("/countsByDep", (req, res) => __awaiter(void 0, void 0
 exports.requetsRouter.get("/countsByCat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, requests_2.getReqCountsByCategory)());
 }));
+exports.requetsRouter.get("/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { status } = req.params;
+    res.send(yield (0, requests_2.getAllRequestsByStatus)(status));
+}));
 exports.requetsRouter.get("/:createdBy", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { createdBy } = req.params;
     res.send(yield (0, requests_2.getAllRequestsByCreator)(createdBy));
