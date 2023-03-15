@@ -147,7 +147,9 @@ export async function saveTender(tender: Tender) {
   let vendorEmails = vendors?.map((v) => {
     return v?.email;
   });
-  send("", vendorEmails, "New Tender Notice", "", "", "newTender");
+  if (vendorEmails?.length >= 1) {
+    send("", vendorEmails, "New Tender Notice", "", "", "newTender");
+  }
   return newTender;
 }
 
@@ -165,7 +167,6 @@ export async function updateTenderStatus(id: String, newStatus: String) {
 
 export async function updateTender(id: String, newTender: Tender) {
   try {
-    
     let updatedTender = await TenderModel.findOneAndUpdate(
       { _id: id },
       newTender,

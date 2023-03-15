@@ -55,7 +55,9 @@ exports.submissionsRouter.post("/select/:id", (req, res) => __awaiter(void 0, vo
         let inviteesEmails = invitees === null || invitees === void 0 ? void 0 : invitees.map((i) => {
             return i === null || i === void 0 ? void 0 : i.approver;
         });
-        (0, sendEmailNode_1.send)("", inviteesEmails, "Bid Selection confirmation", JSON.stringify(tender), "", "bidSelectionConfirmation");
+        if (invitees) {
+            (0, sendEmailNode_1.send)("", inviteesEmails, "Bid Selection confirmation", JSON.stringify(tender), "", "bidSelectionConfirmation");
+        }
         res.send(r);
     }));
 }));

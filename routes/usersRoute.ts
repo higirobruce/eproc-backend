@@ -18,6 +18,7 @@ import {
   hashPassword,
   validPassword,
 } from "../services/users";
+import { send } from "../utils/sendEmailNode";
 
 export const userRouter = Router();
 
@@ -100,6 +101,16 @@ userRouter.post("/", async (req, res) => {
   );
 
   let createdUser = await saveUser(userToCreate);
+  if(createdUser){
+    send(
+      "",
+      email,
+      "Account created",
+      JSON.stringify({email,password}),
+      "",
+      "newUserAccount"
+    );
+  }
   res.status(201).send(createdUser);
 });
 

@@ -228,6 +228,51 @@ const rejection = `<mjml>
 
 </mj-body>
 </mjml>`;
+const newUserAccount = (cred) => {
+    return `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your account is created</mj-text>
+    </mj-column>
+  </mj-section>
+
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="400px">
+
+      <mj-text color="#525252">
+        Hi there, <br />
+        I hope that you are well. <br/>
+        I would like to inform you that your account has been created in Irembo Procure.<br/><br/>
+        Here are your credentials:<br/>
+        Username: ${cred === null || cred === void 0 ? void 0 : cred.email}<br/>
+        Password: <i>${cred === null || cred === void 0 ? void 0 : cred.password}</i> <br/><br/>
+        Please proceed to the e-procurement application by clicking the button below.<br>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+};
 // send email
 function send(from, to, subject, text, html, type) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -271,6 +316,14 @@ function send(from, to, subject, text, html, type) {
                 subject,
                 text,
                 html: mjml(rejection).html,
+            });
+        else if (type === "newUserAccount")
+            return yield transporter.sendMail({
+                from: process.env.IRMB_SENDER_EMAIL,
+                to,
+                subject,
+                text,
+                html: mjml(newUserAccount(JSON.parse(text))).html,
             });
     });
 }

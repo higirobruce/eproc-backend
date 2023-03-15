@@ -101,15 +101,17 @@ submissionsRouter.post("/select/:id", async (req, res) => {
     let inviteesEmails = invitees?.map((i: any) => {
       return i?.approver;
     });
-    send(
-      "",
-      inviteesEmails,
-      "Bid Selection confirmation",
-      JSON.stringify(tender),
-      "",
-      "bidSelectionConfirmation"
-    );
-    
+    if (invitees) {
+      send(
+        "",
+        inviteesEmails,
+        "Bid Selection confirmation",
+        JSON.stringify(tender),
+        "",
+        "bidSelectionConfirmation"
+      );
+    }
+
     res.send(r);
   });
 });

@@ -167,7 +167,9 @@ function saveTender(tender) {
         let vendorEmails = vendors === null || vendors === void 0 ? void 0 : vendors.map((v) => {
             return v === null || v === void 0 ? void 0 : v.email;
         });
-        (0, sendEmailNode_1.send)("", vendorEmails, "New Tender Notice", "", "", "newTender");
+        if ((vendorEmails === null || vendorEmails === void 0 ? void 0 : vendorEmails.length) >= 1) {
+            (0, sendEmailNode_1.send)("", vendorEmails, "New Tender Notice", "", "", "newTender");
+        }
         return newTender;
     });
 }

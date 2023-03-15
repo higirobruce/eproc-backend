@@ -14,6 +14,7 @@ const express_1 = require("express");
 const users_1 = require("../classrepo/users");
 const users_2 = require("../controllers/users");
 const users_3 = require("../services/users");
+const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.userRouter = (0, express_1.Router)();
 exports.userRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllUsers)());
@@ -32,6 +33,9 @@ exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, fun
     let number = yield (0, users_3.generateUserNumber)();
     let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName);
     let createdUser = yield (0, users_2.saveUser)(userToCreate);
+    if (createdUser) {
+        (0, sendEmailNode_1.send)("", email, "Account created", JSON.stringify({ email, password }), "", "newUserAccount");
+    }
     res.status(201).send(createdUser);
 }));
 exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

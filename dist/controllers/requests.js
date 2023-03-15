@@ -17,7 +17,7 @@ function getAllRequests() {
     return __awaiter(this, void 0, void 0, function* () {
         let reqs = yield requests_1.RequestModel.find()
             .populate("createdBy")
-            .populate('level1Approver')
+            .populate("level1Approver")
             .populate({
             path: "createdBy",
             populate: {
@@ -33,7 +33,7 @@ function getAllRequestsByCreator(createdBy) {
     return __awaiter(this, void 0, void 0, function* () {
         let reqs = yield requests_1.RequestModel.find({ createdBy })
             .populate("createdBy")
-            .populate('level1Approver')
+            .populate("level1Approver")
             .populate({
             path: "createdBy",
             populate: {
@@ -61,7 +61,7 @@ function getAllRequestsByStatus(status) {
             : { status };
         let reqs = yield requests_1.RequestModel.find(query)
             .populate("createdBy")
-            .populate('level1Approver')
+            .populate("level1Approver")
             .populate({
             path: "createdBy",
             populate: {
@@ -110,7 +110,9 @@ function declineRequest(id, reason, declinedBy) {
             });
             //Sending email notification
             let requestor = yield users_1.UserModel.findById(response === null || response === void 0 ? void 0 : response.createdBy);
-            (0, sendEmailNode_1.send)("", requestor === null || requestor === void 0 ? void 0 : requestor.email, "Your Purchase request was rejected", "", "", "rejection");
+            if (requestor === null || requestor === void 0 ? void 0 : requestor.email) {
+                (0, sendEmailNode_1.send)("", requestor === null || requestor === void 0 ? void 0 : requestor.email, "Your Purchase request was rejected", "", "", "rejection");
+            }
             return response;
         }
         catch (err) {

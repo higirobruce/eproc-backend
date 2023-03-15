@@ -7,7 +7,7 @@ import { send } from "../utils/sendEmailNode";
 export async function getAllRequests() {
   let reqs = await RequestModel.find()
     .populate("createdBy")
-    .populate('level1Approver')
+    .populate("level1Approver")
     .populate({
       path: "createdBy",
       populate: {
@@ -21,7 +21,7 @@ export async function getAllRequests() {
 export async function getAllRequestsByCreator(createdBy: String) {
   let reqs = await RequestModel.find({ createdBy })
     .populate("createdBy")
-    .populate('level1Approver')
+    .populate("level1Approver")
     .populate({
       path: "createdBy",
       populate: {
@@ -45,10 +45,10 @@ export async function getAllRequestsByStatus(status: String) {
             ],
           },
         }
-      : {status};
+      : { status };
   let reqs = await RequestModel.find(query)
     .populate("createdBy")
-    .populate('level1Approver')
+    .populate("level1Approver")
     .populate({
       path: "createdBy",
       populate: {
@@ -68,7 +68,6 @@ export async function saveRequest(request: Request) {
 
   return newReq;
 }
-
 
 export async function approveRequest(id: String) {
   try {
@@ -98,14 +97,16 @@ export async function declineRequest(
 
     //Sending email notification
     let requestor = await UserModel.findById(response?.createdBy);
-    send(
-      "",
-      requestor?.email,
-      "Your Purchase request was rejected",
-      "",
-      "",
-      "rejection"
-    );
+    if (requestor?.email) {
+      send(
+        "",
+        requestor?.email,
+        "Your Purchase request was rejected",
+        "",
+        "",
+        "rejection"
+      );
+    }
 
     return response;
   } catch (err) {
