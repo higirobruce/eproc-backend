@@ -291,7 +291,7 @@ export async function send(
       to,
       subject,
       text,
-      html: mjml(bidSelectionConfirmation(JSON.parse(text))).html,
+      html: mjml(invitation(JSON.parse(text))).html,
     });
   else if (type === "bidSelectionConfirmation")
     return await transporter.sendMail({
@@ -299,7 +299,7 @@ export async function send(
       to,
       subject,
       text,
-      html: mjml(invitation(JSON.parse(text))).html,
+      html: mjml(bidSelectionConfirmation(JSON.parse(text))).html,
     });
   else if (type === "approval")
     return await transporter.sendMail({

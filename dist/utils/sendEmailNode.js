@@ -291,7 +291,7 @@ function send(from, to, subject, text, html, type) {
                 to,
                 subject,
                 text,
-                html: mjml(bidSelectionConfirmation(JSON.parse(text))).html,
+                html: mjml(invitation(JSON.parse(text))).html,
             });
         else if (type === "bidSelectionConfirmation")
             return yield transporter.sendMail({
@@ -299,7 +299,7 @@ function send(from, to, subject, text, html, type) {
                 to,
                 subject,
                 text,
-                html: mjml(invitation(JSON.parse(text))).html,
+                html: mjml(bidSelectionConfirmation(JSON.parse(text))).html,
             });
         else if (type === "approval")
             return yield transporter.sendMail({
