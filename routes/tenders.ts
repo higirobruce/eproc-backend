@@ -12,6 +12,7 @@ import {
 } from "../controllers/requests";
 import {
   getAllTenders,
+  getAllTendersByStatus,
   getClosedTenders,
   getOpenTenders,
   getTendCountsByCategory,
@@ -32,6 +33,11 @@ export const tenderRouter = Router();
 
 tenderRouter.get("/", async (req, res) => {
   res.send(await getAllTenders());
+});
+
+tenderRouter.get("/byStatus/:status", async (req, res) => {
+  let {status} = req.params;
+  res.send(await getAllTendersByStatus(status));
 });
 
 tenderRouter.get("/byRequest/:requestId", async (req, res) => {

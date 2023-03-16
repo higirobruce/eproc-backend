@@ -68,7 +68,7 @@ app.use("/users", auth, usersRoute_1.userRouter);
 app.use("/requests", requestsRoute_1.requetsRouter);
 app.use("/dpts", auth, dptRoute_1.dptRouter);
 app.use("/serviceCategories", auth, serviceCategories_1.serviceCategoryRouter);
-app.use("/tenders", auth, tenders_1.tenderRouter);
+app.use("/tenders", tenders_1.tenderRouter);
 app.use("/submissions", auth, bidSubmissionsRoute_1.submissionsRouter);
 app.use("/purchaseOrders", auth, purchaseOrders_1.poRouter);
 app.use("/contracts", auth, contracts_1.contractRouter);

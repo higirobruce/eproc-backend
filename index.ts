@@ -69,7 +69,7 @@ app.use("/users",auth, userRouter);
 app.use("/requests", requetsRouter);
 app.use("/dpts", auth, dptRouter);
 app.use("/serviceCategories", auth, serviceCategoryRouter);
-app.use("/tenders",auth, tenderRouter);
+app.use("/tenders", tenderRouter);
 app.use("/submissions", auth, submissionsRouter);
 app.use("/purchaseOrders", auth, poRouter);
 app.use("/contracts", auth, contractRouter);

@@ -19,6 +19,10 @@ exports.tenderRouter = (0, express_1.Router)();
 exports.tenderRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, tenders_2.getAllTenders)());
 }));
+exports.tenderRouter.get("/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { status } = req.params;
+    res.send(yield (0, tenders_2.getAllTendersByStatus)(status));
+}));
 exports.tenderRouter.get("/byRequest/:requestId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { requestId } = req.params;
     res.send(yield (0, tenders_2.getTendersByRequest)(requestId));

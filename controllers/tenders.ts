@@ -1,3 +1,4 @@
+import moment from "moment";
 import { Request } from "../classrepo/requests";
 import { Tender } from "../classrepo/tenders";
 import { TenderModel } from "../models/tenders";
@@ -6,6 +7,22 @@ import { send } from "../utils/sendEmailNode";
 
 export async function getAllTenders() {
   let reqs = await TenderModel.find()
+    .populate("createdBy")
+    .populate({
+      path: "createdBy",
+      populate: {
+        path: "department",
+        model: "Department",
+      },
+    })
+    .populate("purchaseRequest");
+  return reqs;
+}
+
+export async function getAllTendersByStatus(status: String) {
+  let _status =
+    status == "open" ? { submissionDeadLine: { $gt: Date.now() } } : { submissionDeadLine: { $lt: Date.now() }  };
+  let reqs = await TenderModel.find(_status)
     .populate("createdBy")
     .populate({
       path: "createdBy",

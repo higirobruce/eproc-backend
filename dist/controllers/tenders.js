@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTender = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByServiceCategoryList = exports.getTendersByRequest = exports.getTendersById = exports.getAllTenders = void 0;
+exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTender = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByServiceCategoryList = exports.getTendersByRequest = exports.getTendersById = exports.getAllTendersByStatus = exports.getAllTenders = void 0;
 const tenders_1 = require("../models/tenders");
 const users_1 = require("../models/users");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
@@ -29,6 +29,23 @@ function getAllTenders() {
     });
 }
 exports.getAllTenders = getAllTenders;
+function getAllTendersByStatus(status) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let _status = status == "open" ? { submissionDeadLine: { $gt: Date.now() } } : { submissionDeadLine: { $lt: Date.now() } };
+        let reqs = yield tenders_1.TenderModel.find(_status)
+            .populate("createdBy")
+            .populate({
+            path: "createdBy",
+            populate: {
+                path: "department",
+                model: "Department",
+            },
+        })
+            .populate("purchaseRequest");
+        return reqs;
+    });
+}
+exports.getAllTendersByStatus = getAllTendersByStatus;
 function getTendersById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         let req = yield tenders_1.TenderModel.findById({ id })
