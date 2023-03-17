@@ -81,6 +81,8 @@ contractRouter.put('/:id',async (req,res)=>{
 
   let updated = await updateContract(id, newContract)
 
+  console.log(updated);
+
   res.status(200).send(updated)
 
 })

@@ -124,15 +124,15 @@ function updateContract(id, contract) {
         let newContract = yield contracts_1.ContractModel.findByIdAndUpdate(id, contract, {
             new: true,
         });
-        if ((newContract === null || newContract === void 0 ? void 0 : newContract.status) === "reviewed") {
-            let internallyNotSigned = yield contracts_1.ContractModel.find({
-                "signatories.onBehalfOf": "Irembo Ltd",
-                "signatories.signed": false,
-                tender: "640ad9b09058d32c4efacc15",
-            });
-            if (internallyNotSigned.length === 0) {
-            }
-        }
+        // if (newContract?.status === "reviewed") {
+        //   let internallyNotSigned = await ContractModel.find({
+        //     "signatories.onBehalfOf": "Irembo Ltd",
+        //     "signatories.signed": false,
+        //     tender: "640ad9b09058d32c4efacc15",
+        //   });
+        //   if(internallyNotSigned.length===0){
+        //   }
+        // }
         return newContract;
     });
 }

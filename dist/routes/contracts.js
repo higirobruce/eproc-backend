@@ -41,5 +41,6 @@ exports.contractRouter.put('/:id', (req, res) => __awaiter(void 0, void 0, void 
     let { id } = req.params;
     let { newContract } = req.body;
     let updated = yield (0, contracts_2.updateContract)(id, newContract);
+    console.log(updated);
     res.status(200).send(updated);
 }));
