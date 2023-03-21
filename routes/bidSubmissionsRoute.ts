@@ -5,6 +5,7 @@ import {
   getAllBidSubmissions,
   getAllBidSubmissionsByTender,
   getAllBidSubmissionsByVendor,
+  getAverageBidsPerTender,
   iSubmittedOnTender,
   rejectOtherSubmissions,
   rejectSubmission,
@@ -32,6 +33,11 @@ submissionsRouter.get("/byTender/:tenderId", async (req, res) => {
 submissionsRouter.get("/byVendor/:vendorId", async (req, res) => {
   let { vendorId } = req.params;
   res.send(await getAllBidSubmissionsByVendor(vendorId));
+});
+
+submissionsRouter.get("/avgBidsPerTender", async (req, res) => {
+  
+  res.send(await getAverageBidsPerTender());
 });
 
 submissionsRouter.get("/submitted/:tenderId", async (req, res) => {

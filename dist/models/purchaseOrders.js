@@ -32,6 +32,11 @@ exports.PurchaseOrderSchema = new mongoose_1.Schema({
     signatories: [],
     reqAttachmentDocId: {
         type: String
+    },
+    referenceDocs: [],
+    rate: {
+        type: Number,
+        default: 2.5
     }
 });
 exports.PurchaseOrderModel = (0, mongoose_1.model)('PurchaseOrder', exports.PurchaseOrderSchema);

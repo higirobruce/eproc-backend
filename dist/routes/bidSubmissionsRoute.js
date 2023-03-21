@@ -28,6 +28,9 @@ exports.submissionsRouter.get("/byVendor/:vendorId", (req, res) => __awaiter(voi
     let { vendorId } = req.params;
     res.send(yield (0, bidSubmissions_1.getAllBidSubmissionsByVendor)(vendorId));
 }));
+exports.submissionsRouter.get("/avgBidsPerTender", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(yield (0, bidSubmissions_1.getAverageBidsPerTender)());
+}));
 exports.submissionsRouter.get("/submitted/:tenderId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { tenderId } = req.params;
     let { vendorId } = req.query;

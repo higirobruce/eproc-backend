@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReqCountsByCategory = exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByStatus = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
+exports.getReqCountsByCategory = exports.getReqCountsByBudgetStatus = exports.getReqCountsByStatus = exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByStatus = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
 const requests_1 = require("../models/requests");
 const users_1 = require("../models/users");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
@@ -31,7 +31,10 @@ function getAllRequests() {
 exports.getAllRequests = getAllRequests;
 function getAllRequestsByCreator(createdBy) {
     return __awaiter(this, void 0, void 0, function* () {
-        let reqs = yield requests_1.RequestModel.find({ createdBy })
+        let query = {};
+        if (createdBy && createdBy !== 'null')
+            query = { createdBy };
+        let reqs = yield requests_1.RequestModel.find(query)
             .populate("createdBy")
             .populate("level1Approver")
             .populate({
@@ -45,7 +48,7 @@ function getAllRequestsByCreator(createdBy) {
     });
 }
 exports.getAllRequestsByCreator = getAllRequestsByCreator;
-function getAllRequestsByStatus(status) {
+function getAllRequestsByStatus(status, id) {
     return __awaiter(this, void 0, void 0, function* () {
         let query = status === "pending"
             ? {
@@ -59,6 +62,8 @@ function getAllRequestsByStatus(status) {
                 },
             }
             : { status };
+        if (id && id !== 'null')
+            query = Object.assign(Object.assign({}, query), { createdBy: id });
         let reqs = yield requests_1.RequestModel.find(query)
             .populate("createdBy")
             .populate("level1Approver")
@@ -229,6 +234,40 @@ function getReqCountsByDepartment() {
     });
 }
 exports.getReqCountsByDepartment = getReqCountsByDepartment;
+function getReqCountsByStatus() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let lookup = [
+            {
+                $group: {
+                    _id: "$status",
+                    count: {
+                        $count: {},
+                    },
+                },
+            },
+        ];
+        let result = yield requests_1.RequestModel.aggregate(lookup);
+        return result;
+    });
+}
+exports.getReqCountsByStatus = getReqCountsByStatus;
+function getReqCountsByBudgetStatus() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let lookup = [
+            {
+                '$group': {
+                    '_id': '$budgeted',
+                    'count': {
+                        '$count': {}
+                    }
+                }
+            }
+        ];
+        let result = yield requests_1.RequestModel.aggregate(lookup);
+        return result;
+    });
+}
+exports.getReqCountsByBudgetStatus = getReqCountsByBudgetStatus;
 function getReqCountsByCategory() {
     return __awaiter(this, void 0, void 0, function* () {
         let lookup = [

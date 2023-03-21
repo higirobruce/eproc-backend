@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const mongoose_1 = require("mongoose");
 class User {
-    constructor(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName) {
+    constructor(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword) {
         this.userType = userType;
         this.email = email;
         this.telephone = telephone;
@@ -35,6 +35,8 @@ class User {
         this.vatCertId = vatCertId;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.tempEmail = tempEmail;
+        this.tempPassword = tempPassword;
     }
 }
 exports.User = User;

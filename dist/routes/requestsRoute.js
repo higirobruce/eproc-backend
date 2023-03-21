@@ -21,12 +21,20 @@ exports.requetsRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, f
 exports.requetsRouter.get("/countsByDep", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, requests_2.getReqCountsByDepartment)());
 }));
+exports.requetsRouter.get("/countsByStatus", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(yield (0, requests_2.getReqCountsByStatus)());
+}));
 exports.requetsRouter.get("/countsByCat", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, requests_2.getReqCountsByCategory)());
 }));
-exports.requetsRouter.get("/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { status } = req.params;
-    res.send(yield (0, requests_2.getAllRequestsByStatus)(status));
+exports.requetsRouter.get("/countsByBudgetStatus", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(yield (0, requests_2.getReqCountsByBudgetStatus)());
+}));
+exports.requetsRouter.get("/byStatus/:status/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { status, id } = req.params;
+    status === "all"
+        ? res.send(yield (0, requests_2.getAllRequestsByCreator)(id))
+        : res.send(yield (0, requests_2.getAllRequestsByStatus)(status, id));
 }));
 exports.requetsRouter.get("/:createdBy", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { createdBy } = req.params;
@@ -61,5 +69,6 @@ exports.requetsRouter.put("/status/:id", (req, res) => __awaiter(void 0, void 0,
 exports.requetsRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     let { updates } = req.body;
+    console.log(updates);
     res.send(yield (0, requests_2.updateRequest)(id, updates));
 }));

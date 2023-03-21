@@ -66,6 +66,8 @@ userRouter.post("/", async (req, res) => {
     vatCertId,
     firstName,
     lastName,
+    tempEmail,
+    tempPassword
   } = req.body;
 
   let number = await generateUserNumber();
@@ -97,7 +99,9 @@ userRouter.post("/", async (req, res) => {
     rdbCertId,
     vatCertId,
     firstName,
-    lastName
+    lastName,
+    tempEmail,
+    hashPassword(tempPassword)
   );
 
   let createdUser = await saveUser(userToCreate);
@@ -121,7 +125,7 @@ userRouter.post("/login", async (req, res) => {
 
   if (user) {
     res.send({
-      allowed: validPassword(password, user!.password),
+      allowed: validPassword(password, user!.password) || validPassword(password,user!.tempPassword),
       user: user,
     });
   } else {
@@ -134,8 +138,9 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.post("/approve/:id", async (req, res) => {
   let { id } = req.params;
-  console.log(id)
-  res.send(await approveUser(id));
+  let result = await approveUser(id)
+  console.log(result)
+  res.send(result).status(201);
 });
 
 userRouter.post("/decline/:id", async (req, res) => {

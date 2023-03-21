@@ -12,7 +12,9 @@ export class PurchaseOrder implements IPurchaseOrder {
   status: String;
   deliveryProgress: number;
   signatories: [];
-  reqAttachmentDocId: string
+  reqAttachmentDocId: string;
+  referenceDocs: string[];
+  rate: number
 
   constructor(
     number: number,
@@ -25,7 +27,9 @@ export class PurchaseOrder implements IPurchaseOrder {
     status: string,
     deliveryProgress: number,
     signatories: [],
-    reqAttachmentDocId: string
+    reqAttachmentDocId: string,
+    referenceDocs: string[],
+    rate: number
   ) {
     this.number = number;
     this.vendor = vendor
@@ -46,5 +50,8 @@ export class PurchaseOrder implements IPurchaseOrder {
     this.deliveryProgress = deliveryProgress;
     this.signatories = signatories;
     this.reqAttachmentDocId = reqAttachmentDocId
+    this.referenceDocs = referenceDocs;
+    this.rate = rate
   }
+  
 }

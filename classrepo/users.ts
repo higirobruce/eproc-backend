@@ -30,6 +30,8 @@ export class User implements IUser {
   vatCertId: String;
   firstName: String;
   lastName: String;
+  tempEmail: String;
+  tempPassword: String;
 
   constructor(
     userType: UserType,
@@ -58,7 +60,9 @@ export class User implements IUser {
     rdbCertId: string,
     vatCertId: string,
     firstName: String,
-    lastName: String
+    lastName: String,
+    tempEmail: String,
+    tempPassword: String
   ) {
     this.userType = userType;
     this.email = email;
@@ -91,5 +95,7 @@ export class User implements IUser {
     this.vatCertId = vatCertId;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.tempEmail = tempEmail;
+    this.tempPassword = tempPassword;
   }
 }

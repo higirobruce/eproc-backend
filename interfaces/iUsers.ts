@@ -28,7 +28,9 @@ export interface IUser {
     rdbCertId: String,
     vatCertId: String,
     firstName: String,
-    lastName: String
+    lastName: String,
+    tempEmail: String,
+    tempPassword: String
 
 }
 

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveBankDetails = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getVendorById = exports.getAllLevel1Approvers = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.saveBankDetails = exports.setTempFields = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getVendorByCompanyName = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getVendorById = exports.getAllLevel1Approvers = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
 const series_1 = require("./series");
@@ -33,7 +33,9 @@ exports.getAllUsers = getAllUsers;
 function getAllVendors() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find({ userType: "VENDOR" }).populate("department").sort({ createdOn: 'desc' });
+            let users = yield users_1.UserModel.find({ userType: "VENDOR" })
+                .populate("department")
+                .sort({ createdOn: "desc" });
             return users;
         }
         catch (err) {
@@ -150,7 +152,6 @@ function saveUser(user) {
             return createdUser._id;
         }
         catch (err) {
-            console.log(err);
             return {
                 error: true,
                 errorMessage: `Error :${err}`,
@@ -161,11 +162,18 @@ function saveUser(user) {
 exports.saveUser = saveUser;
 function getUserByEmail(userEmail) {
     return __awaiter(this, void 0, void 0, function* () {
-        let user = yield users_1.UserModel.findOne({ email: userEmail }).populate("department");
+        let user = yield users_1.UserModel.findOne({ $or: [{ email: userEmail }, { tempEmail: userEmail }] }).populate("department");
         return user;
     });
 }
 exports.getUserByEmail = getUserByEmail;
+function getVendorByCompanyName(name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let user = yield users_1.UserModel.findOne({ companyName: name });
+        return user;
+    });
+}
+exports.getVendorByCompanyName = getVendorByCompanyName;
 function approveUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -177,7 +185,7 @@ function approveUser(id) {
                 if (createdCode) {
                     user = yield users_1.UserModel.findByIdAndUpdate(id, {
                         $set: { status: "approved" },
-                    }).populate("department");
+                    }, { $new: true }).populate("department");
                     return user;
                 }
                 return {
@@ -195,8 +203,9 @@ function approveUser(id) {
         }
         catch (err) {
             return {
+                status: "created",
                 error: true,
-                errorMessage: `Error :${err}`,
+                message: "Could not connect to SAP B1.",
             };
         }
     });
@@ -262,6 +271,22 @@ function updateUser(id, newUser) {
     });
 }
 exports.updateUser = updateUser;
+function setTempFields(id, tempEmail, tempPassword) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log(id, tempEmail, tempPassword);
+        try {
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { tempEmail: tempEmail, tempPassword: tempPassword } }, { new: true });
+            return user;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.setTempFields = setTempFields;
 function saveBankDetails(id, bankName, bankAccountNumber) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

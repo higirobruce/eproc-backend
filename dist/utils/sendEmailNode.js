@@ -44,7 +44,7 @@ const newTender = `<mjml>
 
   <!-- Intro text -->
   <mj-section background-color="">
-    <mj-column width="400px">
+    <mj-column width="500px">
 
       <mj-text color="#525252">
         Greetings, <br />
@@ -54,7 +54,7 @@ const newTender = `<mjml>
         please proceed to the e-procurement application by clicking the button below.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -86,7 +86,7 @@ const invitation = (tender) => {
 
   <!-- Intro text -->
   <mj-section background-color="">
-    <mj-column width="400px">
+    <mj-column width="500px">
 
       <mj-text color="#525252">
         Hi there, <br/><br/>
@@ -96,7 +96,7 @@ const invitation = (tender) => {
             
       </mj-text>
 
-      <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -129,16 +129,16 @@ const bidSelectionConfirmation = (tender) => {
   
     <!-- Intro text -->
     <mj-section background-color="">
-      <mj-column width="400px">
+      <mj-column width="500px">
   
         <mj-text color="#525252">
           Greetings, <br />
           Subsequent to the bids evaluation activities, please be informed that a bid has now been selected for ${tender === null || tender === void 0 ? void 0 : tender.number}<br/>
-          As part of the bid selection team for this tender, you are requested to review the now available tender award recommendations. 
+          As part of the bid selection team for this tender, you are requested to review and approve the now available tender award recommendations. 
           Once all relevant stakeholders approve of these recommendations, the selected vendor will be informed of the tender award decision<br>
         </mj-text>
   
-        <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
       </mj-column>
     </mj-section>
   
@@ -170,7 +170,7 @@ const approval = `<mjml>
 
   <!-- Intro text -->
   <mj-section background-color="">
-    <mj-column width="400px">
+    <mj-column width="500px">
 
       <mj-text color="#525252">
         Hi there, <br />
@@ -179,7 +179,7 @@ const approval = `<mjml>
         To review the request, please proceed to the e-procurement portal application by clicking the button below.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -210,7 +210,7 @@ const rejection = `<mjml>
 
   <!-- Intro text -->
   <mj-section background-color="">
-    <mj-column width="400px">
+    <mj-column width="500px">
 
       <mj-text color="#525252">
         Hi there, <br />
@@ -219,7 +219,7 @@ const rejection = `<mjml>
         For more information on this decision, please proceed to the e-procurement application by clicking the button below.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -251,7 +251,7 @@ const newUserAccount = (cred) => {
 
   <!-- Intro text -->
   <mj-section background-color="">
-    <mj-column width="400px">
+    <mj-column width="500px">
 
       <mj-text color="#525252">
         Hi there, <br />
@@ -263,7 +263,97 @@ const newUserAccount = (cred) => {
         Please proceed to the e-procurement application by clicking the button below.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href="http://192.168.20.181:3000/mainPage">Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+};
+const externalSignature = (cred) => {
+    return `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your contract has been signed</mj-text>
+    </mj-column>
+  </mj-section>
+
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+        Hi there, <br />
+        We hope that you are well. <br/>
+        We would like to let you know that your contract has been signed.
+        Please proceed to the e-procurement application by clicking the button below and provide below credentials<br><br>
+
+        Username: ${cred === null || cred === void 0 ? void 0 : cred.email}<br/>
+        Password: <i>${cred === null || cred === void 0 ? void 0 : cred.password}</i> <br/><br/>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+};
+const externalSignaturePO = (cred) => {
+    return `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your Purchase Order has been signed</mj-text>
+    </mj-column>
+  </mj-section>
+
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+        Hi there, <br />
+        We hope that you are well. <br/>
+        We would like to let you know that your Purchase Order has been signed.
+        Please proceed to the e-procurement application by clicking the button below and provide below credentials to sign<br><br>
+
+        Username: ${cred === null || cred === void 0 ? void 0 : cred.email}<br/>
+        Password: <i>${cred === null || cred === void 0 ? void 0 : cred.password}</i> <br/><br/>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -324,6 +414,22 @@ function send(from, to, subject, text, html, type) {
                 subject,
                 text,
                 html: mjml(newUserAccount(JSON.parse(text))).html,
+            });
+        else if (type === "externalSignature")
+            return yield transporter.sendMail({
+                from: process.env.IRMB_SENDER_EMAIL,
+                to,
+                subject,
+                text,
+                html: mjml(externalSignature(JSON.parse(text))).html,
+            });
+        else if (type === "externalSignaturePO")
+            return yield transporter.sendMail({
+                from: process.env.IRMB_SENDER_EMAIL,
+                to,
+                subject,
+                text,
+                html: mjml(externalSignature(JSON.parse(text))).html,
             });
     });
 }

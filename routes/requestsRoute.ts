@@ -8,8 +8,10 @@ import {
   getAllRequests,
   getAllRequestsByCreator,
   getAllRequestsByStatus,
+  getReqCountsByBudgetStatus,
   getReqCountsByCategory,
   getReqCountsByDepartment,
+  getReqCountsByStatus,
   saveRequest,
   updateRequest,
   updateRequestStatus,
@@ -42,13 +44,24 @@ requetsRouter.get("/countsByDep", async (req, res) => {
   res.send(await getReqCountsByDepartment());
 });
 
+requetsRouter.get("/countsByStatus", async (req, res) => {
+  res.send(await getReqCountsByStatus());
+});
+
+
 requetsRouter.get("/countsByCat", async (req, res) => {
   res.send(await getReqCountsByCategory());
 });
 
-requetsRouter.get("/byStatus/:status", async (req, res) => {
-  let {status} = req.params
-  res.send(await getAllRequestsByStatus(status));
+requetsRouter.get("/countsByBudgetStatus", async (req, res) => {
+  res.send(await getReqCountsByBudgetStatus());
+});
+
+requetsRouter.get("/byStatus/:status/:id", async (req, res) => {
+  let { status,id } = req.params;
+  status === "all"
+    ? res.send(await getAllRequestsByCreator(id))
+    : res.send(await getAllRequestsByStatus(status,id));
 });
 
 requetsRouter.get("/:createdBy", async (req, res) => {
@@ -128,5 +141,6 @@ requetsRouter.put("/status/:id", async (req, res) => {
 requetsRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { updates } = req.body;
+  console.log(updates)
   res.send(await updateRequest(id, updates));
 });

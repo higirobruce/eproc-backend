@@ -32,6 +32,11 @@ export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
     signatories:[],
     reqAttachmentDocId: {
         type: String
+    },
+    referenceDocs:[],
+    rate: {
+        type: Number,
+        default: 2.5
     }
 })
 

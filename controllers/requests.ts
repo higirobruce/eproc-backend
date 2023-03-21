@@ -19,7 +19,9 @@ export async function getAllRequests() {
 }
 
 export async function getAllRequestsByCreator(createdBy: String) {
-  let reqs = await RequestModel.find({ createdBy })
+  let query = {};
+  if(createdBy && createdBy!=='null') query = { createdBy }
+  let reqs = await RequestModel.find(query)
     .populate("createdBy")
     .populate("level1Approver")
     .populate({
@@ -32,8 +34,8 @@ export async function getAllRequestsByCreator(createdBy: String) {
   return reqs;
 }
 
-export async function getAllRequestsByStatus(status: String) {
-  let query =
+export async function getAllRequestsByStatus(status: String, id: String) {
+  let query: any =
     status === "pending"
       ? {
           status: {
@@ -46,6 +48,7 @@ export async function getAllRequestsByStatus(status: String) {
           },
         }
       : { status };
+  if (id && id!=='null') query = { ...query, createdBy: id };
   let reqs = await RequestModel.find(query)
     .populate("createdBy")
     .populate("level1Approver")
@@ -227,6 +230,38 @@ export async function getReqCountsByDepartment() {
       },
     },
   ];
+
+  let result = await RequestModel.aggregate(lookup);
+  return result;
+}
+
+export async function getReqCountsByStatus() {
+  let lookup = [
+    {
+      $group: {
+        _id: "$status",
+        count: {
+          $count: {},
+        },
+      },
+    },
+  ];
+
+  let result = await RequestModel.aggregate(lookup);
+  return result;
+}
+
+export async function getReqCountsByBudgetStatus() {
+  let lookup = [
+    {
+      '$group': {
+        '_id': '$budgeted', 
+        'count': {
+          '$count': {}
+        }
+      }
+    }
+  ]
 
   let result = await RequestModel.aggregate(lookup);
   return result;

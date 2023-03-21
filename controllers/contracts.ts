@@ -75,6 +75,25 @@ export async function getContractByRequestId(requestId: String) {
   return pos;
 }
 
+export async function getContractByStatus(status: String) {
+  let query = {}
+  if(status==='all') query = {}
+  else query = {status}
+  let pos = await ContractModel.find(query)
+    .populate("tender")
+    .populate("request")
+    .populate("vendor")
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+      },
+    });
+  return pos;
+}
+
 /**
  * Get a contract by vendor id. This is used to create a list of contract in order to display the list
  *
@@ -83,8 +102,11 @@ export async function getContractByRequestId(requestId: String) {
  *
  * @return { Promise } The contract with the id specified in the vendorId as the first parameter. If no contract is found an empty Promise is
  */
-export async function getContractByVendorId(vendorId: String) {
-  let pos = await ContractModel.find({ vendor: vendorId })
+export async function getContractByVendorId(vendorId: String, status: String) {
+  let query = {};
+  if (status === "all") query = { vendor: vendorId };
+  else query = { vendor: vendorId, status: status };
+  let pos = await ContractModel.find(query)
     .populate("tender")
     .populate("request")
     .populate("vendor")
@@ -112,7 +134,7 @@ export async function updateContract(id: String, contract: Contract) {
   //   });
 
   //   if(internallyNotSigned.length===0){
-      
+
   //   }
   // }
   return newContract;

@@ -21,7 +21,9 @@ export async function getAllTenders() {
 
 export async function getAllTendersByStatus(status: String) {
   let _status =
-    status == "open" ? { submissionDeadLine: { $gt: Date.now() } } : { submissionDeadLine: { $lt: Date.now() }  };
+    status == "open"
+      ? { submissionDeadLine: { $gt: Date.now() } }
+      : { submissionDeadLine: { $lt: Date.now() } };
   let reqs = await TenderModel.find(_status)
     .populate("createdBy")
     .populate({
@@ -142,7 +144,9 @@ export async function getOpenTenders() {
 }
 
 export async function getClosedTenders() {
-  let reqs = await TenderModel.find({ status: "closed" })
+  let reqs = await TenderModel.find({
+    $or: [{ status: "closed" }, { status: { $ne: "open" } }],
+  })
     .populate("createdBy")
     .populate({
       path: "createdBy",

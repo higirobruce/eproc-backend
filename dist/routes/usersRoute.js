@@ -29,9 +29,9 @@ exports.userRouter.get("/internal", (req, res) => __awaiter(void 0, void 0, void
     res.send(yield (0, users_2.getAllInternalUsers)());
 }));
 exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, } = req.body;
+    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword } = req.body;
     let number = yield (0, users_3.generateUserNumber)();
-    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName);
+    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, (0, users_3.hashPassword)(tempPassword));
     let createdUser = yield (0, users_2.saveUser)(userToCreate);
     if (createdUser) {
         (0, sendEmailNode_1.send)("", email, "Account created", JSON.stringify({ email, password }), "", "newUserAccount");
@@ -43,7 +43,7 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
     let user = yield (0, users_2.getUserByEmail)(email);
     if (user) {
         res.send({
-            allowed: (0, users_3.validPassword)(password, user.password),
+            allowed: (0, users_3.validPassword)(password, user.password) || (0, users_3.validPassword)(password, user.tempPassword),
             user: user,
         });
     }
@@ -56,8 +56,9 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
 }));
 exports.userRouter.post("/approve/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
-    console.log(id);
-    res.send(yield (0, users_2.approveUser)(id));
+    let result = yield (0, users_2.approveUser)(id);
+    console.log(result);
+    res.send(result).status(201);
 }));
 exports.userRouter.post("/decline/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;

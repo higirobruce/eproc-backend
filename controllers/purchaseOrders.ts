@@ -117,11 +117,11 @@ export async function updatePOStatus(id: String, newStatus: String) {
  *
  * @return { Object } Object with error flag and errorMessage set if an error occured during update otherwise an error is
  */
-export async function updateProgress(id: String, progress: String) {
+export async function updateProgress(id: String, updates: String) {
   try {
     let a = await PurchaseOrderModel.findByIdAndUpdate(
       id,
-      { $set: { deliveryProgress: progress } },
+      updates,
       { returnOriginal: false }
     );
     return a;

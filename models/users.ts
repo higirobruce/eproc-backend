@@ -85,7 +85,14 @@ export const UserSchema = new Schema<IUserDocument>({
   firstName: {
     type: String,
   },
+  tempEmail:{
+    type: String
+  },
+  tempPassword:{
+    type: String
+  }
 });
+
 
 // Method to set salt and hash the password for a user
 UserSchema.methods.setPassword = function (password: any) {

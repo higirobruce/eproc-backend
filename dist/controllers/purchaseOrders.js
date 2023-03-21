@@ -135,10 +135,10 @@ exports.updatePOStatus = updatePOStatus;
  *
  * @return { Object } Object with error flag and errorMessage set if an error occured during update otherwise an error is
  */
-function updateProgress(id, progress) {
+function updateProgress(id, updates) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let a = yield purchaseOrders_1.PurchaseOrderModel.findByIdAndUpdate(id, { $set: { deliveryProgress: progress } }, { returnOriginal: false });
+            let a = yield purchaseOrders_1.PurchaseOrderModel.findByIdAndUpdate(id, updates, { returnOriginal: false });
             return a;
         }
         catch (err) {
