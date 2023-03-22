@@ -13,7 +13,7 @@ exports.sapLogout = exports.sapLogin = exports.COOKIE = exports.SESSION_ID = voi
 const node_localstorage_1 = require("node-localstorage");
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 var config = {
-    CompanyDB: "Z_TEST",
+    CompanyDB: "Z_TRAINING",
     UserName: "manager",
     Password: "K1g@li@123",
 };

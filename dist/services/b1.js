@@ -26,6 +26,7 @@ b1Router.get("/fixedAssets", (req, response) => __awaiter(void 0, void 0, void 0
     });
 }));
 b1Router.get('/businessPartner/:name', (req, response) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params.name);
     yield getBusinessPartnerByName(req.params.name).then(res => {
         response.send(res.value);
     });
@@ -69,6 +70,7 @@ function getFixedAssets() {
 }
 exports.getFixedAssets = getFixedAssets;
 function getBusinessPartnerByName(CardName) {
+    console.log(CardName);
     return (0, sapB1Connection_1.sapLogin)()
         .then((res) => __awaiter(this, void 0, void 0, function* () {
         let resJson = yield res.json();

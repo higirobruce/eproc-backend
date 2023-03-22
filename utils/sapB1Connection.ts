@@ -3,7 +3,7 @@ import { LocalStorage } from "node-localstorage";
 let localstorage = new LocalStorage("./scratch");
 
 var config = {
-  CompanyDB: "Z_TEST",
+  CompanyDB: "Z_TRAINING",
   UserName: "manager",
   Password: "K1g@li@123",
 };

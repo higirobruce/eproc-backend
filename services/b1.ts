@@ -19,6 +19,7 @@ b1Router.get("/fixedAssets", async (req, response) => {
 });
 
 b1Router.get('/businessPartner/:name', async (req,response)=>{
+  console.log(req.params.name)
   await getBusinessPartnerByName(req.params.name).then(res=>{
     response.send(res.value)
   })
@@ -73,6 +74,7 @@ export function getFixedAssets(){
 }
 
 export function getBusinessPartnerByName(CardName:String){
+  console.log(CardName)
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();

@@ -69,6 +69,7 @@ userRouter.post("/", async (req, res) => {
     tempEmail,
     tempPassword
   } = req.body;
+  
 
   let number = await generateUserNumber();
 
