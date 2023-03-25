@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validPassword = exports.hashPassword = exports.generateUserNumber = void 0;
+exports.validPassword = exports.hashPassword = exports.generatePassword = exports.generateUserNumber = void 0;
 const users_1 = require("../models/users");
 const crypto_1 = __importDefault(require("crypto"));
 let SALT = '762f021e88bdfdc80f8e174edbdfaf65';
@@ -28,6 +28,10 @@ const generateUserNumber = () => __awaiter(void 0, void 0, void 0, function* () 
     return newNumber;
 });
 exports.generateUserNumber = generateUserNumber;
+const generatePassword = (length = 20, wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$') => Array.from(crypto_1.default.randomFillSync(new Uint32Array(length)))
+    .map((x) => wishlist[x % wishlist.length])
+    .join('');
+exports.generatePassword = generatePassword;
 const hashPassword = (password) => {
     // Creating a unique salt for a particular user 
     // Hashing user's salt and password with 1000 iterations, 

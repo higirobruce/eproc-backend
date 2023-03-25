@@ -21,6 +21,7 @@ import { LocalStorage } from "node-localstorage";
 import { savePOInB1 } from "./controllers/purchaseOrders";
 import path from "path";
 import { send } from "./utils/sendEmailNode";
+import { generatePassword } from "./services/users";
 
 let localstorage = new LocalStorage("./scratch");
 
@@ -76,7 +77,6 @@ app.use("/contracts", contractRouter);
 app.use("/budgetLines", auth, budgetLinesRouter);
 app.use("/uploads", uploadRouter);
 app.use("/b1", b1Router);
-
 app.get("/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
   var options = {

@@ -3,9 +3,9 @@ import { LocalStorage } from "node-localstorage";
 let localstorage = new LocalStorage("./scratch");
 
 var config = {
-  CompanyDB: "Z_TRAINING",
-  UserName: "manager",
-  Password: "K1g@li@123",
+  CompanyDB: process.env.IRMB_B1_COMPANY_DB,
+  UserName: process.env.IRMB_B1_USERNAME,
+  Password: process.env.IRMB_B1_PASSWORD,
 };
 export var SESSION_ID: any;
 export var COOKIE: any;

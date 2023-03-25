@@ -16,6 +16,14 @@ export const generateUserNumber = async () => {
     return newNumber;
 }
 
+export const generatePassword = (
+  length = 20,
+  wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'
+) =>
+  Array.from(crypto.randomFillSync(new Uint32Array(length)))
+    .map((x) => wishlist[x % wishlist.length])
+    .join('')
+
 
 export const hashPassword = (password: any) => {
 

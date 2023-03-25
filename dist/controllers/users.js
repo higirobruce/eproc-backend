@@ -9,11 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveBankDetails = exports.setTempFields = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getVendorByCompanyName = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getVendorById = exports.getAllLevel1Approvers = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.saveBankDetails = exports.setTempFields = exports.resetPassword = exports.updateMyPassword = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getVendorByCompanyName = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getVendorById = exports.getAllLevel1Approvers = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
 const series_1 = require("./series");
 const node_localstorage_1 = require("node-localstorage");
+const users_2 = require("../services/users");
+const sendEmailNode_1 = require("../utils/sendEmailNode");
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 function getAllUsers() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -162,7 +164,9 @@ function saveUser(user) {
 exports.saveUser = saveUser;
 function getUserByEmail(userEmail) {
     return __awaiter(this, void 0, void 0, function* () {
-        let user = yield users_1.UserModel.findOne({ $or: [{ email: userEmail }, { tempEmail: userEmail }] }).populate("department");
+        let user = yield users_1.UserModel.findOne({
+            $or: [{ email: userEmail }, { tempEmail: userEmail }],
+        }).populate("department");
         return user;
     });
 }
@@ -271,9 +275,49 @@ function updateUser(id, newUser) {
     });
 }
 exports.updateUser = updateUser;
+function updateMyPassword(id, currentPassword, newPassword) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let user = yield users_1.UserModel.findById(id);
+            if ((0, users_2.validPassword)(currentPassword, user === null || user === void 0 ? void 0 : user.password)) {
+                user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { password: newPassword } }, { new: true });
+                return user;
+            }
+            else {
+                return {
+                    error: true,
+                    errorMessage: `Please check the current password provided!`,
+                };
+            }
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.updateMyPassword = updateMyPassword;
+function resetPassword(email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let user = null;
+        try {
+            let newPassword = (0, users_2.generatePassword)(8);
+            user = yield users_1.UserModel.findOneAndUpdate({ email: email }, { $set: { password: (0, users_2.hashPassword)(newPassword) } }, { new: true });
+            if (user) {
+                (0, sendEmailNode_1.send)("", email, "Password reset", JSON.stringify({ email: user.email, password: newPassword }), "", "passwordReset");
+            }
+            return user;
+        }
+        catch (err) {
+            return user;
+        }
+    });
+}
+exports.resetPassword = resetPassword;
 function setTempFields(id, tempEmail, tempPassword) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(id, tempEmail, tempPassword);
         try {
             let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { tempEmail: tempEmail, tempPassword: tempPassword } }, { new: true });
             return user;

@@ -141,6 +141,5 @@ requetsRouter.put("/status/:id", async (req, res) => {
 requetsRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { updates } = req.body;
-  console.log(updates)
   res.send(await updateRequest(id, updates));
 });

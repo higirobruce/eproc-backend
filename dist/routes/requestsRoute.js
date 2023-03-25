@@ -69,6 +69,5 @@ exports.requetsRouter.put("/status/:id", (req, res) => __awaiter(void 0, void 0,
 exports.requetsRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     let { updates } = req.body;
-    console.log(updates);
     res.send(yield (0, requests_2.updateRequest)(id, updates));
 }));

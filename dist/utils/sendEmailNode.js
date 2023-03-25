@@ -273,6 +273,51 @@ const newUserAccount = (cred) => {
 </mj-body>
 </mjml>`;
 };
+const passwordReset = (cred) => {
+    return `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Password Reset</mj-text>
+    </mj-column>
+  </mj-section>
+
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+        Hi there, <br />
+        I hope that you are well. <br/>
+        I would like to inform you that your password to access Irembo Procure has been reset.<br/><br/>
+        
+        Your new Password is <i>${cred === null || cred === void 0 ? void 0 : cred.password}</i> <br/><br/>
+
+        Please proceed to the e-procurement application by clicking the button below, and remember to go to your profile to set your own password.<br>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+};
 const externalSignature = (cred) => {
     return `<mjml>
 <mj-body>
@@ -414,6 +459,14 @@ function send(from, to, subject, text, html, type) {
                 subject,
                 text,
                 html: mjml(newUserAccount(JSON.parse(text))).html,
+            });
+        else if (type === "passwordReset")
+            return yield transporter.sendMail({
+                from: process.env.IRMB_SENDER_EMAIL,
+                to,
+                subject,
+                text,
+                html: mjml(passwordReset(JSON.parse(text))).html,
             });
         else if (type === "externalSignature")
             return yield transporter.sendMail({

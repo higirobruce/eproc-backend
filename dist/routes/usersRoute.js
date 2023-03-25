@@ -29,7 +29,10 @@ exports.userRouter.get("/internal", (req, res) => __awaiter(void 0, void 0, void
     res.send(yield (0, users_2.getAllInternalUsers)());
 }));
 exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword } = req.body;
+    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, 
+    // password,
+    createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword } = req.body;
+    let password = (0, users_3.generatePassword)(8);
     let number = yield (0, users_3.generateUserNumber)();
     let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, (0, users_3.hashPassword)(tempPassword));
     let createdUser = yield (0, users_2.saveUser)(userToCreate);
@@ -76,4 +79,15 @@ exports.userRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, f
     let { id } = req.params;
     let { newUser } = req.body;
     res.send(yield (0, users_2.updateUser)(id, newUser));
+}));
+exports.userRouter.put("/updatePassword/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    let { newPassword, currentPassword } = req.body;
+    let updatedUser = yield (0, users_2.updateMyPassword)(id, currentPassword, (0, users_3.hashPassword)(newPassword));
+    res.send(updatedUser);
+}));
+exports.userRouter.put("/reset/:email", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { email } = req.params;
+    let updatedUser = yield (0, users_2.resetPassword)(email);
+    res.send(updatedUser);
 }));

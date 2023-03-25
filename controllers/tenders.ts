@@ -158,7 +158,7 @@ export async function getClosedTenders() {
   return reqs;
 }
 
-export async function saveTender(tender: Tender) {
+export async function saveTender(tender: Tender,) {
   let newTender = await TenderModel.create(tender);
 
   //Send notifications to vendors in the tender's caterogry

@@ -3,6 +3,12 @@ import { UserModel } from "../models/users";
 import { sapLogin, SESSION_ID } from "../utils/sapB1Connection";
 import { getSeriesByDescription } from "./series";
 import { LocalStorage } from "node-localstorage";
+import {
+  generatePassword,
+  hashPassword,
+  validPassword,
+} from "../services/users";
+import { send } from "../utils/sendEmailNode";
 
 let localstorage = new LocalStorage("./scratch");
 
@@ -139,10 +145,9 @@ export async function saveUser(user: User) {
 }
 
 export async function getUserByEmail(userEmail: String) {
-  
-  let user = await UserModel.findOne({$or:[{ email: userEmail },{tempEmail:userEmail}]}).populate(
-    "department"
-  );
+  let user = await UserModel.findOne({
+    $or: [{ email: userEmail }, { tempEmail: userEmail }],
+  }).populate("department");
   return user;
 }
 
@@ -251,16 +256,69 @@ export async function updateUser(id: String, newUser: User) {
   }
 }
 
+export async function updateMyPassword(
+  id: String,
+  currentPassword: String,
+  newPassword: String
+) {
+  try {
+    let user = await UserModel.findById(id);
+    if (validPassword(currentPassword, user?.password)) {
+      user = await UserModel.findByIdAndUpdate(
+        id,
+        { $set: { password: newPassword } },
+        { new: true }
+      );
+      return user;
+    } else {
+      return {
+        error: true,
+        errorMessage: `Please check the current password provided!`,
+      };
+    }
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
+export async function resetPassword(email: String) {
+  let user = null;
+  try {
+    let newPassword = generatePassword(8);
+    user = await UserModel.findOneAndUpdate(
+      { email: email },
+      { $set: { password: hashPassword(newPassword) } },
+      { new: true }
+    );
+
+    if (user) {
+      send(
+        "",
+        email,
+        "Password reset",
+        JSON.stringify({ email: user.email, password: newPassword }),
+        "",
+        "passwordReset"
+      );
+    }
+    return user;
+  } catch (err) {
+    return user;
+  }
+}
+
 export async function setTempFields(
   id: String,
-  tempEmail: String|undefined,
+  tempEmail: String | undefined,
   tempPassword: String
 ) {
-  console.log(id,tempEmail,tempPassword)
   try {
     let user = await UserModel.findByIdAndUpdate(
       id,
-      { $set: { tempEmail:tempEmail, tempPassword:tempPassword } },
+      { $set: { tempEmail: tempEmail, tempPassword: tempPassword } },
       { new: true }
     );
 

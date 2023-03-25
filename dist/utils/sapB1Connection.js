@@ -13,9 +13,9 @@ exports.sapLogout = exports.sapLogin = exports.COOKIE = exports.SESSION_ID = voi
 const node_localstorage_1 = require("node-localstorage");
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 var config = {
-    CompanyDB: "Z_TRAINING",
-    UserName: "manager",
-    Password: "K1g@li@123",
+    CompanyDB: process.env.IRMB_B1_COMPANY_DB,
+    UserName: process.env.IRMB_B1_USERNAME,
+    Password: process.env.IRMB_B1_PASSWORD,
 };
 function sapLogin() {
     return __awaiter(this, void 0, void 0, function* () {

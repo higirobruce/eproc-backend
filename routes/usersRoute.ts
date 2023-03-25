@@ -10,10 +10,13 @@ import {
   getAllUsers,
   getAllVendors,
   getUserByEmail,
+  resetPassword,
   saveUser,
+  updateMyPassword,
   updateUser,
 } from "../controllers/users";
 import {
+  generatePassword,
   generateUserNumber,
   hashPassword,
   validPassword,
@@ -47,7 +50,7 @@ userRouter.post("/", async (req, res) => {
     experienceDurationInMonths,
     webSite,
     status,
-    password,
+    // password,
     createdOn,
     createdBy,
     rating,
@@ -70,9 +73,8 @@ userRouter.post("/", async (req, res) => {
     tempPassword
   } = req.body;
   
-
+  let password = generatePassword(8);
   let number = await generateUserNumber();
-
   let userToCreate = new User(
     userType,
     email,
@@ -164,4 +166,19 @@ userRouter.put("/:id", async (req, res) => {
   let { newUser } = req.body;
 
   res.send(await updateUser(id, newUser));
+});
+
+userRouter.put("/updatePassword/:id", async (req, res) => {
+  let { id } = req.params;
+  let {newPassword, currentPassword} = req.body
+
+  let updatedUser = await updateMyPassword(id, currentPassword, hashPassword(newPassword));
+  res.send(updatedUser);
+});
+
+userRouter.put("/reset/:email", async (req, res) => {
+  let { email } = req.params;
+  let updatedUser = await resetPassword(email);
+
+  res.send(updatedUser);
 });
