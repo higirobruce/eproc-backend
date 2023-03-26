@@ -17,6 +17,7 @@ const contracts_2 = require("../controllers/contracts");
 const users_1 = require("../controllers/users");
 const contracts_3 = require("../services/contracts");
 const users_2 = require("../services/users");
+const logger_1 = require("../utils/logger");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.contractRouter = (0, express_1.Router)();
 exports.contractRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -43,18 +44,33 @@ exports.contractRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0,
     let number = yield (0, contracts_3.generateContractNumber)();
     let contractToCreate = new contracts_1.Contract(tender, number, vendor, request, createdBy, sections, status, deliveryProgress, contractStartDate, contractEndDate, signatories, reqAttachmentDocId);
     let createdContract = yield (0, contracts_2.saveContract)(contractToCreate);
+    if (createdContract) {
+        logger_1.logger.log({
+            level: "info",
+            message: `Contract ${createdContract === null || createdContract === void 0 ? void 0 : createdContract._id} successfully created`,
+        });
+    }
     res.status(201).send(createdContract);
 }));
 exports.contractRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d;
     let { id } = req.params;
     let { newContract, pending, paritallySigned, signed } = req.body;
+    let logOptions = {};
     let vendor = yield (0, users_1.getVendorByCompanyName)((_b = newContract === null || newContract === void 0 ? void 0 : newContract.signatories[((_a = newContract === null || newContract === void 0 ? void 0 : newContract.signatories) === null || _a === void 0 ? void 0 : _a.length) - 1]) === null || _b === void 0 ? void 0 : _b.onBehalfOf);
     if (pending) {
         newContract.status = "pending-signature";
+        logOptions = {
+            level: "info",
+            message: `Contract ${id} set to pending-singature status`,
+        };
     }
     if (paritallySigned) {
         newContract.status = "partially-signed";
+        logOptions = {
+            level: "info",
+            message: `Contract ${id} set to partially-signed status`,
+        };
         // console.log(vendor);
         let _vendor = Object.assign({}, vendor);
         let tempPass = (0, crypto_1.randomUUID)();
@@ -66,7 +82,14 @@ exports.contractRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 
     }
     if (signed) {
         newContract.status = "signed";
+        logOptions = {
+            level: "info",
+            message: `Contract ${id} set to signed status`,
+        };
     }
     let updated = yield (0, contracts_2.updateContract)(id, newContract);
+    if (updated) {
+        logger_1.logger.log(logOptions);
+    }
     res.status(200).send(updated);
 }));

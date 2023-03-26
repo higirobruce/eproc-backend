@@ -21,6 +21,7 @@ import {
   hashPassword,
   validPassword,
 } from "../services/users";
+import { logger } from "../utils/logger";
 import { send } from "../utils/sendEmailNode";
 
 export const userRouter = Router();
@@ -70,9 +71,9 @@ userRouter.post("/", async (req, res) => {
     firstName,
     lastName,
     tempEmail,
-    tempPassword
+    tempPassword,
   } = req.body;
-  
+
   let password = generatePassword(8);
   let number = await generateUserNumber();
   let userToCreate = new User(
@@ -108,12 +109,16 @@ userRouter.post("/", async (req, res) => {
   );
 
   let createdUser = await saveUser(userToCreate);
-  if(createdUser){
+  if (createdUser) {
+    logger.log({
+      level: "info",
+      message: `${createdUser?._id} was successfully created`,
+    });
     send(
       "",
       email,
       "Account created",
-      JSON.stringify({email,password}),
+      JSON.stringify({ email, password }),
       "",
       "newUserAccount"
     );
@@ -127,11 +132,21 @@ userRouter.post("/login", async (req, res) => {
   let user = await getUserByEmail(email);
 
   if (user) {
+    logger.log({
+      level: "info",
+      message: `${user?.email} successfully logged in`,
+    });
     res.send({
-      allowed: validPassword(password, user!.password) || validPassword(password,user!.tempPassword),
+      allowed:
+        validPassword(password, user!.password) ||
+        validPassword(password, user!.tempPassword),
       user: user,
     });
   } else {
+    logger.log({
+      level: "info",
+      message: `${email} failed to log in`,
+    });
     res.send({
       allowed: false,
       user: {},
@@ -141,8 +156,9 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.post("/approve/:id", async (req, res) => {
   let { id } = req.params;
-  let result = await approveUser(id)
-  console.log(result)
+  let {approvedBy} = req.body
+  let result = await approveUser(id);
+  console.log(result);
   res.send(result).status(201);
 });
 
@@ -170,9 +186,20 @@ userRouter.put("/:id", async (req, res) => {
 
 userRouter.put("/updatePassword/:id", async (req, res) => {
   let { id } = req.params;
-  let {newPassword, currentPassword} = req.body
+  let { newPassword, currentPassword } = req.body;
 
-  let updatedUser = await updateMyPassword(id, currentPassword, hashPassword(newPassword));
+  let updatedUser = await updateMyPassword(
+    id,
+    currentPassword,
+    hashPassword(newPassword)
+  );
+
+  if(updatedUser){
+    logger.log({
+      level: "warn",
+      message: `Password for ${id} was successfully reset`,
+    });
+  }
   res.send(updatedUser);
 });
 
@@ -180,5 +207,11 @@ userRouter.put("/reset/:email", async (req, res) => {
   let { email } = req.params;
   let updatedUser = await resetPassword(email);
 
+  if(updatedUser){
+    logger.log({
+      level: "warn",
+      message: `Password for ${updatedUser?._id} was successfully reset`,
+    });
+  }
   res.send(updatedUser);
 });

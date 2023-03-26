@@ -36,15 +36,19 @@ exports.poRouter.get("/byVendorId/:vendorId", (req, res) => __awaiter(void 0, vo
     res.send(yield (0, purchaseOrders_2.getPOByVendorId)(vendorId));
 }));
 exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, function* () {
-    let { vendor, tender, request, createdBy, sections, items, status, deliveryProgress, B1Data, signatories, reqAttachmentDocId, rate } = req.body;
+    let { vendor, tender, request, createdBy, sections, items, status, deliveryProgress, B1Data, signatories, reqAttachmentDocId, rate, rateComment } = req.body;
     let { B1Data_Assets, B1Data_NonAssets } = B1Data;
     let CardCode;
     yield (0, b1_1.getBusinessPartnerByName)((B1Data_Assets === null || B1Data_Assets === void 0 ? void 0 : B1Data_Assets.CardName) || B1Data_NonAssets.CardName).then((res) => __awaiter(void 0, void 0, void 0, function* () {
         let bp = res.value;
         if ((bp === null || bp === void 0 ? void 0 : bp.length) >= 1) {
             CardCode = bp[0].CardCode;
-            let b1Response_assets = B1Data_Assets ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_Assets.DocType, B1Data_Assets.DocumentLines) : null;
-            let b1Response_nonAssets = B1Data_NonAssets ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_NonAssets.DocType, B1Data_NonAssets.DocumentLines) : null;
+            let b1Response_assets = B1Data_Assets
+                ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_Assets.DocType, B1Data_Assets.DocumentLines)
+                : null;
+            let b1Response_nonAssets = B1Data_NonAssets
+                ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_NonAssets.DocType, B1Data_NonAssets.DocumentLines)
+                : null;
             if ((b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error) || (b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error)) {
                 response.status(201).send(b1Response_assets || b1Response_nonAssets);
             }
@@ -53,8 +57,17 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
                 let refs = [];
                 b1Response_assets && refs.push(b1Response_assets.DocNum);
                 b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
-                let tenderToCreate = new purchaseOrders_1.PurchaseOrder(number, vendor, tender, request, createdBy, sections, items, status, deliveryProgress, signatories, reqAttachmentDocId, refs, rate);
+                let tenderToCreate = new purchaseOrders_1.PurchaseOrder(number, vendor, tender, request, createdBy, sections, items, status, deliveryProgress, signatories, reqAttachmentDocId, refs, rate, rateComment);
                 let createdTender = yield (0, purchaseOrders_2.savePO)(tenderToCreate);
+                if (createdTender) {
+                    if ((refs === null || refs === void 0 ? void 0 : refs.length) >= 1) {
+                        refs.forEach((r) => __awaiter(void 0, void 0, void 0, function* () {
+                            yield (0, purchaseOrders_2.updateB1Po)(r, {
+                                Comments: `Refer to PO number ${createdTender === null || createdTender === void 0 ? void 0 : createdTender.number} in the e-procurement tool.`,
+                            });
+                        }));
+                    }
+                }
                 response.status(201).send({ createdTender });
             }
         }

@@ -16,6 +16,7 @@ const bidSubmissions_2 = require("../classrepo/bidSubmissions");
 const bidSubmissions_3 = require("../services/bidSubmissions");
 const tenders_1 = require("../models/tenders");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
+const logger_1 = require("../utils/logger");
 exports.submissionsRouter = (0, express_1.Router)();
 exports.submissionsRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, bidSubmissions_1.getAllBidSubmissions)());
@@ -42,6 +43,8 @@ exports.submissionsRouter.post("/", (req, res) => __awaiter(void 0, void 0, void
     let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration, proposalDocId, otherDocId, bankName, bankAccountNumber);
     // await saveBankDetails(createdBy, bankName, bankAccountNumber);
     let createdSubmission = yield (0, bidSubmissions_1.saveBidSubmission)(submission);
+    if (createdSubmission) {
+    }
     res.status(201).send(createdSubmission);
 }));
 exports.submissionsRouter.post("/select/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -52,6 +55,10 @@ exports.submissionsRouter.post("/select/:id", (req, res) => __awaiter(void 0, vo
         $set: { evaluationReportId },
     });
     (0, bidSubmissions_1.selectSubmission)(id).then((r) => __awaiter(void 0, void 0, void 0, function* () {
+        logger_1.logger.log({
+            level: "info",
+            message: `Bid ${id} selected for the tender ${tenderId}`,
+        });
         yield (0, bidSubmissions_1.deselectOtherSubmissions)(tenderId);
         //Send Bid Selection confirmation
         let invitees = tender === null || tender === void 0 ? void 0 : tender.invitees;
@@ -68,6 +75,10 @@ exports.submissionsRouter.post("/award/:id", (req, res) => __awaiter(void 0, voi
     let { id } = req.params;
     let { tenderId } = req.query;
     (0, bidSubmissions_1.awardSubmission)(id).then((r) => __awaiter(void 0, void 0, void 0, function* () {
+        logger_1.logger.log({
+            level: "info",
+            message: `Bid ${id} was awarded for the tender ${tenderId}`,
+        });
         yield (0, bidSubmissions_1.rejectOtherSubmissions)(tenderId);
         res.send(r);
     }));

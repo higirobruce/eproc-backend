@@ -10,6 +10,7 @@ export interface IPurchaseOrder {
   reqAttachmentDocId: String,
   referenceDocs: string[],
   rate: number,
+  rateComment: String,
 }
 
 export interface IPurchaseOrderDocument

@@ -14,6 +14,7 @@ const express_1 = require("express");
 const users_1 = require("../classrepo/users");
 const users_2 = require("../controllers/users");
 const users_3 = require("../services/users");
+const logger_1 = require("../utils/logger");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.userRouter = (0, express_1.Router)();
 exports.userRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -31,12 +32,16 @@ exports.userRouter.get("/internal", (req, res) => __awaiter(void 0, void 0, void
 exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, 
     // password,
-    createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword } = req.body;
+    createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword, } = req.body;
     let password = (0, users_3.generatePassword)(8);
     let number = yield (0, users_3.generateUserNumber)();
     let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, (0, users_3.hashPassword)(tempPassword));
     let createdUser = yield (0, users_2.saveUser)(userToCreate);
     if (createdUser) {
+        logger_1.logger.log({
+            level: "info",
+            message: `${createdUser === null || createdUser === void 0 ? void 0 : createdUser._id} was successfully created`,
+        });
         (0, sendEmailNode_1.send)("", email, "Account created", JSON.stringify({ email, password }), "", "newUserAccount");
     }
     res.status(201).send(createdUser);
@@ -45,12 +50,21 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
     let { email, password } = req.body;
     let user = yield (0, users_2.getUserByEmail)(email);
     if (user) {
+        logger_1.logger.log({
+            level: "info",
+            message: `${user === null || user === void 0 ? void 0 : user.email} successfully logged in`,
+        });
         res.send({
-            allowed: (0, users_3.validPassword)(password, user.password) || (0, users_3.validPassword)(password, user.tempPassword),
+            allowed: (0, users_3.validPassword)(password, user.password) ||
+                (0, users_3.validPassword)(password, user.tempPassword),
             user: user,
         });
     }
     else {
+        logger_1.logger.log({
+            level: "info",
+            message: `${email} failed to log in`,
+        });
         res.send({
             allowed: false,
             user: {},
@@ -59,6 +73,7 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
 }));
 exports.userRouter.post("/approve/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
+    let { approvedBy } = req.body;
     let result = yield (0, users_2.approveUser)(id);
     console.log(result);
     res.send(result).status(201);
@@ -84,10 +99,22 @@ exports.userRouter.put("/updatePassword/:id", (req, res) => __awaiter(void 0, vo
     let { id } = req.params;
     let { newPassword, currentPassword } = req.body;
     let updatedUser = yield (0, users_2.updateMyPassword)(id, currentPassword, (0, users_3.hashPassword)(newPassword));
+    if (updatedUser) {
+        logger_1.logger.log({
+            level: "warn",
+            message: `Password for ${id} was successfully reset`,
+        });
+    }
     res.send(updatedUser);
 }));
 exports.userRouter.put("/reset/:email", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { email } = req.params;
     let updatedUser = yield (0, users_2.resetPassword)(email);
+    if (updatedUser) {
+        logger_1.logger.log({
+            level: "warn",
+            message: `Password for ${updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser._id} was successfully reset`,
+        });
+    }
     res.send(updatedUser);
 }));

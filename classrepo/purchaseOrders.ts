@@ -15,6 +15,7 @@ export class PurchaseOrder implements IPurchaseOrder {
   reqAttachmentDocId: string;
   referenceDocs: string[];
   rate: number
+  rateComment: String
 
   constructor(
     number: number,
@@ -29,7 +30,8 @@ export class PurchaseOrder implements IPurchaseOrder {
     signatories: [],
     reqAttachmentDocId: string,
     referenceDocs: string[],
-    rate: number
+    rate: number,
+    rateComment: String
   ) {
     this.number = number;
     this.vendor = vendor
@@ -52,6 +54,7 @@ export class PurchaseOrder implements IPurchaseOrder {
     this.reqAttachmentDocId = reqAttachmentDocId
     this.referenceDocs = referenceDocs;
     this.rate = rate
+    this.rateComment = rateComment
   }
   
 }

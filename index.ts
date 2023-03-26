@@ -22,6 +22,7 @@ import { savePOInB1 } from "./controllers/purchaseOrders";
 import path from "path";
 import { send } from "./utils/sendEmailNode";
 import { generatePassword } from "./services/users";
+import { logger } from "./utils/logger";
 
 let localstorage = new LocalStorage("./scratch");
 
@@ -56,6 +57,11 @@ let auth = (req: Request, res: Response, next: NextFunction) => {
   if (login && password && login === auth.login && password === auth.password) {
     return next();
   }
+  logger.log({
+    level: "error",
+    message: `Unauthorized API access was declined.`,
+    payload: req.baseUrl,
+  });
   res.set("WWW-Authenticate", 'Basic realm="401"'); // change this
   res.status(401).send("Authentication required."); // custom message
 };
@@ -66,7 +72,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use("/users", userRouter);
+app.use("/users", auth, userRouter);
 app.use("/requests", requetsRouter);
 app.use("/dpts", dptRouter);
 app.use("/serviceCategories", serviceCategoryRouter);
@@ -92,15 +98,64 @@ app.get("/file/:folder/:name", function (req, res, next) {
     if (err) {
       next("File not found! 😏");
     } else {
-      
     }
-
   });
 });
 
-app.listen(PORT, async () => {
-  // console.log(localstorage.getItem('cookie'))
-  // await sapLogin()
-
+let server = app.listen(PORT, async () => {
   console.log(`App listening on port ${PORT}`);
+  logger.log({
+    level: "info",
+    message: `App started on port ${PORT}`,
+  });
+});
+
+process.on("SIGTERM", () => {
+  logger.log({
+    level: "error",
+    message: `SIGTERM signal detected`,
+  });
+  logger.log({
+    level: "error",
+    message: `Closing the server`,
+  });
+  server.close(() => {
+    logger.log({
+      level: "error",
+      message: `HTTP server closed`,
+    });
+    // boolean means [force], see in mongoose doc
+    mongoose.connection.close(false, () => {
+      logger.log({
+        level: "error",
+        message: `MongoDb connection closed.`,
+      });
+      process.exit(0);
+    });
+  });
+});
+
+process.on("SIGINT", () => {
+  logger.log({
+    level: "error",
+    message: `SIGINT signal detected`,
+  });
+  logger.log({
+    level: "error",
+    message: `Closing the server`,
+  });
+  server.close(() => {
+    logger.log({
+      level: "error",
+      message: `HTTP server closed`,
+    });
+    // boolean means [force], see in mongoose doc
+    mongoose.connection.close(false, () => {
+      logger.log({
+        level: "error",
+        message: `MongoDb connection closed.`,
+      });
+      process.exit(0);
+    });
+  });
 });

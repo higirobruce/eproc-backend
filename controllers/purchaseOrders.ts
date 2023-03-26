@@ -175,6 +175,31 @@ export async function savePOInB1(
   });
 }
 
+export async function updateB1Po(
+  CardCode: String,
+  body: any
+) {
+  return sapLogin().then(async (res) => {
+    let COOKIE = res.headers.get("set-cookie");
+    localstorage.setItem("cookie", `${COOKIE}`);
+
+    return fetch(`https://192.168.20.181:50000/b1s/v1/PurchaseOrders(${CardCode})`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `${localstorage.getItem("cookie")}`,
+      },
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((res) => {return res})
+      .catch((err) => {
+        return err
+      });
+  });
+}
+
+
 
 export async function updatePo(id: String, po: PurchaseOrder) {
  

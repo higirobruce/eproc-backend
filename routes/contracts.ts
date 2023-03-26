@@ -25,6 +25,7 @@ import {
 } from "../controllers/users";
 import { generateContractNumber } from "../services/contracts";
 import { hashPassword } from "../services/users";
+import { logger } from "../utils/logger";
 import { send } from "../utils/sendEmailNode";
 
 export const contractRouter = Router();
@@ -86,21 +87,36 @@ contractRouter.post("/", async (req, res) => {
   );
 
   let createdContract = await saveContract(contractToCreate);
+  if(createdContract){
+    logger.log({
+      level: "info",
+      message: `Contract ${createdContract?._id} successfully created`,
+    });
+  }
   res.status(201).send(createdContract);
 });
 
 contractRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { newContract, pending, paritallySigned, signed } = req.body;
+  let logOptions = {}
   let vendor = await getVendorByCompanyName(
     newContract?.signatories[newContract?.signatories?.length - 1]?.onBehalfOf
   );
 
   if (pending) {
     newContract.status = "pending-signature";
+    logOptions = {
+      level: "info",
+      message: `Contract ${id} set to pending-singature status`,
+    }
   }
   if (paritallySigned) {
     newContract.status = "partially-signed";
+    logOptions = {
+      level: "info",
+      message: `Contract ${id} set to partially-signed status`,
+    }
     // console.log(vendor);
     let _vendor = { ...vendor };
     let tempPass = randomUUID();
@@ -120,8 +136,18 @@ contractRouter.put("/:id", async (req, res) => {
   }
   if (signed) {
     newContract.status = "signed";
+    logOptions = {
+      level: "info",
+      message: `Contract ${id} set to signed status`,
+    }
   }
+  
+
   let updated = await updateContract(id, newContract);
+
+  if(updated){
+    logger.log(logOptions)
+  }
 
   res.status(200).send(updated);
 });

@@ -8,6 +8,7 @@ import {
   getPOByVendorId,
   savePO,
   savePOInB1,
+  updateB1Po,
   updatePo,
   updatePOStatus,
   updateProgress,
@@ -52,9 +53,9 @@ poRouter.post("/", async (req, response) => {
     B1Data,
     signatories,
     reqAttachmentDocId,
-    rate
+    rate,
+    rateComment
   } = req.body;
-
 
   let { B1Data_Assets, B1Data_NonAssets } = B1Data;
 
@@ -67,25 +68,29 @@ poRouter.post("/", async (req, response) => {
     if (bp?.length >= 1) {
       CardCode = bp[0].CardCode;
 
-      let b1Response_assets = B1Data_Assets ? await savePOInB1(
-        CardCode,
-        B1Data_Assets.DocType,
-        B1Data_Assets.DocumentLines
-      ): null
+      let b1Response_assets = B1Data_Assets
+        ? await savePOInB1(
+            CardCode,
+            B1Data_Assets.DocType,
+            B1Data_Assets.DocumentLines
+          )
+        : null;
 
-      let b1Response_nonAssets = B1Data_NonAssets ? await savePOInB1(
-        CardCode,
-        B1Data_NonAssets.DocType,
-        B1Data_NonAssets.DocumentLines
-      ): null
+      let b1Response_nonAssets = B1Data_NonAssets
+        ? await savePOInB1(
+            CardCode,
+            B1Data_NonAssets.DocType,
+            B1Data_NonAssets.DocumentLines
+          )
+        : null;
 
       if (b1Response_assets?.error || b1Response_nonAssets?.error) {
         response.status(201).send(b1Response_assets || b1Response_nonAssets);
       } else {
         let number = await generatePONumber();
         let refs = [];
-        b1Response_assets && refs.push(b1Response_assets.DocNum)
-        b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum)
+        b1Response_assets && refs.push(b1Response_assets.DocNum);
+        b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
 
         let tenderToCreate = new PurchaseOrder(
           number,
@@ -100,10 +105,22 @@ poRouter.post("/", async (req, response) => {
           signatories,
           reqAttachmentDocId,
           refs,
-          rate
+          rate,
+          rateComment
         );
 
         let createdTender = await savePO(tenderToCreate);
+
+        if (createdTender) {
+          if (refs?.length >= 1) {
+            refs.forEach(async (r) => {
+              await updateB1Po(r, {
+                Comments: `Refer to PO number ${createdTender?.number} in the e-procurement tool.`,
+              });
+            });
+          }
+        }
+
         response.status(201).send({ createdTender });
       }
     } else {
@@ -128,7 +145,7 @@ poRouter.put("/progress/:id", async (req, res) => {
 
 poRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
-  let { newPo,pending,paritallySigned,signed } = req.body;
+  let { newPo, pending, paritallySigned, signed } = req.body;
   let vendor = await getVendorByCompanyName(
     newPo?.signatories[newPo?.signatories?.length - 1]?.onBehalfOf
   );
@@ -164,3 +181,4 @@ poRouter.put("/:id", async (req, res) => {
 
   res.status(200).send(updated);
 });
+

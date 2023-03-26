@@ -1,0 +1,337 @@
+{
+  level: 'error',
+  message: 'Unauthorized accessed declined.',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:30:21.549Z'
+}
+{
+  level: 'error',
+  message: 'Unauthorized API access was declined.',
+  payload: '/users',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:31:55.766Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:47:17.352Z'
+}
+{
+  level: 'error',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:48:29.502Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:48:38.142Z'
+}
+{
+  level: 'error',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:49:12.095Z'
+}
+{
+  level: 'error',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:49:13.944Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:49:31.751Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-25T17:12:47.409Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-25T17:15:22.921Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:25:26.513Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:25:56.711Z'
+}
+{
+  level: 'info',
+  message: 'lhimili@shapeherd.rw failed to log in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:37:18.124Z'
+}
+{
+  level: 'info',
+  message: 'lhimili@shapeherd.com failed to log in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:37:28.401Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:37:36.780Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+vendor@gmail.com failed to log in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:38:18.217Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:38:41.600Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:39:17.980Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:40:11.679Z'
+}
+{
+  level: 'info',
+  message: 'email@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:40:26.418Z'
+}
+{
+  level: 'info',
+  message: 'Bid 641ff6d6cd44c51f0d66d581 selected for the tender 6412c2ece636716a75722186',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:40:47.504Z'
+}
+{
+  level: 'info',
+  message: 'Bid 641ff6d6cd44c51f0d66d581 was awarded for the tender 6412c2ece636716a75722186',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:40:54.069Z'
+}
+{
+  level: 'info',
+  message: 'Contract 641ff73acd44c51f0d66d803 successfully created',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:41:46.334Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:42:13.793Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:42:20.308Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:42:32.035Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:42:50.570Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 641d462e8b88b17b072ce318 was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:43:01.228Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:43:18.842Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 641d462e8b88b17b072ce318 was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:43:32.036Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:43:39.265Z'
+}
+{
+  level: 'info',
+  message: 'Contract 641ff73acd44c51f0d66d803 set to partially-signed status',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:43:53.877Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:44:10.673Z'
+}
+{
+  level: 'info',
+  message: 'Contract 641ff73acd44c51f0d66d803 set to signed status',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:44:28.367Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T07:44:38.877Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T08:02:28.198Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T08:03:07.263Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T08:03:16.171Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-26T08:45:58.550Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-26T09:01:10.232Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-26T09:59:35.177Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:12:02.766Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:12:17.593Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:12:23.903Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:13:04.284Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:14:10.467Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:14:46.260Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:15:30.829Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:16:00.668Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:16:54.957Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:25:51.973Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:25:59.349Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:26:19.057Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:28:50.939Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:29:27.654Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-26T11:36:34.382Z'
+}

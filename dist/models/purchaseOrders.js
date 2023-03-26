@@ -36,7 +36,9 @@ exports.PurchaseOrderSchema = new mongoose_1.Schema({
     referenceDocs: [],
     rate: {
         type: Number,
-        default: 2.5
+    },
+    rateComment: {
+        type: String
     }
 });
 exports.PurchaseOrderModel = (0, mongoose_1.model)('PurchaseOrder', exports.PurchaseOrderSchema);

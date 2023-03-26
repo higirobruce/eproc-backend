@@ -1,0 +1,43 @@
+{
+  level: 'error',
+  message: 'Unauthorized accessed declined.',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:30:21.549Z'
+}
+{
+  level: 'error',
+  message: 'Unauthorized API access was declined.',
+  payload: '/users',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:31:55.766Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:47:17.352Z'
+}
+{
+  level: 'error',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:48:29.502Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:48:38.142Z'
+}
+{
+  level: 'error',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:49:12.095Z'
+}
+{
+  level: 'error',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-25T16:49:13.944Z'
+}

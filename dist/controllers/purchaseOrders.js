@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePo = exports.savePOInB1 = exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getPOByTenderId = exports.getAllPOs = void 0;
+exports.updatePo = exports.updateB1Po = exports.savePOInB1 = exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getPOByTenderId = exports.getAllPOs = void 0;
 const purchaseOrders_1 = require("../models/purchaseOrders");
 const node_localstorage_1 = require("node-localstorage");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
@@ -192,6 +192,28 @@ function savePOInB1(CardCode, DocType, DocumentLines) {
     });
 }
 exports.savePOInB1 = savePOInB1;
+function updateB1Po(CardCode, body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return (0, sapB1Connection_1.sapLogin)().then((res) => __awaiter(this, void 0, void 0, function* () {
+            let COOKIE = res.headers.get("set-cookie");
+            localstorage.setItem("cookie", `${COOKIE}`);
+            return fetch(`https://192.168.20.181:50000/b1s/v1/PurchaseOrders(${CardCode})`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Cookie: `${localstorage.getItem("cookie")}`,
+                },
+                body: JSON.stringify(body),
+            })
+                .then((res) => res.json())
+                .then((res) => { return res; })
+                .catch((err) => {
+                return err;
+            });
+        }));
+    });
+}
+exports.updateB1Po = updateB1Po;
 function updatePo(id, po) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield purchaseOrders_1.PurchaseOrderModel.findByIdAndUpdate(id, po, { new: true });

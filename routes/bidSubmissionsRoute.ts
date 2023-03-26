@@ -18,6 +18,7 @@ import { generateBidSubmissionNumber } from "../services/bidSubmissions";
 import { getVendorById, saveBankDetails } from "../controllers/users";
 import { TenderModel } from "../models/tenders";
 import { send } from "../utils/sendEmailNode";
+import { logger } from "../utils/logger";
 
 export const submissionsRouter = Router();
 
@@ -88,6 +89,10 @@ submissionsRouter.post("/", async (req, res) => {
   // await saveBankDetails(createdBy, bankName, bankAccountNumber);
 
   let createdSubmission = await saveBidSubmission(submission);
+  if(createdSubmission){
+    
+    
+  }
   res.status(201).send(createdSubmission);
 });
 
@@ -100,6 +105,10 @@ submissionsRouter.post("/select/:id", async (req, res) => {
     $set: { evaluationReportId },
   });
   selectSubmission(id).then(async (r) => {
+    logger.log({
+      level: "info",
+      message: `Bid ${id} selected for the tender ${tenderId}`,
+    });
     await deselectOtherSubmissions(tenderId);
 
     //Send Bid Selection confirmation
@@ -108,6 +117,7 @@ submissionsRouter.post("/select/:id", async (req, res) => {
       return i?.approver;
     });
     if (invitees) {
+      
       send(
         "",
         inviteesEmails,
@@ -126,6 +136,10 @@ submissionsRouter.post("/award/:id", async (req, res) => {
   let { id } = req.params;
   let { tenderId } = req.query;
   awardSubmission(id).then(async (r) => {
+    logger.log({
+      level: "info",
+      message: `Bid ${id} was awarded for the tender ${tenderId}`,
+    });
     await rejectOtherSubmissions(tenderId);
     res.send(r);
   });

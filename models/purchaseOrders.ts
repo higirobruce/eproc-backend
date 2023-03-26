@@ -36,7 +36,9 @@ export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
     referenceDocs:[],
     rate: {
         type: Number,
-        default: 2.5
+    },
+    rateComment:{
+        type: String
     }
 })
 
