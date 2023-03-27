@@ -412,78 +412,82 @@ const externalSignaturePO = (cred) => {
 function send(from, to, subject, text, html, type) {
     return __awaiter(this, void 0, void 0, function* () {
         // console.log("sent");
-        if (type === "newTender")
-            return yield transporter.sendMail({
-                from: process.env.IRMB_SENDER_EMAIL,
-                to: to,
-                subject,
-                text,
-                html: mjml(newTender).html,
-            });
-        else if (type === "bidEvaluationInvite")
-            return yield transporter.sendMail({
-                from: process.env.IRMB_SENDER_EMAIL,
-                to,
-                subject,
-                text,
-                html: mjml(invitation(JSON.parse(text))).html,
-            });
-        else if (type === "bidSelectionConfirmation")
-            return yield transporter.sendMail({
-                from: process.env.IRMB_SENDER_EMAIL,
-                to,
-                subject,
-                text,
-                html: mjml(bidSelectionConfirmation(JSON.parse(text))).html,
-            });
-        else if (type === "approval")
-            return yield transporter.sendMail({
-                from: process.env.IRMB_SENDER_EMAIL,
-                to,
-                subject,
-                text,
-                html: mjml(approval).html,
-            });
-        else if (type === "rejection")
-            return yield transporter.sendMail({
-                from: process.env.IRMB_SENDER_EMAIL,
-                to,
-                subject,
-                text,
-                html: mjml(rejection).html,
-            });
-        else if (type === "newUserAccount")
-            return yield transporter.sendMail({
-                from: process.env.IRMB_SENDER_EMAIL,
-                to,
-                subject,
-                text,
-                html: mjml(newUserAccount(JSON.parse(text))).html,
-            });
-        else if (type === "passwordReset")
-            return yield transporter.sendMail({
-                from: process.env.IRMB_SENDER_EMAIL,
-                to,
-                subject,
-                text,
-                html: mjml(passwordReset(JSON.parse(text))).html,
-            });
-        else if (type === "externalSignature")
-            return yield transporter.sendMail({
-                from: process.env.IRMB_SENDER_EMAIL,
-                to,
-                subject,
-                text,
-                html: mjml(externalSignature(JSON.parse(text))).html,
-            });
-        else if (type === "externalSignaturePO")
-            return yield transporter.sendMail({
-                from: process.env.IRMB_SENDER_EMAIL,
-                to,
-                subject,
-                text,
-                html: mjml(externalSignature(JSON.parse(text))).html,
-            });
+        try {
+            if (type === "newTender")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to: to,
+                    subject,
+                    text,
+                    html: mjml(newTender).html,
+                });
+            else if (type === "bidEvaluationInvite")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(invitation(JSON.parse(text))).html,
+                });
+            else if (type === "bidSelectionConfirmation")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(bidSelectionConfirmation(JSON.parse(text))).html,
+                });
+            else if (type === "approval")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(approval).html,
+                });
+            else if (type === "rejection")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(rejection).html,
+                });
+            else if (type === "newUserAccount")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(newUserAccount(JSON.parse(text))).html,
+                });
+            else if (type === "passwordReset")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(passwordReset(JSON.parse(text))).html,
+                });
+            else if (type === "externalSignature")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(externalSignature(JSON.parse(text))).html,
+                });
+            else if (type === "externalSignaturePO")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(externalSignature(JSON.parse(text))).html,
+                });
+        }
+        catch (err) {
+        }
     });
 }
 exports.send = send;

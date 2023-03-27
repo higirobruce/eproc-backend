@@ -335,3 +335,57 @@
   service: 'user-service',
   timestamp: '2023-03-26T11:36:34.382Z'
 }
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-27T15:00:13.111Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-03-27T15:00:16.556Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-27T15:02:41.487Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-27T16:07:37.094Z'
+}
+{
+  level: 'info',
+  message: 'info@shapeherd.com failed to log in',
+  service: 'user-service',
+  timestamp: '2023-03-27T16:07:55.412Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-27T16:08:05.303Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-27T16:08:29.491Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-27T16:11:03.578Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-03-27T16:26:47.537Z'
+}

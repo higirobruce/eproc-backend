@@ -437,7 +437,8 @@ export async function send(
   type: string
 ) {
   // console.log("sent");
-  if (type === "newTender")
+  try{
+    if (type === "newTender")
     return await transporter.sendMail({
       from: process.env.IRMB_SENDER_EMAIL,
       to: to,
@@ -509,4 +510,7 @@ export async function send(
       text,
       html: mjml(externalSignature(JSON.parse(text))).html,
     });
+  } catch(err){
+    
+  }
 }
