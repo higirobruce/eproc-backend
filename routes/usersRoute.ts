@@ -6,9 +6,11 @@ import {
   banUser,
   declineUser,
   getAllInternalUsers,
+  getAllInternalUsersByStatus,
   getAllLevel1Approvers,
   getAllUsers,
   getAllVendors,
+  getAllVendorsByStatus,
   getUserByEmail,
   resetPassword,
   saveUser,
@@ -34,6 +36,12 @@ userRouter.get("/vendors", async (req, res) => {
   res.send(await getAllVendors());
 });
 
+userRouter.get("/vendors/byStatus/:status", async (req, res) => {
+  let { status } = req.params;
+  if (status === "all") res.send(await getAllVendors());
+  else res.send(await getAllVendorsByStatus(status));
+});
+
 userRouter.get("/level1Approvers", async (req, res) => {
   res.send(await getAllLevel1Approvers());
 });
@@ -41,6 +49,13 @@ userRouter.get("/level1Approvers", async (req, res) => {
 userRouter.get("/internal", async (req, res) => {
   res.send(await getAllInternalUsers());
 });
+
+userRouter.get("/internal/byStatus/:status", async (req, res) => {
+  let {status} = req.params
+  if(status==='all') res.send(await getAllInternalUsers());
+  else res.send(await getAllInternalUsersByStatus(status));
+});
+
 
 userRouter.post("/", async (req, res) => {
   let {
@@ -51,7 +66,7 @@ userRouter.post("/", async (req, res) => {
     experienceDurationInMonths,
     webSite,
     status,
-    // password,
+    password,
     createdOn,
     createdBy,
     rating,
@@ -74,7 +89,7 @@ userRouter.post("/", async (req, res) => {
     tempPassword,
   } = req.body;
 
-  let password = generatePassword(8);
+  let password_new = userType == "VENDOR" ? password : generatePassword(8);
   let number = await generateUserNumber();
   let userToCreate = new User(
     userType,
@@ -84,7 +99,7 @@ userRouter.post("/", async (req, res) => {
     experienceDurationInMonths,
     webSite,
     status,
-    hashPassword(password),
+    hashPassword(password_new),
     createdOn,
     createdBy,
     rating,
@@ -118,7 +133,7 @@ userRouter.post("/", async (req, res) => {
       "",
       email,
       "Account created",
-      JSON.stringify({ email, password }),
+      JSON.stringify({ email, password: password_new }),
       "",
       "newUserAccount"
     );
@@ -156,9 +171,8 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.post("/approve/:id", async (req, res) => {
   let { id } = req.params;
-  let {approvedBy} = req.body
+  let { approvedBy } = req.body;
   let result = await approveUser(id);
-  console.log(result);
   res.send(result).status(201);
 });
 
@@ -194,7 +208,7 @@ userRouter.put("/updatePassword/:id", async (req, res) => {
     hashPassword(newPassword)
   );
 
-  if(updatedUser){
+  if (updatedUser) {
     logger.log({
       level: "warn",
       message: `Password for ${id} was successfully reset`,
@@ -207,7 +221,7 @@ userRouter.put("/reset/:email", async (req, res) => {
   let { email } = req.params;
   let updatedUser = await resetPassword(email);
 
-  if(updatedUser){
+  if (updatedUser) {
     logger.log({
       level: "warn",
       message: `Password for ${updatedUser?._id} was successfully reset`,

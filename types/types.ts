@@ -46,7 +46,7 @@ export type UserType =
   | "BoD-MEMBER"
   | "CEO"
   | "HEAD-OF-FINANCE";
-export type UserStatus = "created" | "active" | "inactive" | "";
+export type UserStatus = "pending-approval" | "active" | "inactive" | "approved" | "";
 
 export type DocumentLines = {
   ItemDescription: String;

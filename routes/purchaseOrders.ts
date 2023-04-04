@@ -85,8 +85,12 @@ poRouter.post("/", async (req, response) => {
         : null;
 
       if (b1Response_assets?.error || b1Response_nonAssets?.error) {
-        response.status(201).send(b1Response_assets || b1Response_nonAssets);
+        console.log(b1Response_assets?.error)
+        console.log(b1Response_nonAssets?.error)
+        
+        response.status(201).send(b1Response_assets?.error || b1Response_nonAssets?.error);
       } else {
+        console.log('passed')
         let number = await generatePONumber();
         let refs = [];
         b1Response_assets && refs.push(b1Response_assets.DocNum);

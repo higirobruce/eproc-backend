@@ -143,9 +143,11 @@ export async function updateProgress(id: String, updates: String) {
  */
 export async function savePO(po: PurchaseOrder) {
   try {
+    console.log(po)
     let createdRecord = await PurchaseOrderModel.create(po);
     return createdRecord;
   } catch (err) {
+    console.log(err)
     throw err;
   }
 }
@@ -170,7 +172,7 @@ export async function savePOInB1(
       .then((res) => res.json())
       .then((res) => {return res})
       .catch((err) => {
-        return err
+        return {error:err}
       });
   });
 }

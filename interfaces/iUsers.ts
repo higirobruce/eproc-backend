@@ -1,7 +1,6 @@
 import { Document, Types } from 'mongoose';
 import { UserStatus, UserType } from '../types/types';
 
-
 export interface IUser {
     userType: UserType,
     contactPersonNames: string,

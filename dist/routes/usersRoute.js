@@ -23,26 +23,38 @@ exports.userRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.userRouter.get("/vendors", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllVendors)());
 }));
+exports.userRouter.get("/vendors/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { status } = req.params;
+    if (status === "all")
+        res.send(yield (0, users_2.getAllVendors)());
+    else
+        res.send(yield (0, users_2.getAllVendorsByStatus)(status));
+}));
 exports.userRouter.get("/level1Approvers", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllLevel1Approvers)());
 }));
 exports.userRouter.get("/internal", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllInternalUsers)());
 }));
+exports.userRouter.get("/internal/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { status } = req.params;
+    if (status === 'all')
+        res.send(yield (0, users_2.getAllInternalUsers)());
+    else
+        res.send(yield (0, users_2.getAllInternalUsersByStatus)(status));
+}));
 exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, 
-    // password,
-    createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword, } = req.body;
-    let password = (0, users_3.generatePassword)(8);
+    let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword, } = req.body;
+    let password_new = userType == "VENDOR" ? password : (0, users_3.generatePassword)(8);
     let number = yield (0, users_3.generateUserNumber)();
-    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, (0, users_3.hashPassword)(tempPassword));
+    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password_new), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, (0, users_3.hashPassword)(tempPassword));
     let createdUser = yield (0, users_2.saveUser)(userToCreate);
     if (createdUser) {
         logger_1.logger.log({
             level: "info",
             message: `${createdUser === null || createdUser === void 0 ? void 0 : createdUser._id} was successfully created`,
         });
-        (0, sendEmailNode_1.send)("", email, "Account created", JSON.stringify({ email, password }), "", "newUserAccount");
+        (0, sendEmailNode_1.send)("", email, "Account created", JSON.stringify({ email, password: password_new }), "", "newUserAccount");
     }
     res.status(201).send(createdUser);
 }));
@@ -75,7 +87,6 @@ exports.userRouter.post("/approve/:id", (req, res) => __awaiter(void 0, void 0, 
     let { id } = req.params;
     let { approvedBy } = req.body;
     let result = yield (0, users_2.approveUser)(id);
-    console.log(result);
     res.send(result).status(201);
 }));
 exports.userRouter.post("/decline/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

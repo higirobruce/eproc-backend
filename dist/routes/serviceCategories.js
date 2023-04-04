@@ -14,6 +14,6 @@ const express_1 = require("express");
 const serviceCategories_1 = require("../models/serviceCategories");
 exports.serviceCategoryRouter = (0, express_1.Router)();
 exports.serviceCategoryRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let categs = yield serviceCategories_1.ServiceCategoryModel.find();
+    let categs = yield serviceCategories_1.ServiceCategoryModel.find().sort({ description: 'asc' });
     res.status(200).send(categs);
 }));

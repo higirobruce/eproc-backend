@@ -41,3 +41,118 @@
   service: 'user-service',
   timestamp: '2023-03-25T16:49:13.944Z'
 }
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-28T07:58:09.097Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:05:59.959Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:05:59.968Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:05:59.972Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.026Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.026Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.028Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.059Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.060Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.060Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.060Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.060Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.060Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.073Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.073Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.073Z'
+}
+{
+  level: 'error',
+  message: 'MongoDb connection closed.',
+  service: 'user-service',
+  timestamp: '2023-03-29T07:06:00.078Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-03-31T12:21:58.510Z'
+}
+{
+  level: 'error',
+  message: 'Unauthorized API access was declined.',
+  payload: '/users',
+  service: 'user-service',
+  timestamp: '2023-03-31T16:23:48.298Z'
+}

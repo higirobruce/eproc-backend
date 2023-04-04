@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveBankDetails = exports.setTempFields = exports.resetPassword = exports.updateMyPassword = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getVendorByCompanyName = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsers = exports.getVendorById = exports.getAllLevel1Approvers = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.saveBankDetails = exports.setTempFields = exports.resetPassword = exports.updateMyPassword = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getVendorByCompanyName = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsersByStatus = exports.getAllInternalUsers = exports.getVendorById = exports.getAllLevel1Approvers = exports.getAllVendorsByStatus = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
 const series_1 = require("./series");
@@ -20,7 +20,9 @@ let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 function getAllUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find().populate("department");
+            let users = yield users_1.UserModel.find()
+                .populate("department")
+                .sort({ email: "asc" });
             return users;
         }
         catch (err) {
@@ -49,6 +51,23 @@ function getAllVendors() {
     });
 }
 exports.getAllVendors = getAllVendors;
+function getAllVendorsByStatus(status) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let users = yield users_1.UserModel.find({ userType: "VENDOR", status })
+                .populate("department")
+                .sort({ createdOn: "desc" });
+            return users;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.getAllVendorsByStatus = getAllVendorsByStatus;
 function getAllLevel1Approvers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -90,7 +109,7 @@ exports.getVendorById = getVendorById;
 function getAllInternalUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" } }).populate("department");
+            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" } }).populate("department").sort({ email: "asc" });
             return users;
         }
         catch (err) {
@@ -102,6 +121,21 @@ function getAllInternalUsers() {
     });
 }
 exports.getAllInternalUsers = getAllInternalUsers;
+function getAllInternalUsersByStatus(status) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" }, status }).populate("department").sort({ email: "asc" });
+            return users;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.getAllInternalUsersByStatus = getAllInternalUsersByStatus;
 function createSupplierinB1(CardName, CardType, Series) {
     return __awaiter(this, void 0, void 0, function* () {
         let options = {
@@ -218,7 +252,7 @@ exports.approveUser = approveUser;
 function declineUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "declined" } }, { new: true });
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "rejected" } }, { new: true });
             return user;
         }
         catch (err) {

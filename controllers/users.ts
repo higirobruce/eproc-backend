@@ -14,7 +14,9 @@ let localstorage = new LocalStorage("./scratch");
 
 export async function getAllUsers() {
   try {
-    let users = await UserModel.find().populate("department");
+    let users = await UserModel.find()
+      .populate("department")
+      .sort({ email: "asc" });
     return users;
   } catch (err) {
     return {
@@ -37,6 +39,21 @@ export async function getAllVendors() {
     };
   }
 }
+
+export async function getAllVendorsByStatus(status:String) {
+  try {
+    let users = await UserModel.find({ userType: "VENDOR", status })
+      .populate("department")
+      .sort({ createdOn: "desc" });
+    return users;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
 
 export async function getAllLevel1Approvers() {
   try {
@@ -77,7 +94,21 @@ export async function getAllInternalUsers() {
   try {
     let users = await UserModel.find({ userType: { $ne: "VENDOR" } }).populate(
       "department"
-    );
+    ).sort({ email: "asc" });
+    return users;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
+export async function getAllInternalUsersByStatus(status:string) {
+  try {
+    let users = await UserModel.find({ userType: { $ne: "VENDOR"}, status }).populate(
+      "department"
+    ).sort({ email: "asc" });
     return users;
   } catch (err) {
     return {
@@ -200,7 +231,7 @@ export async function declineUser(id: String) {
   try {
     let user = await UserModel.findByIdAndUpdate(
       id,
-      { $set: { status: "declined" } },
+      { $set: { status: "rejected" } },
       { new: true }
     );
     return user;
@@ -211,6 +242,7 @@ export async function declineUser(id: String) {
     };
   }
 }
+
 
 export async function banUser(id: String) {
   try {

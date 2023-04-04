@@ -34,7 +34,7 @@ exports.UserSchema = new mongoose_1.Schema({
     },
     status: {
         type: String,
-        default: "created",
+        default: "pending-approval",
     },
     password: {
         type: String,

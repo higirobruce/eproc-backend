@@ -30,7 +30,7 @@ export const UserSchema = new Schema<IUserDocument>({
   },
   status: {
     type: String,
-    default: "created",
+    default: "pending-approval",
   },
   password: {
     type: String,

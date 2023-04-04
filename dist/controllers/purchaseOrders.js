@@ -161,10 +161,12 @@ exports.updateProgress = updateProgress;
 function savePO(po) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            console.log(po);
             let createdRecord = yield purchaseOrders_1.PurchaseOrderModel.create(po);
             return createdRecord;
         }
         catch (err) {
+            console.log(err);
             throw err;
         }
     });
@@ -186,7 +188,7 @@ function savePOInB1(CardCode, DocType, DocumentLines) {
                 .then((res) => res.json())
                 .then((res) => { return res; })
                 .catch((err) => {
-                return err;
+                return { error: err };
             });
         }));
     });
