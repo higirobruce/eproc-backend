@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePo = exports.updateB1Po = exports.savePOInB1 = exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getPOByTenderId = exports.getAllPOs = void 0;
+exports.getVendorRate = exports.updatePo = exports.updateB1Po = exports.savePOInB1 = exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getPOByTenderId = exports.getAllPOs = void 0;
 const purchaseOrders_1 = require("../models/purchaseOrders");
 const node_localstorage_1 = require("node-localstorage");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
+const mongoose_1 = __importDefault(require("mongoose"));
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 /**
  * Get all POs in the database. This is used to populate the list of purchases and get the purchase order for each purchase
@@ -222,3 +226,34 @@ function updatePo(id, po) {
     });
 }
 exports.updatePo = updatePo;
+function getVendorRate(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let pipeline = [
+            {
+                $match: {
+                    vendor: new mongoose_1.default.Types.ObjectId(id)
+                },
+            },
+            {
+                $group: {
+                    _id: "$vendor",
+                    avgRate: {
+                        $avg: "$rate",
+                    },
+                },
+            },
+        ];
+        try {
+            let avg = yield purchaseOrders_1.PurchaseOrderModel.aggregate(pipeline);
+            console.log(avg);
+            return avg;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.getVendorRate = getVendorRate;

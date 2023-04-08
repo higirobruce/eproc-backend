@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { User } from "../classrepo/users";
+import { getVendorRate } from "../controllers/purchaseOrders";
 import {
   activateUser,
   approveUser,
@@ -36,6 +37,12 @@ userRouter.get("/vendors", async (req, res) => {
   res.send(await getAllVendors());
 });
 
+userRouter.get("/vendors/rate/:id", async (req, res) => {
+  let { id } = req.params;
+  // console.log(id)
+  res.send(await getVendorRate(id));
+});
+
 userRouter.get("/vendors/byStatus/:status", async (req, res) => {
   let { status } = req.params;
   if (status === "all") res.send(await getAllVendors());
@@ -51,11 +58,10 @@ userRouter.get("/internal", async (req, res) => {
 });
 
 userRouter.get("/internal/byStatus/:status", async (req, res) => {
-  let {status} = req.params
-  if(status==='all') res.send(await getAllInternalUsers());
+  let { status } = req.params;
+  if (status === "all") res.send(await getAllInternalUsers());
   else res.send(await getAllInternalUsersByStatus(status));
 });
-
 
 userRouter.post("/", async (req, res) => {
   let {

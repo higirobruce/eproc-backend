@@ -4,6 +4,7 @@ import { DocumentLines } from "../types/types";
 import { updateRequestStatus } from "./requests";
 import { LocalStorage } from "node-localstorage";
 import { sapLogin } from "../utils/sapB1Connection";
+import mongoose from "mongoose";
 
 let localstorage = new LocalStorage("./scratch");
 
@@ -210,4 +211,32 @@ export async function updatePo(id: String, po: PurchaseOrder) {
     po,
     { new: true }
   );
+}
+
+export async function getVendorRate(id: string) {
+  let pipeline = [
+    {
+      $match: {
+        vendor: new mongoose.Types.ObjectId(id)
+      },
+    },
+    {
+      $group: {
+        _id: "$vendor",
+        avgRate: {
+          $avg: "$rate",
+        },
+      },
+    },
+  ];
+  try {
+    let avg = await PurchaseOrderModel.aggregate(pipeline);
+    console.log(avg)
+    return avg;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
 }

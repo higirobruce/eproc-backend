@@ -37,10 +37,49 @@ exports.getAllUsers = getAllUsers;
 function getAllVendors() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            let pipeline = [
+                {
+                    '$match': {
+                        'userType': 'VENDOR'
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'purchaseorders',
+                        'localField': '_id',
+                        'foreignField': 'vendor',
+                        'as': 'purchaseorders'
+                    }
+                }, {
+                    '$unwind': {
+                        'path': '$purchaseorders',
+                        'preserveNullAndEmptyArrays': true
+                    }
+                }, {
+                    '$group': {
+                        '_id': '$_id',
+                        'avgRate': {
+                            '$avg': '$purchaseorders.rate'
+                        }
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'users',
+                        'localField': '_id',
+                        'foreignField': '_id',
+                        'as': 'vendor'
+                    }
+                }, {
+                    '$unwind': {
+                        'path': '$vendor',
+                        'preserveNullAndEmptyArrays': true
+                    }
+                }
+            ];
             let users = yield users_1.UserModel.find({ userType: "VENDOR" })
                 .populate("department")
                 .sort({ createdOn: "desc" });
-            return users;
+            let usersAggregate = yield users_1.UserModel.aggregate(pipeline).sort({ createdOn: "desc" });
+            return usersAggregate;
         }
         catch (err) {
             return {
@@ -54,10 +93,50 @@ exports.getAllVendors = getAllVendors;
 function getAllVendorsByStatus(status) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            let pipeline = [
+                {
+                    '$match': {
+                        'userType': 'VENDOR',
+                        'status': status
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'purchaseorders',
+                        'localField': '_id',
+                        'foreignField': 'vendor',
+                        'as': 'purchaseorders'
+                    }
+                }, {
+                    '$unwind': {
+                        'path': '$purchaseorders',
+                        'preserveNullAndEmptyArrays': true
+                    }
+                }, {
+                    '$group': {
+                        '_id': '$_id',
+                        'avgRate': {
+                            '$avg': '$purchaseorders.rate'
+                        }
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'users',
+                        'localField': '_id',
+                        'foreignField': '_id',
+                        'as': 'vendor'
+                    }
+                }, {
+                    '$unwind': {
+                        'path': '$vendor',
+                        'preserveNullAndEmptyArrays': true
+                    }
+                }
+            ];
             let users = yield users_1.UserModel.find({ userType: "VENDOR", status })
                 .populate("department")
                 .sort({ createdOn: "desc" });
-            return users;
+            let usersAggregate = yield users_1.UserModel.aggregate(pipeline).sort({ createdOn: "desc" });
+            return usersAggregate;
         }
         catch (err) {
             return {
@@ -109,7 +188,9 @@ exports.getVendorById = getVendorById;
 function getAllInternalUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" } }).populate("department").sort({ email: "asc" });
+            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" } })
+                .populate("department")
+                .sort({ email: "asc" });
             return users;
         }
         catch (err) {
@@ -124,7 +205,9 @@ exports.getAllInternalUsers = getAllInternalUsers;
 function getAllInternalUsersByStatus(status) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" }, status }).populate("department").sort({ email: "asc" });
+            let users = yield users_1.UserModel.find({ userType: { $ne: "VENDOR" }, status })
+                .populate("department")
+                .sort({ email: "asc" });
             return users;
         }
         catch (err) {

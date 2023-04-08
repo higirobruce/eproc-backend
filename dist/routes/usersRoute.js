@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRouter = void 0;
 const express_1 = require("express");
 const users_1 = require("../classrepo/users");
+const purchaseOrders_1 = require("../controllers/purchaseOrders");
 const users_2 = require("../controllers/users");
 const users_3 = require("../services/users");
 const logger_1 = require("../utils/logger");
@@ -22,6 +23,11 @@ exports.userRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, func
 }));
 exports.userRouter.get("/vendors", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllVendors)());
+}));
+exports.userRouter.get("/vendors/rate/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    // console.log(id)
+    res.send(yield (0, purchaseOrders_1.getVendorRate)(id));
 }));
 exports.userRouter.get("/vendors/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { status } = req.params;
@@ -38,7 +44,7 @@ exports.userRouter.get("/internal", (req, res) => __awaiter(void 0, void 0, void
 }));
 exports.userRouter.get("/internal/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { status } = req.params;
-    if (status === 'all')
+    if (status === "all")
         res.send(yield (0, users_2.getAllInternalUsers)());
     else
         res.send(yield (0, users_2.getAllInternalUsersByStatus)(status));
