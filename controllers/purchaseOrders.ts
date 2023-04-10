@@ -144,11 +144,9 @@ export async function updateProgress(id: String, updates: String) {
  */
 export async function savePO(po: PurchaseOrder) {
   try {
-    console.log(po)
     let createdRecord = await PurchaseOrderModel.create(po);
     return createdRecord;
   } catch (err) {
-    console.log(err)
     throw err;
   }
 }
@@ -231,7 +229,6 @@ export async function getVendorRate(id: string) {
   ];
   try {
     let avg = await PurchaseOrderModel.aggregate(pipeline);
-    console.log(avg)
     return avg;
   } catch (err) {
     return {

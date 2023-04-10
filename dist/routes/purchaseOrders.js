@@ -50,12 +50,9 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
                 ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_NonAssets.DocType, B1Data_NonAssets.DocumentLines)
                 : null;
             if ((b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error) || (b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error)) {
-                console.log(b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error);
-                console.log(b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error);
                 response.status(201).send((b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error) || (b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error));
             }
             else {
-                console.log('passed');
                 let number = yield (0, purchaseOrders_3.generatePONumber)();
                 let refs = [];
                 b1Response_assets && refs.push(b1Response_assets.DocNum);

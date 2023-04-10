@@ -165,12 +165,10 @@ exports.updateProgress = updateProgress;
 function savePO(po) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log(po);
             let createdRecord = yield purchaseOrders_1.PurchaseOrderModel.create(po);
             return createdRecord;
         }
         catch (err) {
-            console.log(err);
             throw err;
         }
     });
@@ -245,7 +243,6 @@ function getVendorRate(id) {
         ];
         try {
             let avg = yield purchaseOrders_1.PurchaseOrderModel.aggregate(pipeline);
-            console.log(avg);
             return avg;
         }
         catch (err) {

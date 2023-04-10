@@ -23,6 +23,7 @@ import path from "path";
 import { send } from "./utils/sendEmailNode";
 import { generatePassword } from "./services/users";
 import { logger } from "./utils/logger";
+import multer from "multer";
 
 let localstorage = new LocalStorage("./scratch");
 
@@ -70,7 +71,7 @@ const app: Express = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use("/users", auth, userRouter);

@@ -1152,3 +1152,568 @@
   service: 'user-service',
   timestamp: '2023-04-01T22:12:07.382Z'
 }
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-05T14:08:14.125Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-05T14:08:15.730Z'
+}
+{
+  level: 'info',
+  message: 'bruce@shapeherd.com failed to log in',
+  service: 'user-service',
+  timestamp: '2023-04-05T14:09:05.793Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-05T14:09:22.685Z'
+}
+{
+  level: 'info',
+  message: 'bruce@shapeherd.com failed to log in',
+  service: 'user-service',
+  timestamp: '2023-04-06T06:43:26.547Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-06T06:43:33.743Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T06:48:53.203Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-06T06:53:37.200Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:19:25.107Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:20:13.614Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:20:36.630Z'
+}
+{
+  level: 'error',
+  message: 'Unauthorized API access was declined.',
+  payload: '/users',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:21:45.519Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:22:34.266Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:23:01.385Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:23:56.766Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:24:01.608Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:24:13.446Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:24:18.727Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:47:08.261Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:56:03.386Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:56:29.768Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-06T13:56:36.032Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-06T16:26:07.135Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-06T16:57:37.585Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-07T09:23:24.049Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-07T09:23:25.545Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-07T10:28:35.988Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-07T10:31:48.853Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-07T11:21:59.242Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-07T11:22:29.456Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-08T07:23:17.089Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-08T22:08:49.908Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-04-08T22:08:49.936Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-04-08T22:08:49.952Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T07:43:50.799Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T07:43:52.953Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T07:45:37.723Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T07:48:38.433Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T07:49:12.491Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:22:08.783Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:22:47.307Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:26:10.537Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:31:12.305Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:34:49.049Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:35:00.074Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:35:59.844Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:36:48.147Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:37:09.083Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:39:30.600Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:39:57.602Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:40:28.240Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:42:03.771Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:42:11.195Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:43:24.883Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:44:52.221Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:45:05.720Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:46:08.945Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:53:32.771Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:54:12.710Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T08:54:35.209Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:09:55.164Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:11:28.916Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:12:01.496Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:12:12.933Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:12:49.845Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:16:53.030Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:24:23.758Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:27:16.588Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:27:27.127Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:28:04.235Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:29:14.586Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:29:58.686Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:31:59.372Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:32:20.117Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:33:15.070Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:33:29.821Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T09:50:03.457Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T10:05:52.585Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T10:13:56.076Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T10:19:09.011Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:16:27.474Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:16:42.944Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:16:44.906Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:17:15.130Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:20:04.349Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:20:40.999Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:25:33.660Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:26:03.713Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:26:19.330Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:31:36.826Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:35:50.281Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T11:36:10.775Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-10T12:42:25.939Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-10T12:42:27.969Z'
+}

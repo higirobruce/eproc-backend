@@ -1,6 +1,7 @@
 import multer, { diskStorage } from "multer";
 import { Router } from "express";
 import fs from "fs";
+import { randomUUID } from "crypto";
 
 export let uploadRouter = Router();
 
@@ -9,12 +10,17 @@ uploadRouter.post("/termsOfReference/", (req, res) => {
     destination: function (req, file, cb) {
       cb(null, "dist/public/termsOfReference");
     },
+
     filename: function (req, file, cb) {
-      cb(null, req.query.id+'.pdf');
+      // cb(null, req.query.id+'.pdf');
+      let fileName = randomUUID()
+      cb(null, fileName+'.pdf');
     },
   });
 
-  var upload = multer({ storage: storage }).single("file");
+
+  var upload = multer({ storage: storage }).array("files[]");
+  // var upload = multer({ storage: storage }).array('file',100)
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -24,7 +30,7 @@ uploadRouter.post("/termsOfReference/", (req, res) => {
       return res.status(500);
     }
 
-    return res.status(200).send(req.file);
+    return res.status(200).send(req.files);
   });
 });
 

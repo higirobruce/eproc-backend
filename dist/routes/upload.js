@@ -7,6 +7,7 @@ exports.uploadRouter = void 0;
 const multer_1 = __importDefault(require("multer"));
 const express_1 = require("express");
 const fs_1 = __importDefault(require("fs"));
+const crypto_1 = require("crypto");
 exports.uploadRouter = (0, express_1.Router)();
 exports.uploadRouter.post("/termsOfReference/", (req, res) => {
     var storage = multer_1.default.diskStorage({
@@ -14,10 +15,13 @@ exports.uploadRouter.post("/termsOfReference/", (req, res) => {
             cb(null, "dist/public/termsOfReference");
         },
         filename: function (req, file, cb) {
-            cb(null, req.query.id + '.pdf');
+            // cb(null, req.query.id+'.pdf');
+            let fileName = (0, crypto_1.randomUUID)();
+            cb(null, fileName + '.pdf');
         },
     });
-    var upload = (0, multer_1.default)({ storage: storage }).single("file");
+    var upload = (0, multer_1.default)({ storage: storage }).array("files[]");
+    // var upload = multer({ storage: storage }).array('file',100)
     upload(req, res, function (err) {
         if (err instanceof multer_1.default.MulterError) {
             console.log(err);
@@ -27,7 +31,7 @@ exports.uploadRouter.post("/termsOfReference/", (req, res) => {
             console.log(err);
             return res.status(500);
         }
-        return res.status(200).send(req.file);
+        return res.status(200).send(req.files);
     });
 });
 exports.uploadRouter.post("/rdbCerts/", (req, res) => {
