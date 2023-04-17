@@ -14,6 +14,7 @@ import {
   getReqCountsByStatus,
   saveRequest,
   updateRequest,
+  updateRequestSourcingMethod,
   updateRequestStatus,
 } from "../controllers/requests";
 import {
@@ -87,6 +88,7 @@ requetsRouter.post("/", async (req, res) => {
     hof_approvalDate,
     pm_approvalDate,
     level1Approver,
+    sourcingMethod
   } = req.body;
 
   let number = await generateReqNumber();
@@ -112,7 +114,8 @@ requetsRouter.post("/", async (req, res) => {
     hod_approvalDate,
     hof_approvalDate,
     pm_approvalDate,
-    level1Approver
+    level1Approver,
+    sourcingMethod
   );
 
   let createdRequest = await saveRequest(requestToCreate);
@@ -137,6 +140,15 @@ requetsRouter.put("/status/:id", async (req, res) => {
 
   res.send(await updateRequestStatus(id, status));
 });
+
+
+requetsRouter.put("/sourcingMethod/:id", async (req, res) => {
+  let { id } = req.params;
+  let { sourcingMethod } = req.body;
+
+  res.send(await updateRequestSourcingMethod(id, sourcingMethod));
+});
+
 
 requetsRouter.put("/:id", async (req, res) => {
   let { id } = req.params;

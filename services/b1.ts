@@ -62,6 +62,7 @@ export function getFixedAssets(){
           headers: {
             "Content-Type": "application/json",
             Cookie: `${localstorage.getItem("cookie")}`,
+            Prefer: 'odata.maxpagesize=1000'
           },
         }
       ).then(res=>res.json())

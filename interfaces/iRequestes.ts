@@ -19,6 +19,7 @@ export interface IRequest {
     hof_approvalDate: Date,
     pm_approvalDate: Date,
     title: String,
+    sourcingMethod: String
 
 }
 

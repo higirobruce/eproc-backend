@@ -177,6 +177,22 @@ export async function updateRequestStatus(id: String, newStatus: String) {
   }
 }
 
+export async function updateRequestSourcingMethod(id: String, sourcingMethod: String) {
+  try {
+    let update = {sourcingMethod: sourcingMethod};
+    
+
+    await RequestModel.findByIdAndUpdate(id, { $set: update });
+
+    return { message: "done" };
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
 export async function updateRequest(id: String, update: Request) {
   try {
     await RequestModel.findByIdAndUpdate(id, update);

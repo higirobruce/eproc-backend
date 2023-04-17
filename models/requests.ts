@@ -54,6 +54,9 @@ export const RequestSchema = new Schema<IRequestDocument>({
     type: Types.ObjectId,
     ref: "User",
   },
+  sourcingMethod: {
+    type: String
+  }
 });
 
 export const RequestModel = model<IRequestDocument>("Request", RequestSchema);

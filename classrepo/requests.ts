@@ -21,6 +21,7 @@ export class Request implements IRequest {
   hof_approvalDate: Date;
   pm_approvalDate: Date;
   level1Approver: Types.ObjectId;
+  sourcingMethod: string;
 
   constructor(
     createdBy: string,
@@ -39,7 +40,8 @@ export class Request implements IRequest {
     hod_approvalDate: Date,
     hof_approvalDate: Date,
     pm_approvalDate: Date,
-    level1Approver: string
+    level1Approver: string,
+    sourcingMethod: string
   ) {
     this.createdBy = createdBy
       ? new Types.ObjectId(createdBy)
@@ -62,5 +64,6 @@ export class Request implements IRequest {
     this.level1Approver = level1Approver
       ? new Types.ObjectId(level1Approver)
       : new Types.ObjectId();
+    this.sourcingMethod = sourcingMethod
   }
 }
