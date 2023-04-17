@@ -54,5 +54,8 @@ exports.RequestSchema = new mongoose_1.Schema({
         type: mongoose_1.Types.ObjectId,
         ref: "User",
     },
+    sourcingMethod: {
+        type: String
+    }
 });
 exports.RequestModel = (0, mongoose_1.model)("Request", exports.RequestSchema);

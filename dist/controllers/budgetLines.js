@@ -11,11 +11,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.saveBudgetLine = exports.getAllBudgetLines = void 0;
 const budgetLines_1 = require("../models/budgetLines");
+const departments_1 = require("../models/departments");
 function getAllBudgetLines() {
     return __awaiter(this, void 0, void 0, function* () {
+        let pipeline = [
+            {
+                '$lookup': {
+                    'from': 'budgetlines',
+                    'localField': '_id',
+                    'foreignField': 'department',
+                    'as': 'budgetlines'
+                }
+            }
+        ];
         try {
-            let dpts = yield budgetLines_1.BudgetLineModel.find();
-            return dpts;
+            // let dpts = await BudgetLineModel.find();
+            let _dpts = yield departments_1.DepartmentModel.aggregate(pipeline);
+            return _dpts;
         }
         catch (err) {
             return {

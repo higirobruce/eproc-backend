@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Request = void 0;
 const mongoose_1 = require("mongoose");
 class Request {
-    constructor(createdBy, items, dueDate, status, attachementUrls, number, description, serviceCategory, reasonForRejection, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, level1Approver) {
+    constructor(createdBy, items, dueDate, status, attachementUrls, number, description, serviceCategory, reasonForRejection, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, level1Approver, sourcingMethod) {
         this.createdBy = createdBy
             ? new mongoose_1.Types.ObjectId(createdBy)
             : new mongoose_1.Types.ObjectId();
@@ -25,6 +25,7 @@ class Request {
         this.level1Approver = level1Approver
             ? new mongoose_1.Types.ObjectId(level1Approver)
             : new mongoose_1.Types.ObjectId();
+        this.sourcingMethod = sourcingMethod;
     }
 }
 exports.Request = Request;

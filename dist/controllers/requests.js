@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReqCountsByCategory = exports.getReqCountsByBudgetStatus = exports.getReqCountsByStatus = exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByStatus = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
+exports.getReqCountsByCategory = exports.getReqCountsByBudgetStatus = exports.getReqCountsByStatus = exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestSourcingMethod = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByStatus = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
 const requests_1 = require("../models/requests");
 const users_1 = require("../models/users");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
@@ -172,6 +172,22 @@ function updateRequestStatus(id, newStatus) {
     });
 }
 exports.updateRequestStatus = updateRequestStatus;
+function updateRequestSourcingMethod(id, sourcingMethod) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let update = { sourcingMethod: sourcingMethod };
+            yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: update });
+            return { message: "done" };
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.updateRequestSourcingMethod = updateRequestSourcingMethod;
 function updateRequest(id, update) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
