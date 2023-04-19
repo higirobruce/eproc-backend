@@ -14,7 +14,7 @@ export async function getAllRequests() {
         path: "department",
         model: "Department",
       },
-    });
+    }).populate('budgetLine')
   return reqs;
 }
 
@@ -30,7 +30,7 @@ export async function getAllRequestsByCreator(createdBy: String) {
         path: "department",
         model: "Department",
       },
-    });
+    }).populate('budgetLine')
   return reqs;
 }
 
@@ -58,7 +58,7 @@ export async function getAllRequestsByStatus(status: String, id: String) {
         path: "department",
         model: "Department",
       },
-    });
+    }).populate('budgetLine')
   return reqs;
 }
 

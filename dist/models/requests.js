@@ -33,7 +33,8 @@ exports.RequestSchema = new mongoose_1.Schema({
         type: Boolean,
     },
     budgetLine: {
-        type: String,
+        type: mongoose_1.Types.ObjectId,
+        ref: "BudgetLine",
     },
     hod_approvalDate: {
         type: Date,
@@ -55,7 +56,7 @@ exports.RequestSchema = new mongoose_1.Schema({
         ref: "User",
     },
     sourcingMethod: {
-        type: String
-    }
+        type: String,
+    },
 });
 exports.RequestModel = (0, mongoose_1.model)("Request", exports.RequestSchema);

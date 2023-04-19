@@ -14,7 +14,7 @@ export interface IRequest {
     reasonForRejection: String,
     declinedBy: String,
     budgeted: boolean,
-    budgetLine: String,
+    
     hod_approvalDate: Date,
     hof_approvalDate: Date,
     pm_approvalDate: Date,
@@ -31,6 +31,10 @@ export interface IRequestDocument extends IRequest, Document {
     level1Approver: {
         type: Types.ObjectId,
         ref: 'User'
+    },
+    budgetLine: {
+        type: Types.ObjectId,
+        ref: 'BudgetLine'
     },
     
 }

@@ -17,7 +17,7 @@ class Request {
         this.reasonForRejection = reasonForRejection;
         this.declinedBy = declinedBy;
         this.budgeted = budgeted;
-        this.budgetLine = budgetLine;
+        this.budgetLine = budgetLine ? new mongoose_1.Types.ObjectId(budgetLine) : new mongoose_1.Types.ObjectId();
         this.title = title;
         this.hod_approvalDate = hod_approvalDate;
         this.hof_approvalDate = hof_approvalDate;

@@ -33,7 +33,8 @@ export const RequestSchema = new Schema<IRequestDocument>({
     type: Boolean,
   },
   budgetLine: {
-    type: String,
+    type: Types.ObjectId,
+    ref: "BudgetLine",
   },
   hod_approvalDate: {
     type: Date,
@@ -55,8 +56,8 @@ export const RequestSchema = new Schema<IRequestDocument>({
     ref: "User",
   },
   sourcingMethod: {
-    type: String
-  }
+    type: String,
+  },
 });
 
 export const RequestModel = model<IRequestDocument>("Request", RequestSchema);

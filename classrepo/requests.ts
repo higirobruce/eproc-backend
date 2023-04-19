@@ -15,7 +15,7 @@ export class Request implements IRequest {
   reasonForRejection: string;
   declinedBy: string;
   budgeted: boolean;
-  budgetLine: String;
+  budgetLine: Types.ObjectId;
   title: string;
   hod_approvalDate: Date;
   hof_approvalDate: Date;
@@ -56,7 +56,7 @@ export class Request implements IRequest {
     this.reasonForRejection = reasonForRejection;
     this.declinedBy = declinedBy;
     this.budgeted = budgeted;
-    this.budgetLine = budgetLine;
+    this.budgetLine = budgetLine ? new Types.ObjectId(budgetLine): new Types.ObjectId();
     this.title = title;
     this.hod_approvalDate = hod_approvalDate;
     this.hof_approvalDate = hof_approvalDate;

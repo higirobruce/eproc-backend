@@ -24,7 +24,7 @@ function getAllRequests() {
                 path: "department",
                 model: "Department",
             },
-        });
+        }).populate('budgetLine');
         return reqs;
     });
 }
@@ -43,7 +43,7 @@ function getAllRequestsByCreator(createdBy) {
                 path: "department",
                 model: "Department",
             },
-        });
+        }).populate('budgetLine');
         return reqs;
     });
 }
@@ -73,7 +73,7 @@ function getAllRequestsByStatus(status, id) {
                 path: "department",
                 model: "Department",
             },
-        });
+        }).populate('budgetLine');
         return reqs;
     });
 }
