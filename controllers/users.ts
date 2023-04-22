@@ -421,6 +421,7 @@ export async function resetPassword(email: String) {
     }
     return user;
   } catch (err) {
+    console.log(err)
     return user;
   }
 }

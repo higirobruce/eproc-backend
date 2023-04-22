@@ -428,6 +428,7 @@ function resetPassword(email) {
             return user;
         }
         catch (err) {
+            console.log(err);
             return user;
         }
     });

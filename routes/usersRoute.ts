@@ -232,6 +232,7 @@ userRouter.put("/reset/:email", async (req, res) => {
       level: "warn",
       message: `Password for ${updatedUser?._id} was successfully reset`,
     });
+    
   }
   res.send(updatedUser);
 });
