@@ -5,7 +5,7 @@ import { UserModel } from "../models/users";
 import { send } from "../utils/sendEmailNode";
 
 export async function getAllRequests() {
-  let reqs = await RequestModel.find()
+  let reqs = await RequestModel.find({status:{$ne:'withdrawn'}})
     .populate("createdBy")
     .populate("level1Approver")
     .populate({
@@ -20,7 +20,7 @@ export async function getAllRequests() {
 
 export async function getAllRequestsByCreator(createdBy: String) {
   let query = {};
-  if(createdBy && createdBy!=='null') query = { createdBy }
+  if(createdBy && createdBy!=='null') query = { createdBy, status:{$ne:'withdrawn'} }
   let reqs = await RequestModel.find(query)
     .populate("createdBy")
     .populate("level1Approver")

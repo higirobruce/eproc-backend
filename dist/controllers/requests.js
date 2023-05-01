@@ -15,7 +15,7 @@ const users_1 = require("../models/users");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
 function getAllRequests() {
     return __awaiter(this, void 0, void 0, function* () {
-        let reqs = yield requests_1.RequestModel.find()
+        let reqs = yield requests_1.RequestModel.find({ status: { $ne: 'withdrawn' } })
             .populate("createdBy")
             .populate("level1Approver")
             .populate({
@@ -33,7 +33,7 @@ function getAllRequestsByCreator(createdBy) {
     return __awaiter(this, void 0, void 0, function* () {
         let query = {};
         if (createdBy && createdBy !== 'null')
-            query = { createdBy };
+            query = { createdBy, status: { $ne: 'withdrawn' } };
         let reqs = yield requests_1.RequestModel.find(query)
             .populate("createdBy")
             .populate("level1Approver")
