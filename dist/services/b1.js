@@ -84,7 +84,6 @@ function getBusinessPartnerByName(CardName) {
         }).then(res => res.json());
     })).catch(err => {
         return err;
-        console.log(err);
     });
 }
 exports.getBusinessPartnerByName = getBusinessPartnerByName;

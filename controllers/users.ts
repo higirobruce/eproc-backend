@@ -31,47 +31,127 @@ export async function getAllVendors() {
   try {
     let pipeline = [
       {
-        '$match': {
-          'userType': 'VENDOR'
-        }
-      }, {
-        '$lookup': {
-          'from': 'purchaseorders', 
-          'localField': '_id', 
-          'foreignField': 'vendor', 
-          'as': 'purchaseorders'
-        }
-      }, {
-        '$unwind': {
-          'path': '$purchaseorders', 
-          'preserveNullAndEmptyArrays': true
-        }
-      }, {
-        '$group': {
-          '_id': '$_id', 
-          'avgRate': {
-            '$avg': '$purchaseorders.rate'
-          }
-        }
-      }, {
-        '$lookup': {
-          'from': 'users', 
-          'localField': '_id', 
-          'foreignField': '_id', 
-          'as': 'vendor'
-        }
-      }, {
-        '$unwind': {
-          'path': '$vendor', 
-          'preserveNullAndEmptyArrays': true
-        }
-      }
+        $match: {
+          userType: "VENDOR",
+        },
+      },
+      {
+        $lookup: {
+          from: "purchaseorders",
+          localField: "_id",
+          foreignField: "vendor",
+          as: "purchaseorders",
+        },
+      },
+      {
+        $unwind: {
+          path: "$purchaseorders",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          avgRate: {
+            $avg: "$purchaseorders.rate",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "vendor",
+        },
+      },
+      {
+        $unwind: {
+          path: "$vendor",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          "vendor.avgRate": "$avgRate",
+        },
+      },
     ];
     let users = await UserModel.find({ userType: "VENDOR" })
       .populate("department")
       .sort({ createdOn: "desc" });
 
-    let usersAggregate = await UserModel.aggregate(pipeline).sort({ createdOn: "desc" });
+    let usersAggregate = await UserModel.aggregate(pipeline).sort({
+      createdOn: "desc",
+    });
+    return usersAggregate;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
+export async function getVendorById(id: string) {
+  try {
+    let pipeline = [
+      {
+        $match: {
+          userType: "VENDOR",
+          _id: new mongoose.mongo.ObjectId(id),
+        },
+      },
+      {
+        $lookup: {
+          from: "purchaseorders",
+          localField: "_id",
+          foreignField: "vendor",
+          as: "purchaseorders",
+        },
+      },
+      {
+        $unwind: {
+          path: "$purchaseorders",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          avgRate: {
+            $avg: "$purchaseorders.rate",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "vendor",
+        },
+      },
+      {
+        $unwind: {
+          path: "$vendor",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          "vendor.avgRate": "$avgRate",
+        },
+      },
+    ];
+    let users = await UserModel.find({ userType: "VENDOR" })
+      .populate("department")
+      .sort({ createdOn: "desc" });
+
+    let usersAggregate = await UserModel.aggregate(pipeline).sort({
+      createdOn: "desc",
+    });
+
     return usersAggregate;
   } catch (err) {
     return {
@@ -85,48 +165,55 @@ export async function getAllVendorsByStatus(status: String) {
   try {
     let pipeline = [
       {
-        '$match': {
-          'userType': 'VENDOR',
-          'status': status
-        }
-      }, {
-        '$lookup': {
-          'from': 'purchaseorders', 
-          'localField': '_id', 
-          'foreignField': 'vendor', 
-          'as': 'purchaseorders'
-        }
-      }, {
-        '$unwind': {
-          'path': '$purchaseorders', 
-          'preserveNullAndEmptyArrays': true
-        }
-      }, {
-        '$group': {
-          '_id': '$_id', 
-          'avgRate': {
-            '$avg': '$purchaseorders.rate'
-          }
-        }
-      }, {
-        '$lookup': {
-          'from': 'users', 
-          'localField': '_id', 
-          'foreignField': '_id', 
-          'as': 'vendor'
-        }
-      }, {
-        '$unwind': {
-          'path': '$vendor', 
-          'preserveNullAndEmptyArrays': true
-        }
-      }
+        $match: {
+          userType: "VENDOR",
+          status: status,
+        },
+      },
+      {
+        $lookup: {
+          from: "purchaseorders",
+          localField: "_id",
+          foreignField: "vendor",
+          as: "purchaseorders",
+        },
+      },
+      {
+        $unwind: {
+          path: "$purchaseorders",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          avgRate: {
+            $avg: "$purchaseorders.rate",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "vendor",
+        },
+      },
+      {
+        $unwind: {
+          path: "$vendor",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
     ];
     let users = await UserModel.find({ userType: "VENDOR", status })
       .populate("department")
       .sort({ createdOn: "desc" });
 
-    let usersAggregate = await UserModel.aggregate(pipeline).sort({ createdOn: "desc" });
+    let usersAggregate = await UserModel.aggregate(pipeline).sort({
+      createdOn: "desc",
+    });
     return usersAggregate;
   } catch (err) {
     return {
@@ -156,9 +243,8 @@ export async function getAllLevel1Approvers() {
   }
 }
 
-export async function getVendorById(id: string) {
+export async function getVendorById2(id: string) {
   try {
-    
     let users = await UserModel.findOne({
       userType: "VENDOR",
       _id: id,
@@ -173,6 +259,20 @@ export async function getVendorById(id: string) {
 }
 
 
+export async function getInternalUserById(id: string) {
+ 
+  try {
+    let users = await UserModel.findOne({
+      _id: id,
+    }).populate("department");
+    return users;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
 
 export async function getAllInternalUsers() {
   try {
@@ -296,9 +396,13 @@ export async function approveUser(id: String) {
         message: createdCode ? "" : "Could not connect to SAP B1.",
       };
     } else {
-      user = await UserModel.findByIdAndUpdate(id, {
-        $set: { status: "approved" },
-      }).populate("department");
+      user = await UserModel.findByIdAndUpdate(
+        id,
+        {
+          $set: { status: "approved" },
+        },
+        { new: true }
+      ).populate("department");
 
       return user;
     }
@@ -317,7 +421,7 @@ export async function declineUser(id: String) {
       id,
       { $set: { status: "rejected" } },
       { new: true }
-    );
+    ).populate("department");
     return user;
   } catch (err) {
     return {
@@ -333,7 +437,7 @@ export async function banUser(id: String) {
       id,
       { $set: { status: "banned" } },
       { new: true }
-    );
+    ).populate("department");
     return user;
   } catch (err) {
     return {
@@ -349,7 +453,7 @@ export async function activateUser(id: String) {
       id,
       { $set: { status: "approved" } },
       { new: true }
-    );
+    ).populate("department");
     return user;
   } catch (err) {
     return {
@@ -361,7 +465,9 @@ export async function activateUser(id: String) {
 
 export async function updateUser(id: String, newUser: User) {
   try {
-    let user = await UserModel.findByIdAndUpdate(id, newUser, { new: true });
+    let user = await UserModel.findByIdAndUpdate(id, newUser, {
+      new: true,
+    }).populate("department");
     return user;
   } catch (err) {
     return {
@@ -383,7 +489,7 @@ export async function updateMyPassword(
         id,
         { $set: { password: newPassword } },
         { new: true }
-      );
+      ).populate("department");
       return user;
     } else {
       return {
@@ -407,7 +513,7 @@ export async function resetPassword(email: String) {
       { email: email },
       { $set: { password: hashPassword(newPassword) } },
       { new: true }
-    );
+    ).populate("department");
 
     if (user) {
       send(
@@ -421,7 +527,7 @@ export async function resetPassword(email: String) {
     }
     return user;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return user;
   }
 }

@@ -37,16 +37,16 @@ export const RequestSchema = new Schema<IRequestDocument>({
     ref: "BudgetLine",
   },
   hod_approvalDate: {
-    type: Date,
-    default: Date.now(),
+    type: Date
   },
   hof_approvalDate: {
     type: Date,
-    default: Date.now(),
   },
   pm_approvalDate: {
-    type: Date,
-    default: Date.now(),
+    type: Date
+  },
+  rejectionDate: {
+    type: Date
   },
   title: {
     type: String,

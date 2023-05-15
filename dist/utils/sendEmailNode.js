@@ -203,7 +203,7 @@ const rejection = `<mjml>
   <!-- Image Header -->
   <mj-section>
     <mj-column width="600px">
-      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your Approval is needed</mj-text>
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your Request has been declined</mj-text>
     </mj-column>
   </mj-section>
 

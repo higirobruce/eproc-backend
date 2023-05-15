@@ -57,18 +57,18 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
                 let refs = [];
                 b1Response_assets && refs.push(b1Response_assets.DocNum);
                 b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
-                let tenderToCreate = new purchaseOrders_1.PurchaseOrder(number, vendor, tender, request, createdBy, sections, items, status, deliveryProgress, signatories, reqAttachmentDocId, refs, rate, rateComment);
-                let createdTender = yield (0, purchaseOrders_2.savePO)(tenderToCreate);
-                if (createdTender) {
+                let poToCreate = new purchaseOrders_1.PurchaseOrder(number, vendor, tender, request, createdBy, sections, items, status, deliveryProgress, signatories, reqAttachmentDocId, refs, rate, rateComment);
+                let createdPO = yield (0, purchaseOrders_2.savePO)(poToCreate);
+                if (createdPO) {
                     if ((refs === null || refs === void 0 ? void 0 : refs.length) >= 1) {
                         refs.forEach((r) => __awaiter(void 0, void 0, void 0, function* () {
                             yield (0, purchaseOrders_2.updateB1Po)(r, {
-                                Comments: `Refer to PO number ${createdTender === null || createdTender === void 0 ? void 0 : createdTender.number} in the e-procurement tool.`,
+                                Comments: `Refer to PO number ${createdPO === null || createdPO === void 0 ? void 0 : createdPO.number} in the e-procurement tool.`,
                             });
                         }));
                     }
                 }
-                response.status(201).send({ createdTender });
+                response.status(201).send({ createdTender: createdPO });
             }
         }
         else {
@@ -76,7 +76,9 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
                 .status(500)
                 .send({ error: true, message: "Business Partner not found!" });
         }
-    }));
+    })).catch(err => {
+        console.log(err);
+    });
 }));
 exports.poRouter.put("/status/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;

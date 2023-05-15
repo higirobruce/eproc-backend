@@ -1,3 +1,4 @@
+import moment from "moment";
 import { ObjectId } from "mongoose";
 import { Request } from "../classrepo/requests";
 import { RequestModel } from "../models/requests";
@@ -5,7 +6,7 @@ import { UserModel } from "../models/users";
 import { send } from "../utils/sendEmailNode";
 
 export async function getAllRequests() {
-  let reqs = await RequestModel.find({status:{$ne:'withdrawn'}})
+  let reqs = await RequestModel.find({ status: { $ne: "withdrawn" } })
     .populate("createdBy")
     .populate("level1Approver")
     .populate({
@@ -14,13 +15,30 @@ export async function getAllRequests() {
         path: "department",
         model: "Department",
       },
-    }).populate('budgetLine')
+    })
+    .populate("budgetLine");
+  return reqs;
+}
+
+export async function getRequestById(id: String) {
+  let reqs = await RequestModel.findById(id)
+    .populate("createdBy")
+    .populate("level1Approver")
+    .populate({
+      path: "createdBy",
+      populate: {
+        path: "department",
+        model: "Department",
+      },
+    })
+    .populate("budgetLine");
   return reqs;
 }
 
 export async function getAllRequestsByCreator(createdBy: String) {
   let query = {};
-  if(createdBy && createdBy!=='null') query = { createdBy, status:{$ne:'withdrawn'} }
+  if (createdBy && createdBy !== "null")
+    query = { createdBy, status: { $ne: "withdrawn" } };
   let reqs = await RequestModel.find(query)
     .populate("createdBy")
     .populate("level1Approver")
@@ -30,7 +48,8 @@ export async function getAllRequestsByCreator(createdBy: String) {
         path: "department",
         model: "Department",
       },
-    }).populate('budgetLine')
+    })
+    .populate("budgetLine");
   return reqs;
 }
 
@@ -48,7 +67,7 @@ export async function getAllRequestsByStatus(status: String, id: String) {
           },
         }
       : { status };
-  if (id && id!=='null') query = { ...query, createdBy: id };
+  if (id && id !== "null") query = { ...query, createdBy: id };
   let reqs = await RequestModel.find(query)
     .populate("createdBy")
     .populate("level1Approver")
@@ -58,7 +77,8 @@ export async function getAllRequestsByStatus(status: String, id: String) {
         path: "department",
         model: "Department",
       },
-    }).populate('budgetLine')
+    })
+    .populate("budgetLine");
   return reqs;
 }
 
@@ -90,13 +110,28 @@ export async function declineRequest(
   declinedBy: String
 ) {
   try {
-    let response = await RequestModel.findByIdAndUpdate(id, {
-      $set: {
-        status: "declined",
-        reasonForRejection: reason,
-        declinedBy: declinedBy,
+    let response = await RequestModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          status: "declined",
+          reasonForRejection: reason,
+          declinedBy: declinedBy,
+          rejectionDate: moment(),
+        },
       },
-    });
+      { new: true }
+    )
+      .populate("createdBy")
+      .populate("level1Approver")
+      .populate({
+        path: "createdBy",
+        populate: {
+          path: "department",
+          model: "Department",
+        },
+      })
+      .populate("budgetLine");
 
     //Sending email notification
     let requestor = await UserModel.findById(response?.createdBy);
@@ -131,7 +166,11 @@ export async function updateRequestStatus(id: String, newStatus: String) {
       update = { status: newStatus, pm_approvalDate: Date.now() };
     else update = { status: newStatus };
 
-    await RequestModel.findByIdAndUpdate(id, { $set: update });
+    let newRequest = await RequestModel.findByIdAndUpdate(
+      id,
+      { $set: update },
+      { new: true }
+    );
 
     //Sending email notifications
     if (newStatus === "approved (hod)") {
@@ -168,7 +207,10 @@ export async function updateRequestStatus(id: String, newStatus: String) {
       );
     }
 
-    return { message: "done" };
+    return RequestModel.populate(
+      newRequest,
+      "createdBy level1Approver budgetLine"
+    );
   } catch (err) {
     return {
       error: true,
@@ -177,14 +219,30 @@ export async function updateRequestStatus(id: String, newStatus: String) {
   }
 }
 
-export async function updateRequestSourcingMethod(id: String, sourcingMethod: String) {
+export async function updateRequestSourcingMethod(
+  id: String,
+  sourcingMethod: String
+) {
   try {
-    let update = {sourcingMethod: sourcingMethod};
-    
+    let update = { sourcingMethod: sourcingMethod };
 
-    await RequestModel.findByIdAndUpdate(id, { $set: update });
+    let newRequest = await RequestModel.findByIdAndUpdate(
+      id,
+      { $set: update },
+      { new: true }
+    )
+      .populate("createdBy")
+      .populate("level1Approver")
+      .populate({
+        path: "createdBy",
+        populate: {
+          path: "department",
+          model: "Department",
+        },
+      })
+      .populate("budgetLine");
 
-    return { message: "done" };
+    return newRequest;
   } catch (err) {
     return {
       error: true,
@@ -195,8 +253,10 @@ export async function updateRequestSourcingMethod(id: String, sourcingMethod: St
 
 export async function updateRequest(id: String, update: Request) {
   try {
-    await RequestModel.findByIdAndUpdate(id, update);
-    return { message: "done" };
+    let newRequest = await RequestModel.findByIdAndUpdate(id, update, {
+      new: true,
+    });
+    return newRequest;
   } catch (err) {
     return {
       error: true,
@@ -270,14 +330,14 @@ export async function getReqCountsByStatus() {
 export async function getReqCountsByBudgetStatus() {
   let lookup = [
     {
-      '$group': {
-        '_id': '$budgeted', 
-        'count': {
-          '$count': {}
-        }
-      }
-    }
-  ]
+      $group: {
+        _id: "$budgeted",
+        count: {
+          $count: {},
+        },
+      },
+    },
+  ];
 
   let result = await RequestModel.aggregate(lookup);
   return result;

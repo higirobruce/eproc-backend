@@ -12,6 +12,7 @@ import {
   getReqCountsByCategory,
   getReqCountsByDepartment,
   getReqCountsByStatus,
+  getRequestById,
   saveRequest,
   updateRequest,
   updateRequestSourcingMethod,
@@ -41,6 +42,7 @@ requetsRouter.get("/", async (req, res) => {
   res.send(await getAllRequests());
 });
 
+
 requetsRouter.get("/countsByDep", async (req, res) => {
   res.send(await getReqCountsByDepartment());
 });
@@ -65,9 +67,15 @@ requetsRouter.get("/byStatus/:status/:id", async (req, res) => {
     : res.send(await getAllRequestsByStatus(status,id));
 });
 
-requetsRouter.get("/:createdBy", async (req, res) => {
+requetsRouter.get("/byCreator/:createdBy", async (req, res) => {
   let { createdBy } = req.params;
   res.send(await getAllRequestsByCreator(createdBy));
+});
+
+
+requetsRouter.get("/:id", async (req, res) => {
+  let {id} = req.params;
+  res.send(await getRequestById(id));
 });
 
 requetsRouter.post("/", async (req, res) => {
@@ -87,6 +95,7 @@ requetsRouter.post("/", async (req, res) => {
     hod_approvalDate,
     hof_approvalDate,
     pm_approvalDate,
+    rejectionDate,
     level1Approver,
     sourcingMethod
   } = req.body;
@@ -114,6 +123,7 @@ requetsRouter.post("/", async (req, res) => {
     hod_approvalDate,
     hof_approvalDate,
     pm_approvalDate,
+    rejectionDate,
     level1Approver,
     sourcingMethod
   );

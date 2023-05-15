@@ -47,6 +47,10 @@ exports.tenderRouter.get("/stats", (req, res) => __awaiter(void 0, void 0, void 
         closed: closedTenders.length,
     });
 }));
+exports.tenderRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    res.send(yield (0, tenders_2.getTendersById)(id));
+}));
 exports.tenderRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { createdBy, items, dueDate, status, attachementUrls, submissionDeadLine, torsUrl, purchaseRequest, invitationSent, invitees, docId, evaluationReportId, } = req.body;
     let number = yield (0, tenders_3.generateTenderNumber)();

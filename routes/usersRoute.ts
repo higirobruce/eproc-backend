@@ -12,7 +12,9 @@ import {
   getAllUsers,
   getAllVendors,
   getAllVendorsByStatus,
+  getInternalUserById,
   getUserByEmail,
+  getVendorById,
   resetPassword,
   saveUser,
   updateMyPassword,
@@ -43,6 +45,12 @@ userRouter.get("/vendors/rate/:id", async (req, res) => {
   res.send(await getVendorRate(id));
 });
 
+userRouter.get("/vendors/byId/:id", async (req, res) => {
+  let { id } = req.params;
+  // console.log(id)
+  res.send(await getVendorById(id));
+});
+
 userRouter.get("/vendors/byStatus/:status", async (req, res) => {
   let { status } = req.params;
   if (status === "all") res.send(await getAllVendors());
@@ -55,6 +63,11 @@ userRouter.get("/level1Approvers", async (req, res) => {
 
 userRouter.get("/internal", async (req, res) => {
   res.send(await getAllInternalUsers());
+});
+
+userRouter.get("/internalUserById/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getInternalUserById(id));
 });
 
 userRouter.get("/internal/byStatus/:status", async (req, res) => {
@@ -177,7 +190,7 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.post("/approve/:id", async (req, res) => {
   let { id } = req.params;
-  let { approvedBy } = req.body;
+  let { approvedBy, avgRate } = req.body;
   let result = await approveUser(id);
   res.send(result).status(201);
 });
@@ -232,7 +245,6 @@ userRouter.put("/reset/:email", async (req, res) => {
       level: "warn",
       message: `Password for ${updatedUser?._id} was successfully reset`,
     });
-    
   }
   res.send(updatedUser);
 });

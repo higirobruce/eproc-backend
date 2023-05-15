@@ -91,7 +91,6 @@ export function getBusinessPartnerByName(CardName:String){
       ).then(res=>res.json())
     }).catch(err=>{
       return err
-      console.log(err)
     })
 }
 

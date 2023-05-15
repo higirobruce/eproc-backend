@@ -39,6 +39,10 @@ exports.contractRouter.get("/byStatus/:status", (req, res) => __awaiter(void 0, 
     let { status } = req.params;
     res.send(yield (0, contracts_2.getContractByStatus)(status));
 }));
+exports.contractRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    res.send(yield (0, contracts_2.getContractById)(id));
+}));
 exports.contractRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { vendor, tender, request, createdBy, sections, status, deliveryProgress, contractStartDate, contractEndDate, signatories, reqAttachmentDocId, } = req.body;
     let number = yield (0, contracts_3.generateContractNumber)();

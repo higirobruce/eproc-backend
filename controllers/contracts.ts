@@ -76,10 +76,26 @@ export async function getContractByRequestId(requestId: String) {
 }
 
 export async function getContractByStatus(status: String) {
-  let query = {}
-  if(status==='all') query = {}
-  else query = {status}
+  let query = {};
+  if (status === "all") query = {};
+  else query = { status };
   let pos = await ContractModel.find(query)
+    .populate("tender")
+    .populate("request")
+    .populate("vendor")
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+      },
+    });
+  return pos;
+}
+
+export async function getContractById(id: String) {
+  let pos = await ContractModel.findById(id)
     .populate("tender")
     .populate("request")
     .populate("vendor")

@@ -32,7 +32,7 @@ exports.getAllTenders = getAllTenders;
 function getAllTendersByStatus(status) {
     return __awaiter(this, void 0, void 0, function* () {
         let _status = status == "open"
-            ? { submissionDeadLine: { $gt: Date.now() } }
+            ? { submissionDeadLine: { $gt: Date.now() }, status: { $ne: 'closed' } }
             : { submissionDeadLine: { $lt: Date.now() } };
         let reqs = yield tenders_1.TenderModel.find(_status)
             .populate("createdBy")
@@ -50,7 +50,7 @@ function getAllTendersByStatus(status) {
 exports.getAllTendersByStatus = getAllTendersByStatus;
 function getTendersById(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let req = yield tenders_1.TenderModel.findById({ id })
+        let req = yield tenders_1.TenderModel.findById(id)
             .populate("createdBy")
             .populate({
             path: "createdBy",

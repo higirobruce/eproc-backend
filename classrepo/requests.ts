@@ -20,6 +20,7 @@ export class Request implements IRequest {
   hod_approvalDate: Date;
   hof_approvalDate: Date;
   pm_approvalDate: Date;
+  rejectionDate: Date;
   level1Approver: Types.ObjectId;
   sourcingMethod: string;
 
@@ -40,6 +41,7 @@ export class Request implements IRequest {
     hod_approvalDate: Date,
     hof_approvalDate: Date,
     pm_approvalDate: Date,
+    rejectionDate: Date,
     level1Approver: string,
     sourcingMethod: string
   ) {
@@ -61,6 +63,7 @@ export class Request implements IRequest {
     this.hod_approvalDate = hod_approvalDate;
     this.hof_approvalDate = hof_approvalDate;
     this.pm_approvalDate = pm_approvalDate;
+    this.rejectionDate = rejectionDate;
     this.level1Approver = level1Approver
       ? new Types.ObjectId(level1Approver)
       : new Types.ObjectId();

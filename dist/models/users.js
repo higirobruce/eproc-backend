@@ -73,7 +73,10 @@ exports.UserSchema = new mongoose_1.Schema({
         unique: true,
     },
     services: Array,
-    permissions: Object,
+    permissions: {
+        type: Object,
+        default: {}
+    },
     title: {
         type: String,
     },

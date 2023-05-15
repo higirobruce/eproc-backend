@@ -36,19 +36,23 @@ exports.requetsRouter.get("/byStatus/:status/:id", (req, res) => __awaiter(void 
         ? res.send(yield (0, requests_2.getAllRequestsByCreator)(id))
         : res.send(yield (0, requests_2.getAllRequestsByStatus)(status, id));
 }));
-exports.requetsRouter.get("/:createdBy", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.requetsRouter.get("/byCreator/:createdBy", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { createdBy } = req.params;
     res.send(yield (0, requests_2.getAllRequestsByCreator)(createdBy));
 }));
+exports.requetsRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    res.send(yield (0, requests_2.getRequestById)(id));
+}));
 exports.requetsRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { createdBy, items, dueDate, status, attachementUrls, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, level1Approver, sourcingMethod } = req.body;
+    let { createdBy, items, dueDate, status, attachementUrls, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, rejectionDate, level1Approver, sourcingMethod } = req.body;
     let number = yield (0, requests_3.generateReqNumber)();
     let itemObjects = items.map((i) => {
         if (!i.currency)
             i.currency = "RWF";
         return i;
     });
-    let requestToCreate = new requests_1.Request(createdBy, itemObjects, dueDate, status, attachementUrls, number, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, level1Approver, sourcingMethod);
+    let requestToCreate = new requests_1.Request(createdBy, itemObjects, dueDate, status, attachementUrls, number, description, serviceCategory, reason, declinedBy, budgeted, budgetLine, title, hod_approvalDate, hof_approvalDate, pm_approvalDate, rejectionDate, level1Approver, sourcingMethod);
     let createdRequest = yield (0, requests_2.saveRequest)(requestToCreate);
     res.status(201).send(createdRequest);
 }));

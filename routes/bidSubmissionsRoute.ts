@@ -26,6 +26,7 @@ submissionsRouter.get("/", async (req, res) => {
   res.send(await getAllBidSubmissions());
 });
 
+
 submissionsRouter.get("/byTender/:tenderId", async (req, res) => {
   let { tenderId } = req.params;
   res.send(await getAllBidSubmissionsByTender(tenderId));

@@ -29,6 +29,11 @@ exports.userRouter.get("/vendors/rate/:id", (req, res) => __awaiter(void 0, void
     // console.log(id)
     res.send(yield (0, purchaseOrders_1.getVendorRate)(id));
 }));
+exports.userRouter.get("/vendors/byId/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    // console.log(id)
+    res.send(yield (0, users_2.getVendorById)(id));
+}));
 exports.userRouter.get("/vendors/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { status } = req.params;
     if (status === "all")
@@ -41,6 +46,10 @@ exports.userRouter.get("/level1Approvers", (req, res) => __awaiter(void 0, void 
 }));
 exports.userRouter.get("/internal", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllInternalUsers)());
+}));
+exports.userRouter.get("/internalUserById/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    res.send(yield (0, users_2.getInternalUserById)(id));
 }));
 exports.userRouter.get("/internal/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { status } = req.params;
@@ -91,7 +100,7 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
 }));
 exports.userRouter.post("/approve/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
-    let { approvedBy } = req.body;
+    let { approvedBy, avgRate } = req.body;
     let result = yield (0, users_2.approveUser)(id);
     res.send(result).status(201);
 }));

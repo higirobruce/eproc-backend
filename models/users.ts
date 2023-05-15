@@ -69,7 +69,10 @@ export const UserSchema = new Schema<IUserDocument>({
     unique: true,
   },
   services: Array,
-  permissions: Object,
+  permissions: {
+    type: Object,
+    default: {}
+  },
   title: {
     type: String,
   },

@@ -169,6 +169,7 @@ function savePO(po) {
             return createdRecord;
         }
         catch (err) {
+            console.log(err);
             throw err;
         }
     });
@@ -188,8 +189,11 @@ function savePOInB1(CardCode, DocType, DocumentLines) {
                 body: JSON.stringify({ CardCode, DocType, DocumentLines }),
             })
                 .then((res) => res.json())
-                .then((res) => { return res; })
+                .then((res) => {
+                return res;
+            })
                 .catch((err) => {
+                console.log(err);
                 return { error: err };
             });
         }));

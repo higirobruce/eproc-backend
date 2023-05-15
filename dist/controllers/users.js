@@ -8,14 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveBankDetails = exports.setTempFields = exports.resetPassword = exports.updateMyPassword = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getVendorByCompanyName = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsersByStatus = exports.getAllInternalUsers = exports.getVendorById = exports.getAllLevel1Approvers = exports.getAllVendorsByStatus = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.saveBankDetails = exports.setTempFields = exports.resetPassword = exports.updateMyPassword = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getVendorByCompanyName = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsersByStatus = exports.getAllInternalUsers = exports.getInternalUserById = exports.getVendorById2 = exports.getAllLevel1Approvers = exports.getAllVendorsByStatus = exports.getVendorById = exports.getAllVendors = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
 const series_1 = require("./series");
 const node_localstorage_1 = require("node-localstorage");
 const users_2 = require("../services/users");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
+const mongoose_1 = __importDefault(require("mongoose"));
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
 function getAllUsers() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -39,46 +43,58 @@ function getAllVendors() {
         try {
             let pipeline = [
                 {
-                    '$match': {
-                        'userType': 'VENDOR'
-                    }
-                }, {
-                    '$lookup': {
-                        'from': 'purchaseorders',
-                        'localField': '_id',
-                        'foreignField': 'vendor',
-                        'as': 'purchaseorders'
-                    }
-                }, {
-                    '$unwind': {
-                        'path': '$purchaseorders',
-                        'preserveNullAndEmptyArrays': true
-                    }
-                }, {
-                    '$group': {
-                        '_id': '$_id',
-                        'avgRate': {
-                            '$avg': '$purchaseorders.rate'
-                        }
-                    }
-                }, {
-                    '$lookup': {
-                        'from': 'users',
-                        'localField': '_id',
-                        'foreignField': '_id',
-                        'as': 'vendor'
-                    }
-                }, {
-                    '$unwind': {
-                        'path': '$vendor',
-                        'preserveNullAndEmptyArrays': true
-                    }
-                }
+                    $match: {
+                        userType: "VENDOR",
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "purchaseorders",
+                        localField: "_id",
+                        foreignField: "vendor",
+                        as: "purchaseorders",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$purchaseorders",
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        avgRate: {
+                            $avg: "$purchaseorders.rate",
+                        },
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "_id",
+                        foreignField: "_id",
+                        as: "vendor",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$vendor",
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $addFields: {
+                        "vendor.avgRate": "$avgRate",
+                    },
+                },
             ];
             let users = yield users_1.UserModel.find({ userType: "VENDOR" })
                 .populate("department")
                 .sort({ createdOn: "desc" });
-            let usersAggregate = yield users_1.UserModel.aggregate(pipeline).sort({ createdOn: "desc" });
+            let usersAggregate = yield users_1.UserModel.aggregate(pipeline).sort({
+                createdOn: "desc",
+            });
             return usersAggregate;
         }
         catch (err) {
@@ -90,52 +106,128 @@ function getAllVendors() {
     });
 }
 exports.getAllVendors = getAllVendors;
+function getVendorById(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let pipeline = [
+                {
+                    $match: {
+                        userType: "VENDOR",
+                        _id: new mongoose_1.default.mongo.ObjectId(id),
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "purchaseorders",
+                        localField: "_id",
+                        foreignField: "vendor",
+                        as: "purchaseorders",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$purchaseorders",
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        avgRate: {
+                            $avg: "$purchaseorders.rate",
+                        },
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "_id",
+                        foreignField: "_id",
+                        as: "vendor",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$vendor",
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $addFields: {
+                        "vendor.avgRate": "$avgRate",
+                    },
+                },
+            ];
+            let users = yield users_1.UserModel.find({ userType: "VENDOR" })
+                .populate("department")
+                .sort({ createdOn: "desc" });
+            let usersAggregate = yield users_1.UserModel.aggregate(pipeline).sort({
+                createdOn: "desc",
+            });
+            return usersAggregate;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.getVendorById = getVendorById;
 function getAllVendorsByStatus(status) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let pipeline = [
                 {
-                    '$match': {
-                        'userType': 'VENDOR',
-                        'status': status
-                    }
-                }, {
-                    '$lookup': {
-                        'from': 'purchaseorders',
-                        'localField': '_id',
-                        'foreignField': 'vendor',
-                        'as': 'purchaseorders'
-                    }
-                }, {
-                    '$unwind': {
-                        'path': '$purchaseorders',
-                        'preserveNullAndEmptyArrays': true
-                    }
-                }, {
-                    '$group': {
-                        '_id': '$_id',
-                        'avgRate': {
-                            '$avg': '$purchaseorders.rate'
-                        }
-                    }
-                }, {
-                    '$lookup': {
-                        'from': 'users',
-                        'localField': '_id',
-                        'foreignField': '_id',
-                        'as': 'vendor'
-                    }
-                }, {
-                    '$unwind': {
-                        'path': '$vendor',
-                        'preserveNullAndEmptyArrays': true
-                    }
-                }
+                    $match: {
+                        userType: "VENDOR",
+                        status: status,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "purchaseorders",
+                        localField: "_id",
+                        foreignField: "vendor",
+                        as: "purchaseorders",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$purchaseorders",
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        avgRate: {
+                            $avg: "$purchaseorders.rate",
+                        },
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "_id",
+                        foreignField: "_id",
+                        as: "vendor",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$vendor",
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
             ];
             let users = yield users_1.UserModel.find({ userType: "VENDOR", status })
                 .populate("department")
                 .sort({ createdOn: "desc" });
-            let usersAggregate = yield users_1.UserModel.aggregate(pipeline).sort({ createdOn: "desc" });
+            let usersAggregate = yield users_1.UserModel.aggregate(pipeline).sort({
+                createdOn: "desc",
+            });
             return usersAggregate;
         }
         catch (err) {
@@ -167,7 +259,7 @@ function getAllLevel1Approvers() {
     });
 }
 exports.getAllLevel1Approvers = getAllLevel1Approvers;
-function getVendorById(id) {
+function getVendorById2(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let users = yield users_1.UserModel.findOne({
@@ -184,7 +276,24 @@ function getVendorById(id) {
         }
     });
 }
-exports.getVendorById = getVendorById;
+exports.getVendorById2 = getVendorById2;
+function getInternalUserById(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let users = yield users_1.UserModel.findOne({
+                _id: id,
+            }).populate("department");
+            return users;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.getInternalUserById = getInternalUserById;
 function getAllInternalUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -318,7 +427,7 @@ function approveUser(id) {
             else {
                 user = yield users_1.UserModel.findByIdAndUpdate(id, {
                     $set: { status: "approved" },
-                }).populate("department");
+                }, { new: true }).populate("department");
                 return user;
             }
         }
@@ -335,7 +444,7 @@ exports.approveUser = approveUser;
 function declineUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "rejected" } }, { new: true });
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "rejected" } }, { new: true }).populate("department");
             return user;
         }
         catch (err) {
@@ -350,7 +459,7 @@ exports.declineUser = declineUser;
 function banUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "banned" } }, { new: true });
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "banned" } }, { new: true }).populate("department");
             return user;
         }
         catch (err) {
@@ -365,7 +474,7 @@ exports.banUser = banUser;
 function activateUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "approved" } }, { new: true });
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { status: "approved" } }, { new: true }).populate("department");
             return user;
         }
         catch (err) {
@@ -380,7 +489,9 @@ exports.activateUser = activateUser;
 function updateUser(id, newUser) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let user = yield users_1.UserModel.findByIdAndUpdate(id, newUser, { new: true });
+            let user = yield users_1.UserModel.findByIdAndUpdate(id, newUser, {
+                new: true,
+            }).populate("department");
             return user;
         }
         catch (err) {
@@ -397,7 +508,7 @@ function updateMyPassword(id, currentPassword, newPassword) {
         try {
             let user = yield users_1.UserModel.findById(id);
             if ((0, users_2.validPassword)(currentPassword, user === null || user === void 0 ? void 0 : user.password)) {
-                user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { password: newPassword } }, { new: true });
+                user = yield users_1.UserModel.findByIdAndUpdate(id, { $set: { password: newPassword } }, { new: true }).populate("department");
                 return user;
             }
             else {
@@ -421,7 +532,7 @@ function resetPassword(email) {
         let user = null;
         try {
             let newPassword = (0, users_2.generatePassword)(8);
-            user = yield users_1.UserModel.findOneAndUpdate({ email: email }, { $set: { password: (0, users_2.hashPassword)(newPassword) } }, { new: true });
+            user = yield users_1.UserModel.findOneAndUpdate({ email: email }, { $set: { password: (0, users_2.hashPassword)(newPassword) } }, { new: true }).populate("department");
             if (user) {
                 (0, sendEmailNode_1.send)("", email, "Password reset", JSON.stringify({ email: user.email, password: newPassword }), "", "passwordReset");
             }

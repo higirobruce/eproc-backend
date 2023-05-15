@@ -69,6 +69,11 @@ tenderRouter.get("/stats", async (req, res) => {
   });
 });
 
+tenderRouter.get("/:id", async (req, res) => {
+  let {id} = req.params;
+  res.send(await getTendersById(id));
+});
+
 tenderRouter.post("/", async (req, res) => {
   let {
     createdBy,

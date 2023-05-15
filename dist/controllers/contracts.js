@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateContract = exports.getContractByVendorId = exports.getContractByStatus = exports.getContractByRequestId = exports.getContractByTenderId = exports.saveContract = exports.getAllContracts = void 0;
+exports.updateContract = exports.getContractByVendorId = exports.getContractById = exports.getContractByStatus = exports.getContractByRequestId = exports.getContractByTenderId = exports.saveContract = exports.getAllContracts = void 0;
 const contracts_1 = require("../models/contracts");
 /**
  * Get all contracts in the database. This is used to populate the list of contracts when creating a new invoice.
@@ -96,7 +96,7 @@ exports.getContractByRequestId = getContractByRequestId;
 function getContractByStatus(status) {
     return __awaiter(this, void 0, void 0, function* () {
         let query = {};
-        if (status === 'all')
+        if (status === "all")
             query = {};
         else
             query = { status };
@@ -116,6 +116,24 @@ function getContractByStatus(status) {
     });
 }
 exports.getContractByStatus = getContractByStatus;
+function getContractById(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let pos = yield contracts_1.ContractModel.findById(id)
+            .populate("tender")
+            .populate("request")
+            .populate("vendor")
+            .populate("createdBy")
+            .populate({
+            path: "tender",
+            populate: {
+                path: "purchaseRequest",
+                model: "Request",
+            },
+        });
+        return pos;
+    });
+}
+exports.getContractById = getContractById;
 /**
  * Get a contract by vendor id. This is used to create a list of contract in order to display the list
  *

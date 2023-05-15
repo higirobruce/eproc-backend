@@ -8,14 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReqCountsByCategory = exports.getReqCountsByBudgetStatus = exports.getReqCountsByStatus = exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestSourcingMethod = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByStatus = exports.getAllRequestsByCreator = exports.getAllRequests = void 0;
+exports.getReqCountsByCategory = exports.getReqCountsByBudgetStatus = exports.getReqCountsByStatus = exports.getReqCountsByDepartment = exports.updateRequest = exports.updateRequestSourcingMethod = exports.updateRequestStatus = exports.declineRequest = exports.approveRequest = exports.saveRequest = exports.getAllRequestsByStatus = exports.getAllRequestsByCreator = exports.getRequestById = exports.getAllRequests = void 0;
+const moment_1 = __importDefault(require("moment"));
 const requests_1 = require("../models/requests");
 const users_1 = require("../models/users");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
 function getAllRequests() {
     return __awaiter(this, void 0, void 0, function* () {
-        let reqs = yield requests_1.RequestModel.find({ status: { $ne: 'withdrawn' } })
+        let reqs = yield requests_1.RequestModel.find({ status: { $ne: "withdrawn" } })
             .populate("createdBy")
             .populate("level1Approver")
             .populate({
@@ -24,16 +28,34 @@ function getAllRequests() {
                 path: "department",
                 model: "Department",
             },
-        }).populate('budgetLine');
+        })
+            .populate("budgetLine");
         return reqs;
     });
 }
 exports.getAllRequests = getAllRequests;
+function getRequestById(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let reqs = yield requests_1.RequestModel.findById(id)
+            .populate("createdBy")
+            .populate("level1Approver")
+            .populate({
+            path: "createdBy",
+            populate: {
+                path: "department",
+                model: "Department",
+            },
+        })
+            .populate("budgetLine");
+        return reqs;
+    });
+}
+exports.getRequestById = getRequestById;
 function getAllRequestsByCreator(createdBy) {
     return __awaiter(this, void 0, void 0, function* () {
         let query = {};
-        if (createdBy && createdBy !== 'null')
-            query = { createdBy, status: { $ne: 'withdrawn' } };
+        if (createdBy && createdBy !== "null")
+            query = { createdBy, status: { $ne: "withdrawn" } };
         let reqs = yield requests_1.RequestModel.find(query)
             .populate("createdBy")
             .populate("level1Approver")
@@ -43,7 +65,8 @@ function getAllRequestsByCreator(createdBy) {
                 path: "department",
                 model: "Department",
             },
-        }).populate('budgetLine');
+        })
+            .populate("budgetLine");
         return reqs;
     });
 }
@@ -62,7 +85,7 @@ function getAllRequestsByStatus(status, id) {
                 },
             }
             : { status };
-        if (id && id !== 'null')
+        if (id && id !== "null")
             query = Object.assign(Object.assign({}, query), { createdBy: id });
         let reqs = yield requests_1.RequestModel.find(query)
             .populate("createdBy")
@@ -73,7 +96,8 @@ function getAllRequestsByStatus(status, id) {
                 path: "department",
                 model: "Department",
             },
-        }).populate('budgetLine');
+        })
+            .populate("budgetLine");
         return reqs;
     });
 }
@@ -111,8 +135,19 @@ function declineRequest(id, reason, declinedBy) {
                     status: "declined",
                     reasonForRejection: reason,
                     declinedBy: declinedBy,
+                    rejectionDate: (0, moment_1.default)(),
                 },
-            });
+            }, { new: true })
+                .populate("createdBy")
+                .populate("level1Approver")
+                .populate({
+                path: "createdBy",
+                populate: {
+                    path: "department",
+                    model: "Department",
+                },
+            })
+                .populate("budgetLine");
             //Sending email notification
             let requestor = yield users_1.UserModel.findById(response === null || response === void 0 ? void 0 : response.createdBy);
             if (requestor === null || requestor === void 0 ? void 0 : requestor.email) {
@@ -141,7 +176,7 @@ function updateRequestStatus(id, newStatus) {
                 update = { status: newStatus, pm_approvalDate: Date.now() };
             else
                 update = { status: newStatus };
-            yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: update });
+            let newRequest = yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: update }, { new: true });
             //Sending email notifications
             if (newStatus === "approved (hod)") {
                 let level2Approvers = yield users_1.UserModel.find({
@@ -161,7 +196,7 @@ function updateRequestStatus(id, newStatus) {
                 });
                 (0, sendEmailNode_1.send)("", approversEmails, "Purchase request approval", "", "", "approval");
             }
-            return { message: "done" };
+            return requests_1.RequestModel.populate(newRequest, "createdBy level1Approver budgetLine");
         }
         catch (err) {
             return {
@@ -176,8 +211,18 @@ function updateRequestSourcingMethod(id, sourcingMethod) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let update = { sourcingMethod: sourcingMethod };
-            yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: update });
-            return { message: "done" };
+            let newRequest = yield requests_1.RequestModel.findByIdAndUpdate(id, { $set: update }, { new: true })
+                .populate("createdBy")
+                .populate("level1Approver")
+                .populate({
+                path: "createdBy",
+                populate: {
+                    path: "department",
+                    model: "Department",
+                },
+            })
+                .populate("budgetLine");
+            return newRequest;
         }
         catch (err) {
             return {
@@ -191,8 +236,10 @@ exports.updateRequestSourcingMethod = updateRequestSourcingMethod;
 function updateRequest(id, update) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield requests_1.RequestModel.findByIdAndUpdate(id, update);
-            return { message: "done" };
+            let newRequest = yield requests_1.RequestModel.findByIdAndUpdate(id, update, {
+                new: true,
+            });
+            return newRequest;
         }
         catch (err) {
             return {
@@ -271,13 +318,13 @@ function getReqCountsByBudgetStatus() {
     return __awaiter(this, void 0, void 0, function* () {
         let lookup = [
             {
-                '$group': {
-                    '_id': '$budgeted',
-                    'count': {
-                        '$count': {}
-                    }
-                }
-            }
+                $group: {
+                    _id: "$budgeted",
+                    count: {
+                        $count: {},
+                    },
+                },
+            },
         ];
         let result = yield requests_1.RequestModel.aggregate(lookup);
         return result;

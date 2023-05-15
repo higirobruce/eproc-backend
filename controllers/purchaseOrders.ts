@@ -147,6 +147,7 @@ export async function savePO(po: PurchaseOrder) {
     let createdRecord = await PurchaseOrderModel.create(po);
     return createdRecord;
   } catch (err) {
+    console.log(err)
     throw err;
   }
 }
@@ -169,8 +170,12 @@ export async function savePOInB1(
       body: JSON.stringify({ CardCode, DocType, DocumentLines }),
     })
       .then((res) => res.json())
-      .then((res) => {return res})
+      .then((res) => {
+        console.log(res)
+        return res
+      })
       .catch((err) => {
+        console.log(err)
         return {error:err}
       });
   });

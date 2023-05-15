@@ -41,6 +41,7 @@ poRouter.get("/byVendorId/:vendorId", async (req, res) => {
 });
 
 poRouter.post("/", async (req, response) => {
+  
   let {
     vendor,
     tender,
@@ -64,6 +65,7 @@ poRouter.post("/", async (req, response) => {
   await getBusinessPartnerByName(
     B1Data_Assets?.CardName || B1Data_NonAssets.CardName
   ).then(async (res) => {
+    
     let bp = res.value;
     if (bp?.length >= 1) {
       CardCode = bp[0].CardCode;
@@ -93,7 +95,7 @@ poRouter.post("/", async (req, response) => {
         b1Response_assets && refs.push(b1Response_assets.DocNum);
         b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
 
-        let tenderToCreate = new PurchaseOrder(
+        let poToCreate = new PurchaseOrder(
           number,
           vendor,
           tender,
@@ -110,26 +112,30 @@ poRouter.post("/", async (req, response) => {
           rateComment
         );
 
-        let createdTender = await savePO(tenderToCreate);
 
-        if (createdTender) {
+
+        let createdPO = await savePO(poToCreate);
+
+        if (createdPO) {
           if (refs?.length >= 1) {
             refs.forEach(async (r) => {
               await updateB1Po(r, {
-                Comments: `Refer to PO number ${createdTender?.number} in the e-procurement tool.`,
+                Comments: `Refer to PO number ${createdPO?.number} in the e-procurement tool.`,
               });
             });
           }
         }
 
-        response.status(201).send({ createdTender });
-      }
+        response.status(201).send({ createdTender: createdPO });
+      } 
     } else {
       response
         .status(500)
         .send({ error: true, message: "Business Partner not found!" });
     }
-  });
+  }).catch(err=>{
+    console.log(err)
+  })
 });
 
 poRouter.put("/status/:id", async (req, res) => {

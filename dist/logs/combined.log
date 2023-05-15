@@ -1717,3 +1717,2356 @@
   service: 'user-service',
   timestamp: '2023-04-10T12:42:27.969Z'
 }
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-11T16:01:27.506Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-11T16:01:29.109Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-11T16:02:05.289Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-11T17:44:26.902Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-12T08:19:55.873Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-12T08:45:06.852Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-17T12:09:57.129Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-17T12:09:58.714Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-17T12:10:26.245Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-17T13:04:47.463Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-17T13:05:29.762Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-17T13:05:57.313Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-17T13:06:20.637Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-17T13:11:03.127Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-17T13:11:48.742Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-17T13:32:35.762Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-17T13:43:43.626Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-17T13:45:24.895Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-17T15:27:27.737Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-17T16:48:27.138Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-18T04:12:12.043Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-18T08:40:02.469Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-04-18T08:40:02.472Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-04-18T08:40:02.479Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-18T16:41:00.181Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-18T16:41:01.969Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-18T17:11:50.898Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-18T17:11:51.572Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-18T17:14:01.918Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-18T17:15:02.886Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-18T17:17:14.392Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-19T06:41:24.485Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-04-19T06:41:24.497Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-04-19T06:41:24.499Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-19T16:36:00.799Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-19T16:36:02.685Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-19T16:36:27.783Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-20T07:18:55.456Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:03:25.468Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:03:27.873Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:04:48.194Z'
+}
+{
+  level: 'info',
+  message: 'Contract 64422b5c741d1b919cbca529 successfully created',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:21:16.187Z'
+}
+{
+  level: 'info',
+  message: 'bruce@shapeherd.com failed to log in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:23:57.666Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:24:03.815Z'
+}
+{
+  level: 'info',
+  message: 'Contract 64422d89741d1b919cbca8b1 successfully created',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:30:33.408Z'
+}
+{
+  level: 'info',
+  message: 'aline@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:31:01.087Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:31:25.023Z'
+}
+{
+  level: 'info',
+  message: 'aline@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:39:32.842Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:39:44.908Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:40:59.256Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:41:19.922Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:42:22.056Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 63eb5727bafd1be5095e0278 was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-04-21T06:57:33.714Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 640de465ddb55542132e5da7 was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:14:53.868Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:16:13.827Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:16:26.666Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:17:04.138Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:17:35.826Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:22:32.839Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:27:17.395Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 63eb5727bafd1be5095e027a was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:30:35.792Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:32:01.837Z'
+}
+{
+  level: 'info',
+  message: 'aline@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:44:05.403Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:44:21.103Z'
+}
+{
+  level: 'info',
+  message: 'aline@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:52:10.274Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:52:26.073Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T07:52:44.301Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+ceo@gmail.com failed to log in',
+  service: 'user-service',
+  timestamp: '2023-04-21T08:04:32.372Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T08:04:37.941Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-21T08:05:04.653Z'
+}
+{
+  level: 'info',
+  message: 'Contract 64422d89741d1b919cbca8b1 set to partially-signed status',
+  service: 'user-service',
+  timestamp: '2023-04-21T08:20:10.971Z'
+}
+{
+  level: 'info',
+  message: 'Contract 64422d89741d1b919cbca8b1 set to partially-signed status',
+  service: 'user-service',
+  timestamp: '2023-04-21T08:23:03.609Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-21T10:08:40.889Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-22T11:59:49.920Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-22T11:59:51.613Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 63f841fbdaebf9d728a03756 was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-04-22T12:42:40.226Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 63f841fbdaebf9d728a03756 was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-04-22T12:43:37.125Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 63f841fbdaebf9d728a03756 was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-04-22T12:43:39.459Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 63f841fbdaebf9d728a03756 was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-04-22T12:44:28.610Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-22T13:35:40.058Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-23T14:50:56.435Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-23T14:51:13.663Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-23T14:51:19.708Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-23T14:51:28.629Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 63eb5727bafd1be5095e027a was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-04-23T14:51:42.207Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-23T15:00:28.005Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 63eb5727bafd1be5095e027a was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-04-23T15:00:50.623Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-23T15:02:48.918Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-23T15:04:15.551Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-23T15:41:02.711Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-24T07:13:15.059Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-04-24T07:13:15.066Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-04-24T07:13:15.071Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-24T07:13:15.114Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-04-24T07:13:15.114Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-04-24T07:13:15.115Z'
+}
+{
+  level: 'error',
+  message: 'MongoDb connection closed.',
+  service: 'user-service',
+  timestamp: '2023-04-24T07:13:15.123Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-25T02:21:27.044Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-25T02:21:29.316Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T02:22:29.231Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T02:48:06.552Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T02:48:08.271Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T02:48:14.427Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T02:48:48.663Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T02:49:02.479Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T02:53:50.079Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T03:21:19.350Z'
+}
+{
+  level: 'info',
+  message: 'Contract 644747ad2c3983ef9a426615 successfully created',
+  service: 'user-service',
+  timestamp: '2023-04-25T03:23:25.570Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-25T06:48:51.249Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-25T14:09:29.495Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-25T14:09:31.257Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T14:16:50.441Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T14:17:18.634Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T14:17:44.084Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T14:32:05.460Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-25T14:51:57.092Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-25T15:04:38.883Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-25T15:44:20.621Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-25T15:44:53.319Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-25T15:46:59.656Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T04:19:53.742Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T04:22:12.730Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T04:23:31.180Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T04:25:09.337Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T04:29:52.366Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T04:48:01.289Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T04:58:07.495Z'
+}
+{
+  level: 'info',
+  message: 'Contract 644747ad2c3983ef9a426615 set to partially-signed status',
+  service: 'user-service',
+  timestamp: '2023-04-26T04:59:45.355Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:02:21.007Z'
+}
+{
+  level: 'info',
+  message: 'Contract 644747ad2c3983ef9a426615 set to signed status',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:02:29.427Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:02:59.940Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+user2@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:09:10.113Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:09:23.350Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+user2@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:28:11.889Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:28:28.303Z'
+}
+{
+  level: 'info',
+  message: 'Bid 6447eb09cac82eb5750c532f selected for the tender 64454348c03f3e59ec2c923d',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:33:26.234Z'
+}
+{
+  level: 'info',
+  message: 'Bid 6447eb09cac82eb5750c532f was awarded for the tender 64454348c03f3e59ec2c923d',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:33:33.163Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:33:56.120Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:34:12.713Z'
+}
+{
+  level: 'info',
+  message: 'Contract 6448b81770c024c6150ceff9 successfully created',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:35:19.530Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:35:39.490Z'
+}
+{
+  level: 'info',
+  message: 'Contract 6448b81770c024c6150ceff9 set to partially-signed status',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:35:53.098Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:36:02.974Z'
+}
+{
+  level: 'info',
+  message: 'Contract 6448b81770c024c6150ceff9 set to signed status',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:36:10.543Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:39:02.606Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:44:16.757Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T05:44:21.159Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:01:27.894Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:03:04.534Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:03:21.805Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:03:33.739Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:20:06.436Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:21:11.302Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:21:23.752Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+pm@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:22:09.513Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:22:27.410Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-26T06:22:43.923Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-04-26T09:21:16.941Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-29T14:00:05.733Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-29T14:00:07.404Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-29T14:00:27.171Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-29T14:19:19.911Z'
+}
+{
+  level: 'info',
+  message: 'aline@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-29T15:59:08.781Z'
+}
+{
+  level: 'info',
+  message: 'aline@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-29T15:59:11.563Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-29T15:59:29.519Z'
+}
+{
+  level: 'info',
+  message: 'info@apple.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:04:41.707Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:04:52.954Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:05:20.813Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:06:21.074Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:12:15.807Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:36:45.434Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:36:57.067Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:39:48.184Z'
+}
+{
+  level: 'info',
+  message: 'aline@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:42:48.175Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:42:57.981Z'
+}
+{
+  level: 'info',
+  message: 'edouard@irembo.gov failed to log in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:43:10.972Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:43:18.645Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+ceo@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:43:38.157Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T17:43:54.046Z'
+}
+{
+  level: 'info',
+  message: 'Bid 6447eb09cac82eb5750c532f selected for the tender 64454348c03f3e59ec2c923d',
+  service: 'user-service',
+  timestamp: '2023-04-30T18:13:58.234Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+user2@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T18:16:56.561Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T18:19:17.675Z'
+}
+{
+  level: 'info',
+  message: 'Bid 6447eb09cac82eb5750c532f selected for the tender 64454348c03f3e59ec2c923d',
+  service: 'user-service',
+  timestamp: '2023-04-30T18:20:45.901Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+user2@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T18:21:09.482Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T18:21:33.924Z'
+}
+{
+  level: 'info',
+  message: 'higirobru+user2@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T18:22:29.552Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-04-30T18:23:46.684Z'
+}
+{
+  level: 'info',
+  message: 'Bid 6447eb09cac82eb5750c532f was awarded for the tender 64454348c03f3e59ec2c923d',
+  service: 'user-service',
+  timestamp: '2023-04-30T18:33:50.210Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-01T06:36:36.988Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-01T06:36:36.993Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-01T06:36:36.996Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-01T06:36:37.040Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-01T06:36:37.041Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-01T06:36:37.042Z'
+}
+{
+  level: 'error',
+  message: 'MongoDb connection closed.',
+  service: 'user-service',
+  timestamp: '2023-05-01T06:36:37.057Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-01T15:27:28.633Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-01T15:27:30.776Z'
+}
+{
+  level: 'info',
+  message: 'brucehigiro2+vendor@gmail.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-01T15:53:39.368Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-01T16:03:21.449Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-01T16:28:10.354Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-02T07:56:23.001Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-02T08:05:30.795Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-02T18:08:24.888Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-02T18:08:26.791Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-03T07:24:08.102Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-03T07:24:08.117Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-03T07:24:08.119Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-03T07:24:08.160Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-03T07:24:08.160Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-03T07:24:08.161Z'
+}
+{
+  level: 'error',
+  message: 'MongoDb connection closed.',
+  service: 'user-service',
+  timestamp: '2023-05-03T07:24:08.166Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T05:51:22.027Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T05:51:24.151Z'
+}
+{
+  level: 'info',
+  message: 'higirobru@gmail.com failed to log in',
+  service: 'user-service',
+  timestamp: '2023-05-13T05:51:26.087Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T05:51:33.441Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T05:51:56.716Z'
+}
+{
+  level: 'info',
+  message: '645f29809b3820228ff007fe was successfully created',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:09:04.772Z'
+}
+{
+  level: 'info',
+  message: 'undefined was successfully created',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:09:13.650Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:09:57.390Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:10:14.511Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:10:19.234Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:10:23.263Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:40:28.144Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:43:55.129Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:44:21.145Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T06:45:07.068Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T08:14:14.941Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T08:16:22.667Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T09:01:00.424Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T09:13:27.109Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T09:14:37.232Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T09:26:52.081Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T09:28:36.540Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T09:38:16.373Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T09:49:46.144Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T09:50:51.561Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:10:06.500Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:12:49.758Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:13:20.657Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:13:30.703Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:14:12.860Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:19:33.250Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:19:33.872Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:30:16.774Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:45:56.674Z'
+}
+{
+  level: 'info',
+  message: 'hod-eric@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T10:58:43.652Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T11:03:31.347Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T11:21:21.059Z'
+}
+{
+  level: 'info',
+  message: 'hod-eric@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T11:57:27.926Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T12:38:03.239Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T12:53:03.308Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:06:55.842Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:07:41.191Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:08:13.492Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:08:39.804Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:09:18.003Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:13:37.235Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:13:38.169Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:20:11.240Z'
+}
+{
+  level: 'info',
+  message: 'Contract 645f90b73cc5caaa171f8ec4 successfully created',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:29:27.155Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:32:21.394Z'
+}
+{
+  level: 'info',
+  message: 'Contract 645f91d87575a1b0563e67b2 successfully created',
+  service: 'user-service',
+  timestamp: '2023-05-13T13:34:16.347Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T15:01:33.836Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T15:03:49.949Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T15:07:31.230Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T15:08:08.637Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T15:13:02.532Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T15:20:56.761Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T15:33:40.090Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T15:59:41.220Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:02:07.798Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:04:25.074Z'
+}
+{
+  level: 'info',
+  message: 'hod-eric@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:05:42.155Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:12:31.791Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:12:33.899Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:18:16.300Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:19:40.264Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:20:22.802Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:21:44.022Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:25:06.819Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:37:43.582Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:40:15.169Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:40:43.630Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:43:44.233Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T16:46:38.454Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:25:37.223Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:27:23.865Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:27:29.891Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:29:07.557Z'
+}
+{
+  level: 'info',
+  message: 'Bid 645fbfc99c1fcf3e68e5c656 selected for the tender 645fb628bd8afe1f72d7966a',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:36:41.835Z'
+}
+{
+  level: 'info',
+  message: 'Bid 645fbfc99c1fcf3e68e5c656 was awarded for the tender 645fb628bd8afe1f72d7966a',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:36:53.806Z'
+}
+{
+  level: 'info',
+  message: 'Contract 645fcaf69c1fcf3e68e61721 successfully created',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:37:58.702Z'
+}
+{
+  level: 'info',
+  message: 'Contract 645fcaf69c1fcf3e68e61721 set to partially-signed status',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:38:22.467Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:38:34.932Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:38:42.885Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:38:50.016Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:39:08.688Z'
+}
+{
+  level: 'info',
+  message: 'Contract 645fcaf69c1fcf3e68e61721 set to signed status',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:39:29.565Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T17:39:43.171Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:04:58.611Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:05:52.297Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:10:48.550Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:11:06.538Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:16:53.073Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:17:30.181Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:36:12.956Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:40:44.534Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:40:47.636Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:41:02.396Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:41:02.398Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:41:02.418Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:41:02.419Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:41:02.454Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:41:02.455Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:41:02.456Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:41:02.456Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:41:02.456Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:44:59.958Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:02.514Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.293Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.296Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.326Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.326Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.348Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.348Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.350Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.350Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.360Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:28.361Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:31.231Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:31.231Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:31.379Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:31.379Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:35.487Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:35.487Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:45:35.647Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:47:53.080Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:47:55.887Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:48:03.731Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:51:24.869Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:51:27.334Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:51:38.983Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:54:19.545Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:54:22.500Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:54:30.860Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:54:36.537Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T18:54:39.517Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-13T19:04:18.841Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T19:04:24.560Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-13T19:04:27.045Z'
+}
+{
+  level: 'info',
+  message: 'hod-eric@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-13T19:24:10.276Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T03:00:03.106Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T03:01:15.121Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T03:02:02.175Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T03:11:30.086Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T03:11:43.815Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-14T03:14:38.095Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-14T03:20:35.634Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-14T03:21:39.774Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T08:27:17.569Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T08:29:31.015Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T08:38:58.693Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T08:47:10.478Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T08:49:10.621Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T08:49:57.991Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T08:51:06.631Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T08:59:47.309Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T09:01:11.918Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T09:02:13.021Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T09:04:01.744Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T09:04:39.657Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T09:06:37.018Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T09:07:04.830Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T09:08:56.738Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T09:12:33.046Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-14T09:18:04.184Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T11:09:01.504Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-14T11:09:03.233Z'
+}
+{
+  level: 'info',
+  message: 'hod-eric@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-15T07:30:27.818Z'
+}
+{
+  level: 'info',
+  message: 'Contract 6461dfd2b2d8f08f429f74e1 successfully created',
+  service: 'user-service',
+  timestamp: '2023-05-15T07:31:30.118Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-15T07:38:50.830Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-15T07:53:17.038Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-15T08:11:35.351Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-15T08:12:23.971Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-15T08:17:38.980Z'
+}
+{
+  level: 'warn',
+  message: 'Password for 63f841fbdaebf9d728a03756 was successfully reset',
+  service: 'user-service',
+  timestamp: '2023-05-15T08:20:07.580Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-15T08:29:37.637Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-15T08:29:40.634Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-15T08:29:51.940Z'
+}
+{
+  level: 'error',
+  message: 'Unauthorized API access was declined.',
+  payload: '/users',
+  service: 'user-service',
+  timestamp: '2023-05-15T08:50:40.071Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-15T09:15:56.972Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-15T09:15:59.583Z'
+}

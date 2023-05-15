@@ -4,6 +4,7 @@ import { Contract } from "../classrepo/contracts";
 import { PurchaseOrder } from "../classrepo/purchaseOrders";
 import {
   getAllContracts,
+  getContractById,
   getContractByRequestId,
   getContractByStatus,
   getContractByTenderId,
@@ -53,6 +54,12 @@ contractRouter.get("/byStatus/:status", async (req, res) => {
   let { status } = req.params;
   res.send(await getContractByStatus(status));
 });
+
+contractRouter.get("/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getContractById(id));
+});
+
 
 contractRouter.post("/", async (req, res) => {
   let {
