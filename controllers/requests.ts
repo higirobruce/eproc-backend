@@ -308,23 +308,26 @@ export async function getReqCountsByDepartment() {
   ];
 
   let result = await RequestModel.aggregate(lookup);
-  return result;
+  return result.sort((a,b)=> a._id < b._id ? -1 : 1)
 }
 
 export async function getReqCountsByStatus() {
   let lookup = [
     {
-      $group: {
-        _id: "$status",
-        count: {
-          $count: {},
-        },
-      },
+      '$group': {
+        '_id': '$status', 
+        'count': {
+          '$count': {}
+        }
+      }
     },
+    
   ];
 
+
   let result = await RequestModel.aggregate(lookup);
-  return result;
+
+  return result.sort((a,b)=> a._id < b._id ? -1 : 1)
 }
 
 export async function getReqCountsByBudgetStatus() {
@@ -371,5 +374,6 @@ export async function getReqCountsByCategory() {
   ];
 
   let result = await RequestModel.aggregate(lookup);
-  return result;
+
+  return result.sort((a,b)=> a._id < b._id ? -1 : 1)
 }

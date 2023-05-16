@@ -293,7 +293,7 @@ function getReqCountsByDepartment() {
             },
         ];
         let result = yield requests_1.RequestModel.aggregate(lookup);
-        return result;
+        return result.sort((a, b) => a._id < b._id ? -1 : 1);
     });
 }
 exports.getReqCountsByDepartment = getReqCountsByDepartment;
@@ -301,16 +301,16 @@ function getReqCountsByStatus() {
     return __awaiter(this, void 0, void 0, function* () {
         let lookup = [
             {
-                $group: {
-                    _id: "$status",
-                    count: {
-                        $count: {},
-                    },
-                },
+                '$group': {
+                    '_id': '$status',
+                    'count': {
+                        '$count': {}
+                    }
+                }
             },
         ];
         let result = yield requests_1.RequestModel.aggregate(lookup);
-        return result;
+        return result.sort((a, b) => a._id < b._id ? -1 : 1);
     });
 }
 exports.getReqCountsByStatus = getReqCountsByStatus;
@@ -359,7 +359,7 @@ function getReqCountsByCategory() {
             },
         ];
         let result = yield requests_1.RequestModel.aggregate(lookup);
-        return result;
+        return result.sort((a, b) => a._id < b._id ? -1 : 1);
     });
 }
 exports.getReqCountsByCategory = getReqCountsByCategory;

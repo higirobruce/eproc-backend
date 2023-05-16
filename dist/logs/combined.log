@@ -4070,3 +4070,129 @@
   service: 'user-service',
   timestamp: '2023-05-15T09:15:59.583Z'
 }
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T06:52:39.222Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T06:52:41.137Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T06:52:43.851Z'
+}
+{
+  level: 'info',
+  message: 'hod-eric@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T06:53:08.546Z'
+}
+{
+  level: 'info',
+  message: 'hod-eric@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T06:53:37.650Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T06:53:49.540Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T06:54:04.493Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T06:58:27.739Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T08:37:02.228Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T08:37:15.739Z'
+}
+{
+  level: 'info',
+  message: 'info@michel.com successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:06:58.945Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:08:55.667Z'
+}
+{
+  level: 'info',
+  message: 'bruce@irembo.gov successfully logged in',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:18:23.471Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:25:59.254Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:34:07.677Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:35:28.231Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:35:55.207Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:36:28.263Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:37:03.643Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:37:47.355Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-16T09:38:26.281Z'
+}
