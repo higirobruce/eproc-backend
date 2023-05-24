@@ -87,7 +87,7 @@ export async function saveRequest(request: Request) {
 
   //Sending Email notification
   let approver = await UserModel.findById(request.level1Approver);
-  send("", approver?.email, "Purchase request approval", "", "", "approval");
+  send("", approver?.email, "Purchase request approval", JSON.stringify(newReq), "", "approval");
 
   return newReq;
 }
@@ -140,7 +140,7 @@ export async function declineRequest(
         "",
         requestor?.email,
         "Your Purchase request was rejected",
-        "",
+        JSON.stringify(response),
         "",
         "rejection"
       );
@@ -184,7 +184,7 @@ export async function updateRequestStatus(id: String, newStatus: String) {
         "",
         approversEmails,
         "Purchase request approval",
-        "",
+        JSON.stringify(newRequest),
         "",
         "approval"
       );
@@ -201,7 +201,7 @@ export async function updateRequestStatus(id: String, newStatus: String) {
         "",
         approversEmails,
         "Purchase request approval",
-        "",
+        JSON.stringify(newRequest),
         "",
         "approval"
       );

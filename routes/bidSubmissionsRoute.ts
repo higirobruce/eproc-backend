@@ -63,6 +63,7 @@ submissionsRouter.post("/", async (req, res) => {
     warrantyDuration,
     bankName,
     bankAccountNumber,
+    bankAccountName,
     proposalDocId,
     otherDocId,
   } = req.body;
@@ -84,7 +85,8 @@ submissionsRouter.post("/", async (req, res) => {
     proposalDocId,
     otherDocId,
     bankName,
-    bankAccountNumber
+    bankAccountNumber,
+    bankAccountName
   );
 
   // await saveBankDetails(createdBy, bankName, bankAccountNumber);

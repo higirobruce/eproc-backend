@@ -602,3 +602,82 @@
   service: 'user-service',
   timestamp: '2023-05-15T09:15:59.583Z'
 }
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-17T07:25:48.961Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-17T07:25:48.969Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-17T07:25:48.972Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-17T07:25:49.013Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-17T07:25:49.013Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-17T07:25:49.015Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-17T07:25:49.033Z'
+}
+{
+  level: 'error',
+  message: 'Closing the server',
+  service: 'user-service',
+  timestamp: '2023-05-17T07:25:49.033Z'
+}
+{
+  level: 'error',
+  message: 'HTTP server closed',
+  service: 'user-service',
+  timestamp: '2023-05-17T07:25:49.034Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-20T10:07:07.519Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-21T14:20:11.406Z'
+}
+{
+  level: 'error',
+  message: 'Unauthorized API access was declined.',
+  payload: '/users',
+  service: 'user-service',
+  timestamp: '2023-05-22T06:58:07.056Z'
+}
+{
+  level: 'error',
+  message: 'SIGINT signal detected',
+  service: 'user-service',
+  timestamp: '2023-05-23T06:54:35.088Z'
+}

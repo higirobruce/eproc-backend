@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getVendorRate = exports.updatePo = exports.updateB1Po = exports.savePOInB1 = exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getPOByTenderId = exports.getAllPOs = void 0;
+exports.getVendorRate = exports.updatePo = exports.updateB1Po = exports.savePOInB1 = exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getPOById = exports.getPOByTenderId = exports.getAllPOs = void 0;
 const purchaseOrders_1 = require("../models/purchaseOrders");
 const node_localstorage_1 = require("node-localstorage");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
@@ -68,6 +68,24 @@ function getPOByTenderId(tenderId) {
     });
 }
 exports.getPOByTenderId = getPOByTenderId;
+function getPOById(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let pos = yield purchaseOrders_1.PurchaseOrderModel.findById(id)
+            .populate("request")
+            .populate("tender")
+            .populate("vendor")
+            .populate("createdBy")
+            .populate({
+            path: "tender",
+            populate: {
+                path: "purchaseRequest",
+                model: "Request",
+            },
+        });
+        return pos;
+    });
+}
+exports.getPOById = getPOById;
 function getPOByRequestId(requestId) {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield purchaseOrders_1.PurchaseOrderModel.find({ request: requestId })

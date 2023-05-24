@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
     },
     from: process.env.IRMB_SENDER_EMAIL,
 });
-const newTender = `<mjml>
+const newTender = (newTender) => `<mjml>
 <mj-body>
   <!-- Company Header -->
   <mj-section>
@@ -36,7 +36,7 @@ const newTender = `<mjml>
 
   <!-- Image Header -->
   <mj-section>
-    <mj-column width="600px">
+    <mj-column>
       <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">A new Tender is published</mj-text>
     </mj-column>
   </mj-section>
@@ -44,17 +44,17 @@ const newTender = `<mjml>
 
   <!-- Intro text -->
   <mj-section background-color="">
-    <mj-column width="500px">
+    <mj-column >
 
       <mj-text color="#525252">
         Greetings, <br />
-        We trust that you are keeping well. <br/>
-        We would like to inform you that a new tender has been published. <br/>
+        We trust that you are keeping well. <br/><br/>
+        We would like to inform you that a new tender has been published. <br/><br/><br/>
         For more information on this tender and the related bid submission requirements, 
-        please proceed to the e-procurement application by clicking the button below.<br>
+        please proceed to the e-procurement application by clicking the button below.<br/>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/tenders/${newTender === null || newTender === void 0 ? void 0 : newTender._id}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -96,7 +96,7 @@ const invitation = (tender) => {
             
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/tenders/${tender === null || tender === void 0 ? void 0 : tender._id}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -138,7 +138,7 @@ const bidSelectionConfirmation = (tender) => {
           Once all relevant stakeholders approve of these recommendations, the selected vendor will be informed of the tender award decision<br>
         </mj-text>
   
-        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/tenders/${tender === null || tender === void 0 ? void 0 : tender._id}>Go to application</mj-button>
       </mj-column>
     </mj-section>
   
@@ -148,7 +148,7 @@ const bidSelectionConfirmation = (tender) => {
   </mj-body>
   </mjml>`;
 };
-const approval = `<mjml>
+const prApproval = (pr) => `<mjml>
 <mj-body>
   <!-- Company Header -->
   <mj-section>
@@ -179,7 +179,7 @@ const approval = `<mjml>
         To review the request, please proceed to the e-procurement portal application by clicking the button below.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/requests/${pr === null || pr === void 0 ? void 0 : pr._id}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -188,7 +188,7 @@ const approval = `<mjml>
 
 </mj-body>
 </mjml>`;
-const rejection = `<mjml>
+const prRejection = (pr) => `<mjml>
 <mj-body>
   <!-- Company Header -->
   <mj-section>
@@ -219,7 +219,7 @@ const rejection = `<mjml>
         For more information on this decision, please proceed to the e-procurement application by clicking the button below.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/requests/${pr === null || pr === void 0 ? void 0 : pr._id}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -318,7 +318,7 @@ const passwordReset = (cred) => {
 </mj-body>
 </mjml>`;
 };
-const externalSignature = (cred) => {
+const externalSignature = (emailObj, subject) => {
     return `<mjml>
 <mj-body>
   <!-- Company Header -->
@@ -334,7 +334,7 @@ const externalSignature = (cred) => {
   <!-- Image Header -->
   <mj-section>
     <mj-column width="600px">
-      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your contract has been signed</mj-text>
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">${subject}.</mj-text>
     </mj-column>
   </mj-section>
 
@@ -346,14 +346,14 @@ const externalSignature = (cred) => {
       <mj-text color="#525252">
         Hi there, <br />
         We hope that you are well. <br/>
-        We would like to let you know that your contract has been signed.
-        Please proceed to the e-procurement application by clicking the button below and provide below credentials<br><br>
+        We would like to let you know that your contract has been signed by Irembo.
+        For you to sign the contract, please proceed to the e-procurement application by clicking the button below and provide below credentials<br><br>
 
-        Username: ${cred === null || cred === void 0 ? void 0 : cred.email}<br/>
-        Password: <i>${cred === null || cred === void 0 ? void 0 : cred.password}</i> <br/><br/>
+        Username: ${emailObj === null || emailObj === void 0 ? void 0 : emailObj.email}<br/>
+        Password: <i>${emailObj === null || emailObj === void 0 ? void 0 : emailObj.password}</i> <br/><br/>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/${emailObj.docType}/${emailObj.docId}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -362,6 +362,49 @@ const externalSignature = (cred) => {
 
 </mj-body>
 </mjml>`;
+};
+const internalSignature = (emailObj) => {
+    return `<mjml>
+  <mj-body>
+    <!-- Company Header -->
+    <mj-section>
+      <mj-column>
+      <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+        <mj-text>
+          Irembo Procure
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  
+    <!-- Image Header -->
+    <mj-section>
+      <mj-column width="600px">
+        <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your signature is needed</mj-text>
+      </mj-column>
+    </mj-section>
+  
+  
+    <!-- Intro text -->
+    <mj-section background-color="">
+      <mj-column width="500px">
+  
+        <mj-text color="#525252">
+          Hi there, <br />
+          We hope that you are well. <br/>
+          We would like to let you know that a document has reached at your level, waiting for you to sign it.<br/> <br/>
+          Please proceed to the e-procurement application by clicking the button below.<br/><br/>
+  
+        </mj-text>
+  
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/${emailObj.docType}/${emailObj.docId}>Go to application</mj-button>
+      </mj-column>
+    </mj-section>
+  
+    <!-- Social icons -->
+    <mj-section background-color=""></mj-section>
+  
+  </mj-body>
+  </mjml>`;
 };
 const externalSignaturePO = (cred) => {
     return `<mjml>
@@ -419,7 +462,7 @@ function send(from, to, subject, text, html, type) {
                     to: to,
                     subject,
                     text,
-                    html: mjml(newTender).html,
+                    html: mjml(newTender(JSON.parse(text))).html,
                 });
             else if (type === "bidEvaluationInvite")
                 return yield transporter.sendMail({
@@ -443,7 +486,7 @@ function send(from, to, subject, text, html, type) {
                     to,
                     subject,
                     text,
-                    html: mjml(approval).html,
+                    html: mjml(prApproval(JSON.parse(text))).html,
                 });
             else if (type === "rejection")
                 return yield transporter.sendMail({
@@ -451,7 +494,7 @@ function send(from, to, subject, text, html, type) {
                     to,
                     subject,
                     text,
-                    html: mjml(rejection).html,
+                    html: mjml(prRejection(JSON.parse(text))).html,
                 });
             else if (type === "newUserAccount")
                 return yield transporter.sendMail({
@@ -475,19 +518,18 @@ function send(from, to, subject, text, html, type) {
                     to,
                     subject,
                     text,
-                    html: mjml(externalSignature(JSON.parse(text))).html,
+                    html: mjml(externalSignature(JSON.parse(text), subject)).html,
                 });
-            else if (type === "externalSignaturePO")
+            else if (type === "internalSignature")
                 return yield transporter.sendMail({
                     from: process.env.IRMB_SENDER_EMAIL,
                     to,
                     subject,
                     text,
-                    html: mjml(externalSignature(JSON.parse(text))).html,
+                    html: mjml(internalSignature(JSON.parse(text))).html,
                 });
         }
-        catch (err) {
-        }
+        catch (err) { }
     });
 }
 exports.send = send;

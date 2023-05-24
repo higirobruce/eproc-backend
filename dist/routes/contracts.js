@@ -57,11 +57,17 @@ exports.contractRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0,
     res.status(201).send(createdContract);
 }));
 exports.contractRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     let { id } = req.params;
-    let { newContract, pending, paritallySigned, signed } = req.body;
+    let { newContract, pending, paritallySigned, signed, previousStatus, signingIndex, } = req.body;
     let logOptions = {};
     let vendor = yield (0, users_1.getVendorByCompanyName)((_b = newContract === null || newContract === void 0 ? void 0 : newContract.signatories[((_a = newContract === null || newContract === void 0 ? void 0 : newContract.signatories) === null || _a === void 0 ? void 0 : _a.length) - 1]) === null || _b === void 0 ? void 0 : _b.onBehalfOf);
+    let nextSignatory = (newContract === null || newContract === void 0 ? void 0 : newContract.signatories.length) >= signingIndex + 2
+        ? (_c = newContract.signatories[signingIndex + 1]) === null || _c === void 0 ? void 0 : _c.email
+        : null;
+    if (previousStatus == "draft") {
+        (0, sendEmailNode_1.send)("from", (_d = newContract === null || newContract === void 0 ? void 0 : newContract.signatories[0]) === null || _d === void 0 ? void 0 : _d.email, "Your Signature is needed", JSON.stringify({ docId: newContract === null || newContract === void 0 ? void 0 : newContract._id, docType: "contracts" }), "", "internalSignature");
+    }
     if (pending) {
         newContract.status = "pending-signature";
         logOptions = {
@@ -79,10 +85,15 @@ exports.contractRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 
         let _vendor = Object.assign({}, vendor);
         let tempPass = (0, crypto_1.randomUUID)();
         _vendor.tempEmail =
-            (_d = newContract === null || newContract === void 0 ? void 0 : newContract.signatories[((_c = newContract === null || newContract === void 0 ? void 0 : newContract.signatories) === null || _c === void 0 ? void 0 : _c.length) - 1]) === null || _d === void 0 ? void 0 : _d.email;
+            (_f = newContract === null || newContract === void 0 ? void 0 : newContract.signatories[((_e = newContract === null || newContract === void 0 ? void 0 : newContract.signatories) === null || _e === void 0 ? void 0 : _e.length) - 1]) === null || _f === void 0 ? void 0 : _f.email;
         _vendor.tempPassword = (0, users_2.hashPassword)(tempPass);
         yield (0, users_1.setTempFields)(vendor === null || vendor === void 0 ? void 0 : vendor._id, _vendor === null || _vendor === void 0 ? void 0 : _vendor.tempEmail, _vendor === null || _vendor === void 0 ? void 0 : _vendor.tempPassword);
-        (0, sendEmailNode_1.send)("from", _vendor.tempEmail, "Your contract has been signed", JSON.stringify({ email: _vendor.tempEmail, password: tempPass }), "", "externalSignature");
+        (0, sendEmailNode_1.send)("from", _vendor.tempEmail, "Your contract has been signed", JSON.stringify({
+            email: _vendor.tempEmail,
+            password: tempPass,
+            docType: "contracts",
+            docId: newContract === null || newContract === void 0 ? void 0 : newContract._id,
+        }), "", "externalSignature");
     }
     if (signed) {
         newContract.status = "signed";
@@ -90,6 +101,9 @@ exports.contractRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 
             level: "info",
             message: `Contract ${id} set to signed status`,
         };
+    }
+    if (nextSignatory && !paritallySigned) {
+        (0, sendEmailNode_1.send)("from", nextSignatory, "Your Signature is needed", JSON.stringify({ docId: newContract === null || newContract === void 0 ? void 0 : newContract._id, docType: "contracts" }), "", "internalSignature");
     }
     let updated = yield (0, contracts_2.updateContract)(id, newContract);
     if (updated) {

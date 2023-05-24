@@ -175,3 +175,28 @@ exports.uploadRouter.get("/:path", (req, res) => {
             res.send({ stats });
     });
 });
+exports.uploadRouter.post("/paymentRequests/", (req, res) => {
+    var storage = multer_1.default.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, "dist/public/paymentRequests");
+        },
+        filename: function (req, file, cb) {
+            // cb(null, req.query.id+'.pdf');
+            let fileName = (0, crypto_1.randomUUID)();
+            cb(null, fileName + '.pdf');
+        },
+    });
+    var upload = (0, multer_1.default)({ storage: storage }).array("files[]");
+    // var upload = multer({ storage: storage }).array('file',100)
+    upload(req, res, function (err) {
+        if (err instanceof multer_1.default.MulterError) {
+            console.log(err);
+            return res.status(500);
+        }
+        else if (err) {
+            console.log(err);
+            return res.status(500);
+        }
+        return res.status(200).send(req.files);
+    });
+});

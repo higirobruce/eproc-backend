@@ -60,7 +60,6 @@ contractRouter.get("/:id", async (req, res) => {
   res.send(await getContractById(id));
 });
 
-
 contractRouter.post("/", async (req, res) => {
   let {
     vendor,
@@ -94,7 +93,7 @@ contractRouter.post("/", async (req, res) => {
   );
 
   let createdContract = await saveContract(contractToCreate);
-  if(createdContract){
+  if (createdContract) {
     logger.log({
       level: "info",
       message: `Contract ${createdContract?._id} successfully created`,
@@ -105,25 +104,48 @@ contractRouter.post("/", async (req, res) => {
 
 contractRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
-  let { newContract, pending, paritallySigned, signed } = req.body;
-  let logOptions = {}
+  let {
+    newContract,
+    pending,
+    paritallySigned,
+    signed,
+    previousStatus,
+    signingIndex,
+  } = req.body;
+  let logOptions = {};
   let vendor = await getVendorByCompanyName(
     newContract?.signatories[newContract?.signatories?.length - 1]?.onBehalfOf
   );
+
+  let nextSignatory =
+    newContract?.signatories.length >= signingIndex + 2
+      ? newContract.signatories[signingIndex + 1]?.email
+      : null;
+
+  if (previousStatus == "draft") {
+    send(
+      "from",
+      newContract?.signatories[0]?.email,
+      "Your Signature is needed",
+      JSON.stringify({ docId: newContract?._id, docType: "contracts" }),
+      "",
+      "internalSignature"
+    );
+  }
 
   if (pending) {
     newContract.status = "pending-signature";
     logOptions = {
       level: "info",
       message: `Contract ${id} set to pending-singature status`,
-    }
+    };
   }
   if (paritallySigned) {
     newContract.status = "partially-signed";
     logOptions = {
       level: "info",
       message: `Contract ${id} set to partially-signed status`,
-    }
+    };
     // console.log(vendor);
     let _vendor = { ...vendor };
     let tempPass = randomUUID();
@@ -136,7 +158,12 @@ contractRouter.put("/:id", async (req, res) => {
       "from",
       _vendor.tempEmail,
       "Your contract has been signed",
-      JSON.stringify({ email: _vendor.tempEmail, password: tempPass }),
+      JSON.stringify({
+        email: _vendor.tempEmail,
+        password: tempPass,
+        docType: "contracts",
+        docId: newContract?._id,
+      }),
       "",
       "externalSignature"
     );
@@ -146,14 +173,24 @@ contractRouter.put("/:id", async (req, res) => {
     logOptions = {
       level: "info",
       message: `Contract ${id} set to signed status`,
-    }
+    };
   }
-  
+
+  if (nextSignatory && !paritallySigned) {
+    send(
+      "from",
+      nextSignatory,
+      "Your Signature is needed",
+      JSON.stringify({ docId: newContract?._id, docType: "contracts" }),
+      "",
+      "internalSignature"
+    );
+  }
 
   let updated = await updateContract(id, newContract);
 
-  if(updated){
-    logger.log(logOptions)
+  if (updated) {
+    logger.log(logOptions);
   }
 
   res.status(200).send(updated);

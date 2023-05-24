@@ -10,6 +10,7 @@ import { poRouter } from "./routes/purchaseOrders";
 import { contractRouter } from "./routes/contracts";
 import { budgetLinesRouter } from "./routes/budgetLinesRoute";
 import { uploadRouter } from "./routes/upload";
+import { paymentRequestRouter } from "./routes/paymentRequestRoute";
 import b1Router from "./services/b1";
 
 import bodyParser from "body-parser";
@@ -32,7 +33,7 @@ const DB_USER = process.env.EPROC_DB_USER;
 const DB_PASSWORD = process.env.EPROC_DB_PASSWORD;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //Set up default mongoose connection
-var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
+var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authMechanism=DEFAULT`;
 
 mongoose.connect(mongoDB);
 //Get the default connection
@@ -83,6 +84,7 @@ app.use("/submissions", submissionsRouter);
 app.use("/purchaseOrders", poRouter);
 app.use("/contracts", contractRouter);
 app.use("/budgetLines", auth, budgetLinesRouter);
+app.use("/paymentRequests", paymentRequestRouter);
 app.use("/uploads", uploadRouter);
 app.use("/b1", b1Router);
 app.get("/file/:folder/:name", function (req, res, next) {

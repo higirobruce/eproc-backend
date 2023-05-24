@@ -17,7 +17,8 @@ export class BidSubmission implements IBidSubmission {
   proposalDocId: String;
   otherDocId: String;
   bankName: String;
-    bankAccountNumber: String;
+  bankAccountNumber: String;
+  bankAccountName: String;
 
   constructor(
     proposalUrls: string[],
@@ -35,8 +36,8 @@ export class BidSubmission implements IBidSubmission {
     proposalDocId: String,
     otherDocId: String,
     bankName: string,
-        bankAccountNumber: string
-
+    bankAccountNumber: string,
+    bankAccountName: string
   ) {
     this.proposalUrls = proposalUrls;
     this.deliveryDate = deliveryDate;
@@ -54,7 +55,8 @@ export class BidSubmission implements IBidSubmission {
     this.warrantyDuration = warrantyDuration;
     this.proposalDocId = proposalDocId;
     this.otherDocId = otherDocId;
-    this.bankName= bankName
-    this.bankAccountNumber = bankAccountNumber
+    this.bankName = bankName;
+    this.bankAccountNumber = bankAccountNumber;
+    this.bankAccountName = bankAccountName;
   }
 }

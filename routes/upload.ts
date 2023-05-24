@@ -186,3 +186,34 @@ uploadRouter.get("/:path", (req, res) => {
     if(stats) res.send({stats})
   });
 });
+
+
+
+uploadRouter.post("/paymentRequests/", (req, res) => {
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "dist/public/paymentRequests");
+    },
+
+    filename: function (req, file, cb) {
+      // cb(null, req.query.id+'.pdf');
+      let fileName = randomUUID()
+      cb(null, fileName+'.pdf');
+    },
+  });
+
+
+  var upload = multer({ storage: storage }).array("files[]");
+  // var upload = multer({ storage: storage }).array('file',100)
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      console.log(err);
+      return res.status(500);
+    } else if (err) {
+      console.log(err);
+      return res.status(500);
+    }
+
+    return res.status(200).send(req.files);
+  });
+});

@@ -14,10 +14,12 @@ import mongoose from "mongoose";
 let localstorage = new LocalStorage("./scratch");
 
 export async function getAllUsers() {
+  
   try {
     let users = await UserModel.find()
       .populate("department")
       .sort({ email: "asc" });
+
     return users;
   } catch (err) {
     return {
@@ -372,6 +374,7 @@ export async function getVendorByCompanyName(name: String) {
 }
 
 export async function approveUser(id: String) {
+  console.log(id)
   try {
     let user = await UserModel.findById(id).populate("department");
     let name = user?.companyName;
@@ -379,6 +382,7 @@ export async function approveUser(id: String) {
       let series = await getB1SeriesFromNames(name!);
       let createdCode = await createSupplierinB1(name!, "cSupplier", series);
 
+      console.log(createdCode)
       if (createdCode) {
         user = await UserModel.findByIdAndUpdate(
           id,

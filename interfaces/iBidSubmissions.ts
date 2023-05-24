@@ -15,6 +15,7 @@ export interface IBidSubmission {
   otherDocId: String;
   bankName: String;
   bankAccountNumber: String;
+  bankAccountName: String;
 }
 
 export interface IBidSubmissionDocument extends IBidSubmission, Document {

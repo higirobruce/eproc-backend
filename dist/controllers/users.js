@@ -406,12 +406,14 @@ function getVendorByCompanyName(name) {
 exports.getVendorByCompanyName = getVendorByCompanyName;
 function approveUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log(id);
         try {
             let user = yield users_1.UserModel.findById(id).populate("department");
             let name = user === null || user === void 0 ? void 0 : user.companyName;
             if ((user === null || user === void 0 ? void 0 : user.userType) === "VENDOR") {
                 let series = yield getB1SeriesFromNames(name);
                 let createdCode = yield createSupplierinB1(name, "cSupplier", series);
+                console.log(createdCode);
                 if (createdCode) {
                     user = yield users_1.UserModel.findByIdAndUpdate(id, {
                         $set: { status: "approved" },

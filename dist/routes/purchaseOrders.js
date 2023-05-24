@@ -35,11 +35,16 @@ exports.poRouter.get("/byVendorId/:vendorId", (req, res) => __awaiter(void 0, vo
     let { vendorId } = req.params;
     res.send(yield (0, purchaseOrders_2.getPOByVendorId)(vendorId));
 }));
+exports.poRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    res.send(yield (0, purchaseOrders_2.getPOById)(id));
+}));
 exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, function* () {
-    let { vendor, tender, request, createdBy, sections, items, status, deliveryProgress, B1Data, signatories, reqAttachmentDocId, rate, rateComment } = req.body;
+    let { vendor, tender, request, createdBy, sections, items, status, deliveryProgress, B1Data, signatories, reqAttachmentDocId, rate, rateComment, } = req.body;
     let { B1Data_Assets, B1Data_NonAssets } = B1Data;
     let CardCode;
-    yield (0, b1_1.getBusinessPartnerByName)((B1Data_Assets === null || B1Data_Assets === void 0 ? void 0 : B1Data_Assets.CardName) || B1Data_NonAssets.CardName).then((res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, b1_1.getBusinessPartnerByName)((B1Data_Assets === null || B1Data_Assets === void 0 ? void 0 : B1Data_Assets.CardName) || B1Data_NonAssets.CardName)
+        .then((res) => __awaiter(void 0, void 0, void 0, function* () {
         let bp = res.value;
         if ((bp === null || bp === void 0 ? void 0 : bp.length) >= 1) {
             CardCode = bp[0].CardCode;
@@ -50,7 +55,9 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
                 ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_NonAssets.DocType, B1Data_NonAssets.DocumentLines)
                 : null;
             if ((b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error) || (b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error)) {
-                response.status(201).send((b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error) || (b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error));
+                response
+                    .status(201)
+                    .send((b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error) || (b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error));
             }
             else {
                 let number = yield (0, purchaseOrders_3.generatePONumber)();
@@ -76,7 +83,8 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
                 .status(500)
                 .send({ error: true, message: "Business Partner not found!" });
         }
-    })).catch(err => {
+    }))
+        .catch((err) => {
         console.log(err);
     });
 }));
@@ -91,10 +99,13 @@ exports.poRouter.put("/progress/:id", (req, res) => __awaiter(void 0, void 0, vo
     res.send(yield (0, purchaseOrders_2.updateProgress)(id, updates));
 }));
 exports.poRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     let { id } = req.params;
-    let { newPo, pending, paritallySigned, signed } = req.body;
+    let { newPo, pending, paritallySigned, signed, signingIndex } = req.body;
     let vendor = yield (0, users_1.getVendorByCompanyName)((_b = newPo === null || newPo === void 0 ? void 0 : newPo.signatories[((_a = newPo === null || newPo === void 0 ? void 0 : newPo.signatories) === null || _a === void 0 ? void 0 : _a.length) - 1]) === null || _b === void 0 ? void 0 : _b.onBehalfOf);
+    let nextSignatory = (newPo === null || newPo === void 0 ? void 0 : newPo.signatories.length) >= signingIndex + 2
+        ? (_c = newPo.signatories[signingIndex + 1]) === null || _c === void 0 ? void 0 : _c.email
+        : null;
     if (pending) {
         newPo.status = "pending-signature";
     }
@@ -104,14 +115,17 @@ exports.poRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, fun
         let _vendor = Object.assign({}, vendor);
         let tempPass = (0, crypto_1.randomUUID)();
         _vendor.tempEmail =
-            (_d = newPo === null || newPo === void 0 ? void 0 : newPo.signatories[((_c = newPo === null || newPo === void 0 ? void 0 : newPo.signatories) === null || _c === void 0 ? void 0 : _c.length) - 1]) === null || _d === void 0 ? void 0 : _d.email;
+            (_e = newPo === null || newPo === void 0 ? void 0 : newPo.signatories[((_d = newPo === null || newPo === void 0 ? void 0 : newPo.signatories) === null || _d === void 0 ? void 0 : _d.length) - 1]) === null || _e === void 0 ? void 0 : _e.email;
         _vendor.tempPassword = (0, users_2.hashPassword)(tempPass);
         yield (0, users_1.setTempFields)(vendor === null || vendor === void 0 ? void 0 : vendor._id, _vendor === null || _vendor === void 0 ? void 0 : _vendor.tempEmail, _vendor === null || _vendor === void 0 ? void 0 : _vendor.tempPassword);
-        (0, sendEmailNode_1.send)("from", _vendor.tempEmail, "Your Purchase Order has been signed", JSON.stringify({ email: _vendor.tempEmail, password: tempPass }), "", "externalSignaturePO");
+        (0, sendEmailNode_1.send)("from", _vendor.tempEmail, "Your Purchase Order has been signed", JSON.stringify({ email: _vendor.tempEmail, password: tempPass, docType: 'purchase-orders', docId: newPo === null || newPo === void 0 ? void 0 : newPo._id }), "", "externalSignature");
     }
     if (signed) {
         newPo.status = "signed";
     }
     let updated = yield (0, purchaseOrders_2.updatePo)(id, newPo);
+    if (nextSignatory && !paritallySigned) {
+        (0, sendEmailNode_1.send)("from", nextSignatory, "Your Signature is needed", JSON.stringify({ docId: newPo === null || newPo === void 0 ? void 0 : newPo._id, docType: 'purchase-orders' }), "", "internalSignature");
+    }
     res.status(200).send(updated);
 }));

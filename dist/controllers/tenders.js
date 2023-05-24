@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTendCountsByCategory = exports.getTendCountsByDepartment = exports.updateTender = exports.updateTenderStatus = exports.saveTender = exports.getClosedTenders = exports.getOpenTenders = exports.getTendersByServiceCategoryList = exports.getTendersByRequest = exports.getTendersById = exports.getAllTendersByStatus = exports.getAllTenders = void 0;
+const requests_1 = require("../models/requests");
 const tenders_1 = require("../models/tenders");
 const users_1 = require("../models/users");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
@@ -32,7 +33,7 @@ exports.getAllTenders = getAllTenders;
 function getAllTendersByStatus(status) {
     return __awaiter(this, void 0, void 0, function* () {
         let _status = status == "open"
-            ? { submissionDeadLine: { $gt: Date.now() }, status: { $ne: 'closed' } }
+            ? { submissionDeadLine: { $gt: Date.now() }, status: { $ne: "closed" } }
             : { submissionDeadLine: { $lt: Date.now() } };
         let reqs = yield tenders_1.TenderModel.find(_status)
             .populate("createdBy")
@@ -179,17 +180,20 @@ function getClosedTenders() {
 }
 exports.getClosedTenders = getClosedTenders;
 function saveTender(tender) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let newTender = yield tenders_1.TenderModel.create(tender);
+        let request = tender.purchaseRequest;
+        let category = (_a = (yield requests_1.RequestModel.findById(request))) === null || _a === void 0 ? void 0 : _a.serviceCategory;
         //Send notifications to vendors in the tender's caterogry
         let vendors = yield users_1.UserModel.find({
-            services: { $elemMatch: { $eq: "CLEANING SERVICES" } },
+            services: { $elemMatch: { $eq: category } },
         });
         let vendorEmails = vendors === null || vendors === void 0 ? void 0 : vendors.map((v) => {
             return v === null || v === void 0 ? void 0 : v.email;
         });
         if ((vendorEmails === null || vendorEmails === void 0 ? void 0 : vendorEmails.length) >= 1) {
-            (0, sendEmailNode_1.send)("", vendorEmails, "New Tender Notice", "", "", "newTender");
+            (0, sendEmailNode_1.send)("", vendorEmails, "New Tender Notice", JSON.stringify(newTender), "", "newTender");
         }
         return newTender;
     });

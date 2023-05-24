@@ -54,6 +54,23 @@ export async function getPOByTenderId(tenderId: String) {
   return pos;
 }
 
+export async function getPOById(id: String) {
+  let pos = await PurchaseOrderModel.findById(id)
+    .populate("request")
+    .populate("tender")
+    .populate("vendor")
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+      },
+    });
+  return pos;
+}
+
+
 export async function getPOByRequestId(requestId: String) {
   let pos = await PurchaseOrderModel.find({ request: requestId })
     .populate("request")

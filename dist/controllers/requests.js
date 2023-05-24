@@ -107,7 +107,7 @@ function saveRequest(request) {
         let newReq = yield requests_1.RequestModel.create(request);
         //Sending Email notification
         let approver = yield users_1.UserModel.findById(request.level1Approver);
-        (0, sendEmailNode_1.send)("", approver === null || approver === void 0 ? void 0 : approver.email, "Purchase request approval", "", "", "approval");
+        (0, sendEmailNode_1.send)("", approver === null || approver === void 0 ? void 0 : approver.email, "Purchase request approval", JSON.stringify(newReq), "", "approval");
         return newReq;
     });
 }
@@ -151,7 +151,7 @@ function declineRequest(id, reason, declinedBy) {
             //Sending email notification
             let requestor = yield users_1.UserModel.findById(response === null || response === void 0 ? void 0 : response.createdBy);
             if (requestor === null || requestor === void 0 ? void 0 : requestor.email) {
-                (0, sendEmailNode_1.send)("", requestor === null || requestor === void 0 ? void 0 : requestor.email, "Your Purchase request was rejected", "", "", "rejection");
+                (0, sendEmailNode_1.send)("", requestor === null || requestor === void 0 ? void 0 : requestor.email, "Your Purchase request was rejected", JSON.stringify(response), "", "rejection");
             }
             return response;
         }
@@ -185,7 +185,7 @@ function updateRequestStatus(id, newStatus) {
                 let approversEmails = level2Approvers === null || level2Approvers === void 0 ? void 0 : level2Approvers.map((l2) => {
                     return l2 === null || l2 === void 0 ? void 0 : l2.email;
                 });
-                (0, sendEmailNode_1.send)("", approversEmails, "Purchase request approval", "", "", "approval");
+                (0, sendEmailNode_1.send)("", approversEmails, "Purchase request approval", JSON.stringify(newRequest), "", "approval");
             }
             if (newStatus === "approved (fd)") {
                 let level3Approvers = yield users_1.UserModel.find({
@@ -194,7 +194,7 @@ function updateRequestStatus(id, newStatus) {
                 let approversEmails = level3Approvers === null || level3Approvers === void 0 ? void 0 : level3Approvers.map((l3) => {
                     return l3 === null || l3 === void 0 ? void 0 : l3.email;
                 });
-                (0, sendEmailNode_1.send)("", approversEmails, "Purchase request approval", "", "", "approval");
+                (0, sendEmailNode_1.send)("", approversEmails, "Purchase request approval", JSON.stringify(newRequest), "", "approval");
             }
             return requests_1.RequestModel.populate(newRequest, "createdBy level1Approver budgetLine");
         }

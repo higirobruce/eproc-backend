@@ -38,9 +38,9 @@ exports.submissionsRouter.get("/submitted/:tenderId", (req, res) => __awaiter(vo
     res.send(yield (0, bidSubmissions_1.iSubmittedOnTender)(tenderId, vendorId));
 }));
 exports.submissionsRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, createdBy, tender, warrantyDuration, bankName, bankAccountNumber, proposalDocId, otherDocId, } = req.body;
+    let { proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, createdBy, tender, warrantyDuration, bankName, bankAccountNumber, bankAccountName, proposalDocId, otherDocId, } = req.body;
     let number = yield (0, bidSubmissions_3.generateBidSubmissionNumber)();
-    let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration, proposalDocId, otherDocId, bankName, bankAccountNumber);
+    let submission = new bidSubmissions_2.BidSubmission(proposalUrls, deliveryDate, price, currency, warranty, discount, status, comment, number, createdBy, tender, warrantyDuration, proposalDocId, otherDocId, bankName, bankAccountNumber, bankAccountName);
     // await saveBankDetails(createdBy, bankName, bankAccountNumber);
     let createdSubmission = yield (0, bidSubmissions_1.saveBidSubmission)(submission);
     if (createdSubmission) {

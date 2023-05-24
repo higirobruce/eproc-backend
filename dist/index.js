@@ -24,6 +24,7 @@ const purchaseOrders_1 = require("./routes/purchaseOrders");
 const contracts_1 = require("./routes/contracts");
 const budgetLinesRoute_1 = require("./routes/budgetLinesRoute");
 const upload_1 = require("./routes/upload");
+const paymentRequestRoute_1 = require("./routes/paymentRequestRoute");
 const b1_1 = __importDefault(require("./services/b1"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
@@ -36,7 +37,7 @@ const DB_USER = process.env.EPROC_DB_USER;
 const DB_PASSWORD = process.env.EPROC_DB_PASSWORD;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //Set up default mongoose connection
-var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
+var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authMechanism=DEFAULT`;
 mongoose_1.default.connect(mongoDB);
 //Get the default connection
 var db = mongoose_1.default.connection;
@@ -79,6 +80,7 @@ app.use("/submissions", bidSubmissionsRoute_1.submissionsRouter);
 app.use("/purchaseOrders", purchaseOrders_1.poRouter);
 app.use("/contracts", contracts_1.contractRouter);
 app.use("/budgetLines", auth, budgetLinesRoute_1.budgetLinesRouter);
+app.use("/paymentRequests", paymentRequestRoute_1.paymentRequestRouter);
 app.use("/uploads", upload_1.uploadRouter);
 app.use("/b1", b1_1.default);
 app.get("/file/:folder/:name", function (req, res, next) {

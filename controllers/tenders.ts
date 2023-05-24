@@ -1,6 +1,7 @@
 import moment from "moment";
 import { Request } from "../classrepo/requests";
 import { Tender } from "../classrepo/tenders";
+import { RequestModel } from "../models/requests";
 import { TenderModel } from "../models/tenders";
 import { UserModel } from "../models/users";
 import { send } from "../utils/sendEmailNode";
@@ -22,7 +23,7 @@ export async function getAllTenders() {
 export async function getAllTendersByStatus(status: String) {
   let _status =
     status == "open"
-      ? { submissionDeadLine: { $gt: Date.now() }, status: {$ne: 'closed'} }
+      ? { submissionDeadLine: { $gt: Date.now() }, status: { $ne: "closed" } }
       : { submissionDeadLine: { $lt: Date.now() } };
   let reqs = await TenderModel.find(_status)
     .populate("createdBy")
@@ -158,18 +159,20 @@ export async function getClosedTenders() {
   return reqs;
 }
 
-export async function saveTender(tender: Tender,) {
+export async function saveTender(tender: Tender) {
   let newTender = await TenderModel.create(tender);
+  let request = tender.purchaseRequest;
+  let category = (await RequestModel.findById(request))?.serviceCategory;
 
   //Send notifications to vendors in the tender's caterogry
   let vendors = await UserModel.find({
-    services: { $elemMatch: { $eq: "CLEANING SERVICES" } },
+    services: { $elemMatch: { $eq: category } },
   });
   let vendorEmails = vendors?.map((v) => {
     return v?.email;
   });
   if (vendorEmails?.length >= 1) {
-    send("", vendorEmails, "New Tender Notice", "", "", "newTender");
+    send("", vendorEmails, "New Tender Notice", JSON.stringify(newTender), "", "newTender");
   }
   return newTender;
 }

@@ -3,6 +3,7 @@ import { Router } from "express";
 import { PurchaseOrder } from "../classrepo/purchaseOrders";
 import {
   getAllPOs,
+  getPOById,
   getPOByRequestId,
   getPOByTenderId,
   getPOByVendorId,
@@ -40,8 +41,12 @@ poRouter.get("/byVendorId/:vendorId", async (req, res) => {
   res.send(await getPOByVendorId(vendorId));
 });
 
+poRouter.get("/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getPOById(id));
+});
+
 poRouter.post("/", async (req, response) => {
-  
   let {
     vendor,
     tender,
@@ -55,7 +60,7 @@ poRouter.post("/", async (req, response) => {
     signatories,
     reqAttachmentDocId,
     rate,
-    rateComment
+    rateComment,
   } = req.body;
 
   let { B1Data_Assets, B1Data_NonAssets } = B1Data;
@@ -64,78 +69,78 @@ poRouter.post("/", async (req, response) => {
 
   await getBusinessPartnerByName(
     B1Data_Assets?.CardName || B1Data_NonAssets.CardName
-  ).then(async (res) => {
-    
-    let bp = res.value;
-    if (bp?.length >= 1) {
-      CardCode = bp[0].CardCode;
+  )
+    .then(async (res) => {
+      let bp = res.value;
+      if (bp?.length >= 1) {
+        CardCode = bp[0].CardCode;
 
-      let b1Response_assets = B1Data_Assets
-        ? await savePOInB1(
-            CardCode,
-            B1Data_Assets.DocType,
-            B1Data_Assets.DocumentLines
-          )
-        : null;
+        let b1Response_assets = B1Data_Assets
+          ? await savePOInB1(
+              CardCode,
+              B1Data_Assets.DocType,
+              B1Data_Assets.DocumentLines
+            )
+          : null;
 
-      let b1Response_nonAssets = B1Data_NonAssets
-        ? await savePOInB1(
-            CardCode,
-            B1Data_NonAssets.DocType,
-            B1Data_NonAssets.DocumentLines
-          )
-        : null;
+        let b1Response_nonAssets = B1Data_NonAssets
+          ? await savePOInB1(
+              CardCode,
+              B1Data_NonAssets.DocType,
+              B1Data_NonAssets.DocumentLines
+            )
+          : null;
 
-      if (b1Response_assets?.error || b1Response_nonAssets?.error) {
-        
-        response.status(201).send(b1Response_assets?.error || b1Response_nonAssets?.error);
-      } else {
-        let number = await generatePONumber();
-        let refs = [];
-        b1Response_assets && refs.push(b1Response_assets.DocNum);
-        b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
+        if (b1Response_assets?.error || b1Response_nonAssets?.error) {
+          response
+            .status(201)
+            .send(b1Response_assets?.error || b1Response_nonAssets?.error);
+        } else {
+          let number = await generatePONumber();
+          let refs = [];
+          b1Response_assets && refs.push(b1Response_assets.DocNum);
+          b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
 
-        let poToCreate = new PurchaseOrder(
-          number,
-          vendor,
-          tender,
-          request,
-          createdBy,
-          sections,
-          items,
-          status,
-          deliveryProgress,
-          signatories,
-          reqAttachmentDocId,
-          refs,
-          rate,
-          rateComment
-        );
+          let poToCreate = new PurchaseOrder(
+            number,
+            vendor,
+            tender,
+            request,
+            createdBy,
+            sections,
+            items,
+            status,
+            deliveryProgress,
+            signatories,
+            reqAttachmentDocId,
+            refs,
+            rate,
+            rateComment
+          );
 
+          let createdPO = await savePO(poToCreate);
 
-
-        let createdPO = await savePO(poToCreate);
-
-        if (createdPO) {
-          if (refs?.length >= 1) {
-            refs.forEach(async (r) => {
-              await updateB1Po(r, {
-                Comments: `Refer to PO number ${createdPO?.number} in the e-procurement tool.`,
+          if (createdPO) {
+            if (refs?.length >= 1) {
+              refs.forEach(async (r) => {
+                await updateB1Po(r, {
+                  Comments: `Refer to PO number ${createdPO?.number} in the e-procurement tool.`,
+                });
               });
-            });
+            }
           }
-        }
 
-        response.status(201).send({ createdTender: createdPO });
-      } 
-    } else {
-      response
-        .status(500)
-        .send({ error: true, message: "Business Partner not found!" });
-    }
-  }).catch(err=>{
-    console.log(err)
-  })
+          response.status(201).send({ createdTender: createdPO });
+        }
+      } else {
+        response
+          .status(500)
+          .send({ error: true, message: "Business Partner not found!" });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 poRouter.put("/status/:id", async (req, res) => {
@@ -152,11 +157,16 @@ poRouter.put("/progress/:id", async (req, res) => {
 
 poRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
-  let { newPo, pending, paritallySigned, signed } = req.body;
+  let { newPo, pending, paritallySigned, signed, signingIndex } = req.body;
   let vendor = await getVendorByCompanyName(
     newPo?.signatories[newPo?.signatories?.length - 1]?.onBehalfOf
   );
 
+  let nextSignatory =
+    newPo?.signatories.length >= signingIndex + 2
+      ? newPo.signatories[signingIndex + 1]?.email
+      : null;
+  
   if (pending) {
     newPo.status = "pending-signature";
   }
@@ -175,9 +185,9 @@ poRouter.put("/:id", async (req, res) => {
       "from",
       _vendor.tempEmail,
       "Your Purchase Order has been signed",
-      JSON.stringify({ email: _vendor.tempEmail, password: tempPass }),
+      JSON.stringify({ email: _vendor.tempEmail, password: tempPass, docType: 'purchase-orders', docId: newPo?._id }),
       "",
-      "externalSignaturePO"
+      "externalSignature"
     );
   }
   if (signed) {
@@ -186,6 +196,17 @@ poRouter.put("/:id", async (req, res) => {
 
   let updated = await updatePo(id, newPo);
 
+
+  if(nextSignatory && !paritallySigned){
+    send(
+      "from",
+      nextSignatory,
+      "Your Signature is needed",
+      JSON.stringify({ docId: newPo?._id, docType: 'purchase-orders' }),
+      "",
+      "internalSignature"
+    );
+  }
+
   res.status(200).send(updated);
 });
-
