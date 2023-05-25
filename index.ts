@@ -33,7 +33,7 @@ const DB_USER = process.env.EPROC_DB_USER;
 const DB_PASSWORD = process.env.EPROC_DB_PASSWORD;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //Set up default mongoose connection
-var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authMechanism=DEFAULT`;
+var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
 
 mongoose.connect(mongoDB);
 //Get the default connection
