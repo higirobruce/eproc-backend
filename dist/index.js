@@ -37,12 +37,12 @@ const DB_USER = process.env.EPROC_DB_USER;
 const DB_PASSWORD = process.env.EPROC_DB_PASSWORD;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //Set up default mongoose connection
-var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authMechanism=DEFAULT`;
+var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
 mongoose_1.default.connect(mongoDB);
 //Get the default connection
 var db = mongoose_1.default.connection;
 //Bind connection to error event (to get notification of connection errors)
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
+db.on("error", console.error.bind(console, `MongoDB connection error with user:${DB_USER} pwd:${DB_PASSWORD} :`));
 // db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once("open", () => console.log("connected to db"));
 //Basic Authorization
