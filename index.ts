@@ -35,6 +35,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //Set up default mongoose connection
 var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
 
+
 mongoose.connect(mongoDB);
 //Get the default connection
 
