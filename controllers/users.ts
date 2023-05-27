@@ -319,7 +319,7 @@ export async function createSupplierinB1(
   return sapLogin().then(async (res) => {
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
-    return fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
+    return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

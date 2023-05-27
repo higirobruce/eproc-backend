@@ -339,7 +339,7 @@ function createSupplierinB1(CardName, CardType, Series) {
         return (0, sapB1Connection_1.sapLogin)().then((res) => __awaiter(this, void 0, void 0, function* () {
             let COOKIE = res.headers.get("set-cookie");
             localstorage.setItem("cookie", `${COOKIE}`);
-            return fetch("https://192.168.20.181:50000/b1s/v1/BusinessPartners", {
+            return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -36,7 +36,7 @@ const hashPassword = (password) => {
     // Creating a unique salt for a particular user 
     // Hashing user's salt and password with 1000 iterations, 
     let hash = crypto_1.default.pbkdf2Sync(password, SALT, 1000, 64, `sha512`).toString(`hex`);
-    return hash;
+    return hash.toString();
 };
 exports.hashPassword = hashPassword;
 const validPassword = (password, savedPassword) => {

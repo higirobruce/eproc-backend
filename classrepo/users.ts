@@ -62,7 +62,7 @@ export class User implements IUser {
     firstName: String,
     lastName: String,
     tempEmail: String,
-    tempPassword: String
+    tempPassword: string
   ) {
     this.userType = userType;
     this.email = email;

@@ -62,7 +62,7 @@ exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, fun
     let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword, } = req.body;
     let password_new = userType == "VENDOR" ? password : (0, users_3.generatePassword)(8);
     let number = yield (0, users_3.generateUserNumber)();
-    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password_new), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, (0, users_3.hashPassword)(tempPassword));
+    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password_new), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, (0, users_3.hashPassword)(tempPassword || 'tempPassword'));
     let createdUser = yield (0, users_2.saveUser)(userToCreate);
     if (createdUser) {
         logger_1.logger.log({

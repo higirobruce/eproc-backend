@@ -178,7 +178,7 @@ export async function savePOInB1(
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
 
-    return fetch("https://192.168.20.181:50000/b1s/v1/PurchaseOrders", {
+    return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -206,7 +206,7 @@ export async function updateB1Po(
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
 
-    return fetch(`https://192.168.20.181:50000/b1s/v1/PurchaseOrders(${CardCode})`, {
+    return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders(${CardCode})`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

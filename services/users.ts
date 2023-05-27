@@ -34,7 +34,7 @@ export const hashPassword = (password: any) => {
     let hash = crypto.pbkdf2Sync(password, SALT,
         1000, 64, `sha512`).toString(`hex`);
 
-    return hash
+    return hash.toString()
 };
 
 
