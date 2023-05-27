@@ -198,7 +198,7 @@ function savePOInB1(CardCode, DocType, DocumentLines) {
         return (0, sapB1Connection_1.sapLogin)().then((res) => __awaiter(this, void 0, void 0, function* () {
             let COOKIE = res.headers.get("set-cookie");
             localstorage.setItem("cookie", `${COOKIE}`);
-            return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders`, {
+            return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -224,7 +224,7 @@ function updateB1Po(CardCode, body) {
         return (0, sapB1Connection_1.sapLogin)().then((res) => __awaiter(this, void 0, void 0, function* () {
             let COOKIE = res.headers.get("set-cookie");
             localstorage.setItem("cookie", `${COOKIE}`);
-            return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders(${CardCode})`, {
+            return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders(${CardCode})`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

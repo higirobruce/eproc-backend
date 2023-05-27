@@ -64,7 +64,7 @@ function createSupplierinB1(CardName, CardType, Series) {
             CardType,
             Series
         };
-        fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`, {
+        fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',

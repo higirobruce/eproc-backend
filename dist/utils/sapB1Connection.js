@@ -19,7 +19,7 @@ var config = {
 };
 function sapLogin() {
     return __awaiter(this, void 0, void 0, function* () {
-        return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Login`, {
+        return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -31,7 +31,7 @@ function sapLogin() {
 exports.sapLogin = sapLogin;
 function sapLogout() {
     return __awaiter(this, void 0, void 0, function* () {
-        return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Login`, {
+        return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -11,7 +11,7 @@ export var SESSION_ID: any;
 export var COOKIE: any;
 
 export async function sapLogin() {
-  return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Login`, {
+  return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export async function sapLogin() {
 }
 
 export async function sapLogout() {
-  return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Login`, {
+  return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

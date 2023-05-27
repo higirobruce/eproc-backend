@@ -316,10 +316,12 @@ export async function createSupplierinB1(
     Series,
   };
 
+  console.log(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`)
   return sapLogin().then(async (res) => {
+
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
-    return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`, {
+    return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -329,6 +331,7 @@ export async function createSupplierinB1(
     })
       .then((res) => res.json())
       .then(async (res) => {
+        console.log(res)
         if (res?.error && res?.error.code == 301) {
           console.log("Tried many times, we cant login");
           return false;
@@ -337,6 +340,7 @@ export async function createSupplierinB1(
         }
       })
       .catch((err) => {
+        console.log(err)
         return false;
       });
   });
@@ -374,13 +378,18 @@ export async function getVendorByCompanyName(name: String) {
 }
 
 export async function approveUser(id: String) {
-  console.log(id)
+
   try {
     let user = await UserModel.findById(id).populate("department");
     let name = user?.companyName;
-    if (user?.userType === "VENDOR") {
+
+    if (user?.userType === "VENDOR" && user?.status === 'pending-approval') {
+      console.log(name)
       let series = await getB1SeriesFromNames(name!);
+
       let createdCode = await createSupplierinB1(name!, "cSupplier", series);
+
+      console.log(series)
 
       console.log(createdCode)
       if (createdCode) {

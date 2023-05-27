@@ -33,7 +33,7 @@ export function getVatGroups(){
       let COOKIE = res.headers.get("set-cookie");
       localstorage.setItem("cookie", `${COOKIE}`);
       return fetch(
-       `${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/VatGroups?$filter=Inactive eq 'tNO'&$select=Code,Name,Category`,
+       `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/VatGroups?$filter=Inactive eq 'tNO'&$select=Code,Name,Category`,
         {
           method: "GET",
           headers: {
@@ -56,7 +56,7 @@ export function getFixedAssets(){
       let COOKIE = res.headers.get("set-cookie");
       localstorage.setItem("cookie", `${COOKIE}`);
       return fetch(
-       `${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Items?$filter= ItemType eq 'itFixedAssets' and CapitalizationDate eq null &$select=ItemCode,ItemName`,
+       `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Items?$filter= ItemType eq 'itFixedAssets' and CapitalizationDate eq null &$select=ItemCode,ItemName`,
         {
           method: "GET",
           headers: {
@@ -80,7 +80,7 @@ export function getBusinessPartnerByName(CardName:String){
       let COOKIE = res.headers.get("set-cookie");
       localstorage.setItem("cookie", `${COOKIE}`);
       return fetch(
-       `${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners?$select=CardName,CardCode&$filter=CardName eq '${CardName}'`,
+       `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners?$select=CardName,CardCode&$filter=CardName eq '${CardName}'`,
         {
           method: "GET",
           headers: {

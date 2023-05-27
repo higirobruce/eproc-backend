@@ -336,10 +336,11 @@ function createSupplierinB1(CardName, CardType, Series) {
             CardType,
             Series,
         };
+        console.log(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`);
         return (0, sapB1Connection_1.sapLogin)().then((res) => __awaiter(this, void 0, void 0, function* () {
             let COOKIE = res.headers.get("set-cookie");
             localstorage.setItem("cookie", `${COOKIE}`);
-            return fetch(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`, {
+            return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -349,6 +350,7 @@ function createSupplierinB1(CardName, CardType, Series) {
             })
                 .then((res) => res.json())
                 .then((res) => __awaiter(this, void 0, void 0, function* () {
+                console.log(res);
                 if ((res === null || res === void 0 ? void 0 : res.error) && (res === null || res === void 0 ? void 0 : res.error.code) == 301) {
                     console.log("Tried many times, we cant login");
                     return false;
@@ -358,6 +360,7 @@ function createSupplierinB1(CardName, CardType, Series) {
                 }
             }))
                 .catch((err) => {
+                console.log(err);
                 return false;
             });
         }));
@@ -406,13 +409,14 @@ function getVendorByCompanyName(name) {
 exports.getVendorByCompanyName = getVendorByCompanyName;
 function approveUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(id);
         try {
             let user = yield users_1.UserModel.findById(id).populate("department");
             let name = user === null || user === void 0 ? void 0 : user.companyName;
-            if ((user === null || user === void 0 ? void 0 : user.userType) === "VENDOR") {
+            if ((user === null || user === void 0 ? void 0 : user.userType) === "VENDOR" && (user === null || user === void 0 ? void 0 : user.status) === 'pending-approval') {
+                console.log(name);
                 let series = yield getB1SeriesFromNames(name);
                 let createdCode = yield createSupplierinB1(name, "cSupplier", series);
+                console.log(series);
                 console.log(createdCode);
                 if (createdCode) {
                     user = yield users_1.UserModel.findByIdAndUpdate(id, {
