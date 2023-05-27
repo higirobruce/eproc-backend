@@ -54,7 +54,7 @@ const newTender = (newTender) => `<mjml>
         please proceed to the e-procurement application by clicking the button below.<br/>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/tenders/${newTender === null || newTender === void 0 ? void 0 : newTender._id}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }/system/tenders/${newTender === null || newTender === void 0 ? void 0 : newTender._id}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -96,7 +96,7 @@ const invitation = (tender) => {
             
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/tenders/${tender === null || tender === void 0 ? void 0 : tender._id}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }/system/tenders/${tender === null || tender === void 0 ? void 0 : tender._id}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -138,7 +138,7 @@ const bidSelectionConfirmation = (tender) => {
           Once all relevant stakeholders approve of these recommendations, the selected vendor will be informed of the tender award decision<br>
         </mj-text>
   
-        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/tenders/${tender === null || tender === void 0 ? void 0 : tender._id}>Go to application</mj-button>
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }/system/tenders/${tender === null || tender === void 0 ? void 0 : tender._id}>Go to application</mj-button>
       </mj-column>
     </mj-section>
   
@@ -179,7 +179,7 @@ const prApproval = (pr) => `<mjml>
         To review the request, please proceed to the e-procurement portal application by clicking the button below.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/requests/${pr === null || pr === void 0 ? void 0 : pr._id}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }/system/requests/${pr === null || pr === void 0 ? void 0 : pr._id}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -219,7 +219,7 @@ const prRejection = (pr) => `<mjml>
         For more information on this decision, please proceed to the e-procurement application by clicking the button below.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/requests/${pr === null || pr === void 0 ? void 0 : pr._id}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }/system/requests/${pr === null || pr === void 0 ? void 0 : pr._id}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -263,7 +263,7 @@ const newUserAccount = (cred) => {
         Please proceed to the e-procurement application by clicking the button below.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -308,7 +308,7 @@ const passwordReset = (cred) => {
         Please proceed to the e-procurement application by clicking the button below, and remember to go to your profile to set your own password.<br>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -353,7 +353,7 @@ const externalSignature = (emailObj, subject) => {
         Password: <i>${emailObj === null || emailObj === void 0 ? void 0 : emailObj.password}</i> <br/><br/>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/${emailObj.docType}/${emailObj.docId}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }/system/${emailObj.docType}/${emailObj.docId}>Go to application</mj-button>
     </mj-column>
   </mj-section>
 
@@ -396,7 +396,7 @@ const internalSignature = (emailObj) => {
   
         </mj-text>
   
-        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}/system/${emailObj.docType}/${emailObj.docId}>Go to application</mj-button>
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }/system/${emailObj.docType}/${emailObj.docId}>Go to application</mj-button>
       </mj-column>
     </mj-section>
   
@@ -441,7 +441,7 @@ const externalSignaturePO = (cred) => {
         Password: <i>${cred === null || cred === void 0 ? void 0 : cred.password}</i> <br/><br/>
       </mj-text>
 
-      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER || "http://http://192.168.20.181"}:${process.env.IRMB_APP_PORT || 3000}>Go to application</mj-button>
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER }:${process.env.IRMB_APP_PORT }>Go to application</mj-button>
     </mj-column>
   </mj-section>
 

@@ -26,7 +26,6 @@ import {
 } from "../controllers/tenders";
 import { generateReqNumber } from "../services/requests";
 import { generateTenderNumber } from "../services/tenders";
-import { tenderPublished } from "../utils/notificationMessages";
 import { send } from "../utils/sendEmailNode";
 
 export const tenderRouter = Router();
