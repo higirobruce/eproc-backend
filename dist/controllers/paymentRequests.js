@@ -31,7 +31,7 @@ function getAllPaymentRequests() {
                     path: "purchaseRequest",
                     model: "Request",
                 },
-            });
+            }).populate('approver').populate('reviewedBy');
             return paymentRequests;
         }
         catch (err) {
@@ -44,7 +44,7 @@ function savePaymentRequest(paymentRequest) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let createdPaymentRequest = yield paymentRequests_1.PaymentRequestModel.create(paymentRequest);
-            return createdPaymentRequest.populate("purchaseOrder createdBy");
+            return createdPaymentRequest.populate("purchaseOrder createdBy approver reviewedBy");
         }
         catch (err) {
             throw err;
@@ -56,7 +56,9 @@ function getPaymentRequestById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         let reqs = yield paymentRequests_1.PaymentRequestModel.findById(id)
             .populate("createdBy")
-            .populate("purchaseOrder");
+            .populate("purchaseOrder")
+            .populate('approver')
+            .populate('reviewedBy');
         return reqs;
     });
 }
@@ -66,7 +68,7 @@ function getAllRequestsByCreator(createdBy) {
         let query = {};
         if (createdBy && createdBy !== "null")
             query = { createdBy, status: { $ne: "withdrawn" } };
-        let reqs = yield paymentRequests_1.PaymentRequestModel.find(query).populate("createdBy purchaseOrder");
+        let reqs = yield paymentRequests_1.PaymentRequestModel.find(query).populate("createdBy purchaseOrder approver reviewedBy");
         return reqs;
     });
 }
@@ -82,7 +84,7 @@ function getAllRequestsByStatus(status, id) {
             : { status };
         if (id && id !== "null")
             query = Object.assign(Object.assign({}, query), { createdBy: id });
-        let reqs = yield paymentRequests_1.PaymentRequestModel.find(query).populate("createdBy purchaseOrder");
+        let reqs = yield paymentRequests_1.PaymentRequestModel.find(query).populate("createdBy purchaseOrder approver reviewedBy");
         return reqs;
     });
 }
@@ -114,7 +116,7 @@ function declineRequest(id, reason, declinedBy) {
                     declinedBy: declinedBy,
                     rejectionDate: (0, moment_1.default)(),
                 },
-            }, { new: true }).populate("createdBy purchaseOrder");
+            }, { new: true }).populate("createdBy purchaseOrder approver");
             //Sending email notification
             let requestor = yield users_1.UserModel.findById(response === null || response === void 0 ? void 0 : response.createdBy);
             return response;

@@ -44,3 +44,8 @@ exports.paymentRequestRouter.get("/:id", (req, res) => __awaiter(void 0, void 0,
     let { id } = req.params;
     res.send(yield (0, paymentRequests_1.getPaymentRequestById)(id));
 }));
+exports.paymentRequestRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    let { updates } = req.body;
+    res.send(yield (0, paymentRequests_1.updateRequest)(id, updates));
+}));

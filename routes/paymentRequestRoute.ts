@@ -5,6 +5,7 @@ import {
   getAllRequestsByStatus,
   getPaymentRequestById,
   savePaymentRequest,
+  updateRequest,
 } from "../controllers/paymentRequests";
 import { generatePaymentRequestNumber } from "../services/paymentRequests";
 export const paymentRequestRouter = Router();
@@ -31,13 +32,19 @@ paymentRequestRouter.post("/", async (req, res) => {
 });
 
 paymentRequestRouter.get("/byStatus/:status/:id", async (req, res) => {
-  let { status,id } = req.params;
+  let { status, id } = req.params;
   status === "all"
     ? res.send(await getAllRequestsByCreator(id))
-    : res.send(await getAllRequestsByStatus(status,id));
+    : res.send(await getAllRequestsByStatus(status, id));
 });
 
 paymentRequestRouter.get("/:id", async (req, res) => {
   let { id } = req.params;
-   res.send(await getPaymentRequestById(id));
+  res.send(await getPaymentRequestById(id));
+});
+
+paymentRequestRouter.put("/:id", async (req, res) => {
+  let { id } = req.params;
+  let { updates } = req.body;
+  res.send(await updateRequest(id, updates));
 });

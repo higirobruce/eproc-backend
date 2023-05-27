@@ -6,9 +6,13 @@ export class PaymentRequest implements iPaymentRequest {
   title: string;
   amount: number;
   docIds: [];
+  paymentProofDocs: [];
   status: string;
   rejectionDate: Date;
+  hod_approvalDate: Date;
+  hof_approvalDate: Date;
   reasonForRejection: string;
+  reviewedAt: Date;
 
   constructor(
     number: number,
@@ -18,7 +22,11 @@ export class PaymentRequest implements iPaymentRequest {
     docIds: [],
     status: string,
     rejectionDate: Date,
-    reasonForRejection: string
+    reasonForRejection: string,
+    hod_approvalDate: Date,
+    hof_approvalDate: Date,
+    reviewedAt: Date,
+    paymentProofDocs: [],
   ) {
     this.number = number;
     this.description = description;
@@ -28,5 +36,9 @@ export class PaymentRequest implements iPaymentRequest {
     this.status = status;
     this.reasonForRejection = reasonForRejection;
     this.rejectionDate = rejectionDate;
+    this.hod_approvalDate = hod_approvalDate;
+    this.hof_approvalDate = hof_approvalDate;
+    this.reviewedAt = reviewedAt;
+    this.paymentProofDocs = paymentProofDocs
   }
 }

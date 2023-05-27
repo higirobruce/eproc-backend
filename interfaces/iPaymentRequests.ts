@@ -10,6 +10,10 @@ export interface iPaymentRequest {
   status: string;
   rejectionDate: Date;
   reasonForRejection: String;
+  hod_approvalDate: Date;
+  hof_approvalDate: Date;
+  reviewedAt: Date;
+  paymentProofDocs:[]
 }
 
 export interface iPaymentRequestDocument
@@ -27,9 +31,13 @@ export interface iPaymentRequestDocument
     type: Types.ObjectId;
     ref: "User";
   };
-  
+
   declinedBy: {
     type: Types.ObjectId;
     ref: "User";
   };
+  reviewedBy: {
+    type: Types.ObjectId,
+    ref: "User",
+  },
 }

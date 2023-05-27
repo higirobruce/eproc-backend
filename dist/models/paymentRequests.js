@@ -26,6 +26,7 @@ exports.PaymentRequestSchema = new mongoose_1.Schema({
         ref: "User",
     },
     docIds: [{ type: String }],
+    paymentProofDocs: [{ type: String }],
     status: {
         type: String,
         default: "pending-review",
@@ -35,9 +36,22 @@ exports.PaymentRequestSchema = new mongoose_1.Schema({
         type: mongoose_1.Types.ObjectId,
         ref: "User",
     },
+    reviewedBy: {
+        type: mongoose_1.Types.ObjectId,
+        ref: "User",
+    },
     rejectionDate: {
         type: Date,
         default: (0, moment_1.default)(),
+    },
+    reviewedAt: {
+        type: Date,
+    },
+    hod_approvalDate: {
+        type: Date,
+    },
+    hof_approvalDate: {
+        type: Date,
     },
 }, { timestamps: true });
 exports.PaymentRequestModel = (0, mongoose_1.model)("PaymentRequest", exports.PaymentRequestSchema);

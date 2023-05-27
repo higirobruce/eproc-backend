@@ -315,8 +315,6 @@ export async function createSupplierinB1(
     CardType,
     Series,
   };
-
-  console.log(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`)
   return sapLogin().then(async (res) => {
 
     let COOKIE = res.headers.get("set-cookie");

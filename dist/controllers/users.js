@@ -336,7 +336,6 @@ function createSupplierinB1(CardName, CardType, Series) {
             CardType,
             Series,
         };
-        console.log(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`);
         return (0, sapB1Connection_1.sapLogin)().then((res) => __awaiter(this, void 0, void 0, function* () {
             let COOKIE = res.headers.get("set-cookie");
             localstorage.setItem("cookie", `${COOKIE}`);
