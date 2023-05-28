@@ -4,21 +4,24 @@ import { UserModel } from "../models/users";
 
 export async function getAllPaymentRequests() {
   try {
-    let paymentRequests = await PaymentRequestModel.find().populate(
-      "createdBy purchaseOrder"
-    ).populate({
-      path: "purchaseOrder",
-      populate: {
-        path: "tender",
-        model: "Tender",
-      },
-    }).populate({
-      path: "purchaseOrder.tender",
-      populate: {
-        path: "purchaseRequest",
-        model: "Request",
-      },
-    }).populate('approver').populate('reviewedBy')
+    let paymentRequests = await PaymentRequestModel.find()
+      .populate("createdBy purchaseOrder")
+      .populate({
+        path: "purchaseOrder",
+        populate: {
+          path: "tender",
+          model: "Tender",
+        },
+      })
+      .populate({
+        path: "purchaseOrder.tender",
+        populate: {
+          path: "purchaseRequest",
+          model: "Request",
+        },
+      })
+      .populate("approver")
+      .populate("reviewedBy");
     return paymentRequests;
   } catch (err) {
     throw err;
@@ -30,7 +33,9 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     let createdPaymentRequest = await PaymentRequestModel.create(
       paymentRequest
     );
-    return createdPaymentRequest.populate("purchaseOrder createdBy approver reviewedBy");
+    return createdPaymentRequest.populate(
+      "purchaseOrder createdBy approver reviewedBy"
+    );
   } catch (err) {
     throw err;
   }
@@ -40,8 +45,8 @@ export async function getPaymentRequestById(id: String) {
   let reqs = await PaymentRequestModel.findById(id)
     .populate("createdBy")
     .populate("purchaseOrder")
-    .populate('approver')
-    .populate('reviewedBy')
+    .populate("approver")
+    .populate("reviewedBy");
   return reqs;
 }
 
@@ -58,10 +63,16 @@ export async function getAllRequestsByCreator(createdBy: String) {
 
 export async function getAllRequestsByStatus(status: String, id: String) {
   let query: any =
-    status === "pending"
+    status === "pending-review"
       ? {
           status: {
-            $in: ["pending-approval"],
+            $in: ["pending-review"],
+          },
+        }
+      : status === "pending-approval"
+      ? {
+          status: {
+            $in: ["approved (hod)", "reviewed"],
           },
         }
       : { status };
@@ -210,7 +221,6 @@ export async function updateRequest(id: String, update: Request) {
     };
   }
 }
-
 
 export async function getReqCountsByStatus() {
   let lookup = [

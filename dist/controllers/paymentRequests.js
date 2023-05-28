@@ -19,19 +19,24 @@ const users_1 = require("../models/users");
 function getAllPaymentRequests() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let paymentRequests = yield paymentRequests_1.PaymentRequestModel.find().populate("createdBy purchaseOrder").populate({
+            let paymentRequests = yield paymentRequests_1.PaymentRequestModel.find()
+                .populate("createdBy purchaseOrder")
+                .populate({
                 path: "purchaseOrder",
                 populate: {
                     path: "tender",
                     model: "Tender",
                 },
-            }).populate({
+            })
+                .populate({
                 path: "purchaseOrder.tender",
                 populate: {
                     path: "purchaseRequest",
                     model: "Request",
                 },
-            }).populate('approver').populate('reviewedBy');
+            })
+                .populate("approver")
+                .populate("reviewedBy");
             return paymentRequests;
         }
         catch (err) {
@@ -57,8 +62,8 @@ function getPaymentRequestById(id) {
         let reqs = yield paymentRequests_1.PaymentRequestModel.findById(id)
             .populate("createdBy")
             .populate("purchaseOrder")
-            .populate('approver')
-            .populate('reviewedBy');
+            .populate("approver")
+            .populate("reviewedBy");
         return reqs;
     });
 }
@@ -75,13 +80,19 @@ function getAllRequestsByCreator(createdBy) {
 exports.getAllRequestsByCreator = getAllRequestsByCreator;
 function getAllRequestsByStatus(status, id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let query = status === "pending"
+        let query = status === "pending-review"
             ? {
                 status: {
-                    $in: ["pending-approval"],
+                    $in: ["pending-review"],
                 },
             }
-            : { status };
+            : status === "pending-approval"
+                ? {
+                    status: {
+                        $in: ["approved (hod)", "reviewed"],
+                    },
+                }
+                : { status };
         if (id && id !== "null")
             query = Object.assign(Object.assign({}, query), { createdBy: id });
         let reqs = yield paymentRequests_1.PaymentRequestModel.find(query).populate("createdBy purchaseOrder approver reviewedBy");
