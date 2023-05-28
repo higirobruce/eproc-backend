@@ -14,7 +14,6 @@ exports.PaymentRequestSchema = new mongoose_1.Schema({
     purchaseOrder: {
         type: mongoose_1.Types.ObjectId,
         ref: "PurchaseOrder",
-        required: true,
     },
     createdBy: {
         type: mongoose_1.Types.ObjectId,

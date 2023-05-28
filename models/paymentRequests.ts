@@ -11,7 +11,6 @@ export const PaymentRequestSchema = new Schema<iPaymentRequestDocument>(
     purchaseOrder: {
       type: Types.ObjectId,
       ref: "PurchaseOrder",
-      required: true,
     },
     createdBy: {
       type: Types.ObjectId,
@@ -53,6 +52,7 @@ export const PaymentRequestSchema = new Schema<iPaymentRequestDocument>(
   },
   { timestamps: true }
 );
+
 
 export const PaymentRequestModel = model<iPaymentRequestDocument>(
   "PaymentRequest",
