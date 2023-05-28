@@ -167,12 +167,20 @@ export async function saveTender(tender: Tender) {
   //Send notifications to vendors in the tender's caterogry
   let vendors = await UserModel.find({
     services: { $elemMatch: { $eq: category } },
+    status: { $eq: "approved" },
   });
   let vendorEmails = vendors?.map((v) => {
     return v?.email;
   });
   if (vendorEmails?.length >= 1) {
-    send("", vendorEmails, "New Tender Notice", JSON.stringify(newTender), "", "newTender");
+    send(
+      "",
+      vendorEmails,
+      "New Tender Notice",
+      JSON.stringify(newTender),
+      "",
+      "newTender"
+    );
   }
   return newTender;
 }

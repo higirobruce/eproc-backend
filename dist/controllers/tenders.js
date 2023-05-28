@@ -188,6 +188,7 @@ function saveTender(tender) {
         //Send notifications to vendors in the tender's caterogry
         let vendors = yield users_1.UserModel.find({
             services: { $elemMatch: { $eq: category } },
+            status: { $eq: "approved" },
         });
         let vendorEmails = vendors === null || vendors === void 0 ? void 0 : vendors.map((v) => {
             return v === null || v === void 0 ? void 0 : v.email;

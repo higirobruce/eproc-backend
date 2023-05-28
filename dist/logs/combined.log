@@ -5211,3 +5211,15 @@
   service: 'user-service',
   timestamp: '2023-05-28T07:18:25.952Z'
 }
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-28T12:19:24.807Z'
+}
+{
+  level: 'info',
+  message: 'App started on port 9999',
+  service: 'user-service',
+  timestamp: '2023-05-28T12:19:26.516Z'
+}
