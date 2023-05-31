@@ -315,6 +315,48 @@ const passwordReset = (cred: any) => {
 </mjml>`;
 };
 
+const passwordRecovery = (emailObj: any) => {
+  return `<mjml>
+  <mj-body>
+    <!-- Company Header -->
+    <mj-section>
+      <mj-column>
+        <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image>
+        <mj-text align='center' font-style="" font-size="20px" color="#626262">
+          <mj-text>
+            Irembo Procure
+          </mj-text>
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <!-- Image Header -->
+
+    <!-- Intro text -->
+    <mj-section>
+      <mj-column width="500px">
+
+        <mj-text color="#525252">
+          Hi there, ${emailObj?.user?.firstName} <br /><br />
+          Someone has requested a link to change your password in Irembo Procure. You can do this through the link below.<br /><br />
+
+        </mj-text>
+
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/auth/reset-password?userId=${emailObj?.user?._id}&token=${emailObj?.token}>Reset password</mj-button>
+
+        <mj-text color="#525252">
+          If you didn't request this, please ignore this email. <br /><br />
+          Your password won't change until you access the link above and create a new one.
+
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>`;
+};
+
 const externalSignature = (emailObj: any, subject: any) => {
   return `<mjml>
 <mj-body>
@@ -518,6 +560,14 @@ export async function send(
         text,
         html: mjml(passwordReset(JSON.parse(text))).html,
       });
+    else if (type === "passwordRecover")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(passwordRecovery(JSON.parse(text))).html,
+      });
     else if (type === "externalSignature")
       return await transporter.sendMail({
         from: process.env.IRMB_SENDER_EMAIL,
@@ -534,5 +584,18 @@ export async function send(
         text,
         html: mjml(internalSignature(JSON.parse(text))).html,
       });
-  } catch (err) {}
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//test email
+export async function trySend() {
+  return await transporter.sendMail({
+    from: "e-procurement@irembo.com", //process.env.IRMB_SENDER_EMAIL,
+    to: "higirobru@gmail.com",
+    subject: "Test",
+    text: "It is a test",
+    // html: mjml().html,
+  });
 }

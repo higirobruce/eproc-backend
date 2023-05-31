@@ -28,7 +28,11 @@ import {
 } from "../services/users";
 import { logger } from "../utils/logger";
 import { send } from "../utils/sendEmailNode";
+import jwt from "jsonwebtoken";
+import { UserModel } from "../models/users";
 
+export let SALT =
+  process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
 export const userRouter = Router();
 
 userRouter.get("/", async (req, res) => {
@@ -139,7 +143,7 @@ userRouter.post("/", async (req, res) => {
     firstName,
     lastName,
     tempEmail,
-    hashPassword(tempPassword||'tempPassword')
+    hashPassword(tempPassword || "tempPassword")
   );
 
   let createdUser = await saveUser(userToCreate);
@@ -248,3 +252,94 @@ userRouter.put("/reset/:email", async (req, res) => {
   }
   res.send(updatedUser);
 });
+
+userRouter.put("/recoverPassword/:email", async (req, res) => {
+  let { email } = req.params;
+
+  try {
+    res.send(await sendRecoverPasswordNotification(email));
+  } catch (err) {
+    res.status(500).send({ error: err });
+  }
+});
+
+userRouter.put("/resetPassword/:id", async (req, res) => {
+  let { id } = req.params;
+  let { token, newPassword } = req.body;
+  if (!id) res.status(404).send({ errorMessage: "No userId specified" });
+  else if (!token) res.status(404).send({ errorMessage: "No token provided" });
+  else {
+    try {
+      let validToken = jwt.verify(token, SALT);
+
+      if (validToken) {
+        let _newPassword = hashPassword(newPassword);
+        let updatedUser = await UserModel.findByIdAndUpdate(
+          id,
+          { $set: { password: _newPassword } },
+          {
+            new: true,
+          }
+        );
+
+        res.status(201).send({ updatedUser });
+      } else {
+        res.status(401).send({ errorMessage: "Invalid token" });
+      }
+    } catch (err) {
+      res.status(500).send({ error: err });
+    }
+  }
+});
+
+async function sendRecoverPasswordNotification(email: string) {
+  if (!email) throw { errorMessage: "No email specified" };
+  // res.status(404).send();
+  else {
+    try {
+      // let newPassword = hashPassword(generatePassword(8));
+      let updatedUser = await getUserByEmail(email);
+      let token = "";
+      if (updatedUser) {
+        token = jwt.sign(
+          {
+            email: updatedUser.email,
+            firstName: updatedUser.firstName,
+          },
+          "968d8b95-72cd-4470-b13e-1017138d32cf",
+          { expiresIn: "1h" }
+        );
+      }
+
+      if (updatedUser) {
+        await send(
+          "from",
+          email,
+          "Password recovery Instructions",
+          JSON.stringify({ user: updatedUser, token }),
+          "html",
+          "passwordRecover"
+        );
+
+        return updatedUser;
+        // res.status(201).send({ updatedUser });
+      } else {
+        throw { errorMessage: "The provided email does not exist!" };
+        // res
+        //   .status(404)
+        //   .send();
+      }
+    } catch (err) {
+      throw { error: err };
+      // res.status(500).send();
+    }
+  }
+}
+
+
+export async function sendNotificationToAllUsers(){
+  let users = await getAllInternalUsers() as [];
+  users?.forEach((user:any)=>{
+    sendRecoverPasswordNotification(user?.email)
+  })
+}
