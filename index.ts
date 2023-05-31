@@ -1,6 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
-import { userRouter } from "./routes/usersRoute";
+import { sendNotificationToAllUsers, userRouter } from "./routes/usersRoute";
 import { requetsRouter } from "./routes/requestsRoute";
 import { serviceCategoryRouter } from "./routes/serviceCategories";
 import { dptRouter } from "./routes/dptRoute";
@@ -15,16 +15,9 @@ import b1Router from "./services/b1";
 
 import bodyParser from "body-parser";
 import cors from "cors-ts";
-import { sapLogin, SESSION_ID } from "./utils/sapB1Connection";
-import { createSupplierinB1, getB1SeriesFromNames } from "./controllers/users";
-import { getSeriesByDescription } from "./controllers/series";
 import { LocalStorage } from "node-localstorage";
-import { savePOInB1 } from "./controllers/purchaseOrders";
 import path from "path";
-import { send } from "./utils/sendEmailNode";
-import { generatePassword } from "./services/users";
 import { logger } from "./utils/logger";
-import multer from "multer";
 
 let localstorage = new LocalStorage("./scratch");
 
@@ -35,13 +28,18 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //Set up default mongoose connection
 var mongoDB = `mongodb://${DB_USER}:${DB_PASSWORD}@127.0.0.1:27017/eproc?authSource=admin`;
 
-
 mongoose.connect(mongoDB);
 //Get the default connection
 
 var db = mongoose.connection;
 //Bind connection to error event (to get notification of connection errors)
-db.on("error", console.error.bind(console, `MongoDB connection error with user:${DB_USER} pwd:${DB_PASSWORD} :`));
+db.on(
+  "error",
+  console.error.bind(
+    console,
+    `MongoDB connection error with user:${DB_USER} pwd:${DB_PASSWORD} :`
+  )
+);
 // db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 db.once("open", () => console.log("connected to db"));
@@ -74,7 +72,6 @@ const app: Express = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 app.use("/users", auth, userRouter);
 app.use("/requests", requetsRouter);
@@ -109,6 +106,8 @@ app.get("/file/:folder/:name", function (req, res, next) {
 
 let server = app.listen(PORT, async () => {
   console.log(`App listening on port ${PORT}`);
+
+  sendNotificationToAllUsers()
   logger.log({
     level: "info",
     message: `App started on port ${PORT}`,

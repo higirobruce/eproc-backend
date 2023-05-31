@@ -85,54 +85,41 @@ function getTendersByServiceCategoryList(serviceCategories) {
     return __awaiter(this, void 0, void 0, function* () {
         let pipeline = [
             {
-                $lookup: {
-                    from: "requests",
-                    localField: "purchaseRequest",
-                    foreignField: "_id",
-                    as: "purchaseRequest",
-                },
-            },
-            {
-                $unwind: {
-                    path: "$purchaseRequest",
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "createdBy",
-                    foreignField: "_id",
-                    as: "createdBy",
-                },
-            },
-            {
-                $unwind: {
-                    path: "$createdBy",
-                    preserveNullAndEmptyArrays: false,
-                },
-            },
-            {
-                $lookup: {
-                    from: "departments",
-                    localField: "createdBy.department",
-                    foreignField: "_id",
-                    as: "createdBy.department",
-                },
-            },
-            {
-                $unwind: {
-                    path: "$createdBy.department",
-                    preserveNullAndEmptyArrays: false,
-                },
-            },
-            {
-                $match: {
-                    "purchaseRequest.serviceCategory": {
-                        $in: serviceCategories,
-                    },
-                },
-            },
+                '$lookup': {
+                    'from': 'requests',
+                    'localField': 'purchaseRequest',
+                    'foreignField': '_id',
+                    'as': 'purchaseRequest'
+                }
+            }, {
+                '$unwind': {
+                    'path': '$purchaseRequest',
+                    'preserveNullAndEmptyArrays': true
+                }
+            }, {
+                '$lookup': {
+                    'from': 'users',
+                    'localField': 'createdBy',
+                    'foreignField': '_id',
+                    'as': 'createdBy'
+                }
+            }, {
+                '$unwind': {
+                    'path': '$createdBy',
+                    'preserveNullAndEmptyArrays': false
+                }
+            }, {
+                '$unwind': {
+                    'path': '$createdBy.department',
+                    'preserveNullAndEmptyArrays': false
+                }
+            }, {
+                '$match': {
+                    'purchaseRequest.serviceCategory': {
+                        '$in': serviceCategories
+                    }
+                }
+            }
         ];
         // let reqs = await TenderModel.find({ purchaseRequest: requestId }).populate('createdBy').populate({
         //     path: "createdBy",
@@ -142,6 +129,7 @@ function getTendersByServiceCategoryList(serviceCategories) {
         //     }
         // }).populate('purchaseRequest')
         let reqs = yield tenders_1.TenderModel.aggregate(pipeline);
+        console.log(reqs);
         return reqs;
     });
 }
