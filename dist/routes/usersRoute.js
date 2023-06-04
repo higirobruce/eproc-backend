@@ -202,7 +202,7 @@ function sendRecoverPasswordNotification(email) {
                     }, "968d8b95-72cd-4470-b13e-1017138d32cf", { expiresIn: "1h" });
                 }
                 if (updatedUser) {
-                    yield (0, sendEmailNode_1.send)("from", email, "Password recovery Instructions", JSON.stringify({ user: updatedUser, token }), "html", "passwordRecover");
+                    yield (0, sendEmailNode_1.send)("from", email, "Password recovery Instructions", JSON.stringify({ user: updatedUser, token }), "html", "preGoLive");
                     return updatedUser;
                     // res.status(201).send({ updatedUser });
                 }

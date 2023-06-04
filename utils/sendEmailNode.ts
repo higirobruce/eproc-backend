@@ -357,6 +357,59 @@ const passwordRecovery = (emailObj: any) => {
 </mjml>`;
 };
 
+const preGoLive = (emailObj: any) => {
+  return `<mjml>
+  <mj-body>
+    <!-- Company Header -->
+    <mj-section>
+      <mj-column>
+        <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image>
+        <mj-text align='center' font-style="" font-size="20px" color="#626262">
+          <mj-text>
+            Irembo Procure
+          </mj-text>
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <!-- Image Header -->
+
+    <!-- Intro text -->
+    <mj-section>
+      <mj-column width="500px">
+
+        <mj-text color="#525252">
+          Hi, ${emailObj?.user?.firstName} <br /><br />
+          Following up from our prior announcement, we are happy to announce that the new e-Procurement platform is now live.<br /><br />
+
+          To ease your transition onto the new application, we have already created your account. To access the application, simply reset your password by following these steps:<br />
+          <ul>
+            <li>Click the button below</li>
+            <li>Supply the new password (at least 8 characters) and press "Recover password"</li>
+            <li>Finally login with your email and the new email.</li>
+
+
+          </ul><br /><br />
+
+        </mj-text>
+
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/auth/reset-password?userId=${emailObj?.user?._id}&token=${emailObj?.token}>Reset password</mj-button>
+
+        <mj-text color="#525252">
+
+          Hope you enjoy the new application!<br /><br />
+          Kindly contact us by replying to this email, if you have any questions or concerns.<br />
+
+
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>`;
+};
+
 const externalSignature = (emailObj: any, subject: any) => {
   return `<mjml>
 <mj-body>
@@ -567,6 +620,15 @@ export async function send(
         subject,
         text,
         html: mjml(passwordRecovery(JSON.parse(text))).html,
+      });
+
+      else if (type === "preGoLive")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(preGoLive(JSON.parse(text))).html,
       });
     else if (type === "externalSignature")
       return await transporter.sendMail({

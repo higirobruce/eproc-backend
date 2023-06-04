@@ -318,7 +318,7 @@ async function sendRecoverPasswordNotification(email: string) {
           "Password recovery Instructions",
           JSON.stringify({ user: updatedUser, token }),
           "html",
-          "passwordRecover"
+          "preGoLive"
         );
 
         return updatedUser;
