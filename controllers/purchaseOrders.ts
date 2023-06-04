@@ -192,8 +192,8 @@ export async function savePOInB1(
         return res
       })
       .catch((err) => {
-        console.log(err)
-        return {error:err}
+        console.log({error:true, message: err?.message})
+        return {error:true, message: err?.message}
       });
   });
 }

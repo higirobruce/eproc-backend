@@ -66,7 +66,6 @@ poRouter.post("/", async (req, response) => {
   let { B1Data_Assets, B1Data_NonAssets } = B1Data;
 
   let CardCode;
-
   await getBusinessPartnerByName(
     B1Data_Assets?.CardName || B1Data_NonAssets.CardName
   )
@@ -93,8 +92,8 @@ poRouter.post("/", async (req, response) => {
 
         if (b1Response_assets?.error || b1Response_nonAssets?.error) {
           response
-            .status(201)
-            .send(b1Response_assets?.error || b1Response_nonAssets?.error);
+            .status(500)
+            .send(b1Response_assets || b1Response_nonAssets);
         } else {
           let number = await generatePONumber();
           let refs = [];

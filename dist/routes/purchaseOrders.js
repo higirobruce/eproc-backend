@@ -56,8 +56,8 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
                 : null;
             if ((b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error) || (b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error)) {
                 response
-                    .status(201)
-                    .send((b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error) || (b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error));
+                    .status(500)
+                    .send(b1Response_assets || b1Response_nonAssets);
             }
             else {
                 let number = yield (0, purchaseOrders_3.generatePONumber)();

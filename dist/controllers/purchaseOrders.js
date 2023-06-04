@@ -212,8 +212,8 @@ function savePOInB1(CardCode, DocType, DocumentLines) {
                 return res;
             })
                 .catch((err) => {
-                console.log(err);
-                return { error: err };
+                console.log({ error: true, message: err === null || err === void 0 ? void 0 : err.message });
+                return { error: true, message: err === null || err === void 0 ? void 0 : err.message };
             });
         }));
     });
