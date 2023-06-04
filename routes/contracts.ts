@@ -118,7 +118,7 @@ contractRouter.put("/:id", async (req, res) => {
   );
 
   let nextSignatory =
-    newContract?.signatories.length >= signingIndex + 2
+    newContract?.signatories.length >= signingIndex + 1
       ? newContract.signatories[signingIndex + 1]?.email
       : null;
 
