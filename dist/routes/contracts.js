@@ -62,7 +62,7 @@ exports.contractRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 
     let { newContract, pending, paritallySigned, signed, previousStatus, signingIndex, } = req.body;
     let logOptions = {};
     let vendor = yield (0, users_1.getVendorByCompanyName)((_b = newContract === null || newContract === void 0 ? void 0 : newContract.signatories[((_a = newContract === null || newContract === void 0 ? void 0 : newContract.signatories) === null || _a === void 0 ? void 0 : _a.length) - 1]) === null || _b === void 0 ? void 0 : _b.onBehalfOf);
-    let nextSignatory = (newContract === null || newContract === void 0 ? void 0 : newContract.signatories.length) >= signingIndex + 1
+    let nextSignatory = (newContract === null || newContract === void 0 ? void 0 : newContract.signatories.length) >= signingIndex + 2
         ? (_c = newContract.signatories[signingIndex + 1]) === null || _c === void 0 ? void 0 : _c.email
         : null;
     if (previousStatus == "draft") {
