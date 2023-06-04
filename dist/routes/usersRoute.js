@@ -8,8 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userRouter = void 0;
+exports.sendNotificationToAllUsers = exports.userRouter = exports.SALT = void 0;
 const express_1 = require("express");
 const users_1 = require("../classrepo/users");
 const purchaseOrders_1 = require("../controllers/purchaseOrders");
@@ -17,6 +20,9 @@ const users_2 = require("../controllers/users");
 const users_3 = require("../services/users");
 const logger_1 = require("../utils/logger");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const users_4 = require("../models/users");
+exports.SALT = process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
 exports.userRouter = (0, express_1.Router)();
 exports.userRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(yield (0, users_2.getAllUsers)());
@@ -62,7 +68,7 @@ exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, fun
     let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword, } = req.body;
     let password_new = userType == "VENDOR" ? password : (0, users_3.generatePassword)(8);
     let number = yield (0, users_3.generateUserNumber)();
-    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password_new), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, (0, users_3.hashPassword)(tempPassword || 'tempPassword'));
+    let userToCreate = new users_1.User(userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, (0, users_3.hashPassword)(password_new), createdOn, createdBy, rating, tin, companyName, number, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, (0, users_3.hashPassword)(tempPassword || "tempPassword"));
     let createdUser = yield (0, users_2.saveUser)(userToCreate);
     if (createdUser) {
         logger_1.logger.log({
@@ -144,3 +150,82 @@ exports.userRouter.put("/reset/:email", (req, res) => __awaiter(void 0, void 0, 
     }
     res.send(updatedUser);
 }));
+exports.userRouter.put("/recoverPassword/:email", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { email } = req.params;
+    try {
+        res.send(yield sendRecoverPasswordNotification(email));
+    }
+    catch (err) {
+        res.status(500).send({ error: err });
+    }
+}));
+exports.userRouter.put("/resetPassword/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    let { token, newPassword } = req.body;
+    if (!id)
+        res.status(404).send({ errorMessage: "No userId specified" });
+    else if (!token)
+        res.status(404).send({ errorMessage: "No token provided" });
+    else {
+        try {
+            let validToken = jsonwebtoken_1.default.verify(token, exports.SALT);
+            if (validToken) {
+                let _newPassword = (0, users_3.hashPassword)(newPassword);
+                let updatedUser = yield users_4.UserModel.findByIdAndUpdate(id, { $set: { password: _newPassword } }, {
+                    new: true,
+                });
+                res.status(201).send({ updatedUser });
+            }
+            else {
+                res.status(401).send({ errorMessage: "Invalid token" });
+            }
+        }
+        catch (err) {
+            res.status(500).send({ error: err });
+        }
+    }
+}));
+function sendRecoverPasswordNotification(email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!email)
+            throw { errorMessage: "No email specified" };
+        // res.status(404).send();
+        else {
+            try {
+                // let newPassword = hashPassword(generatePassword(8));
+                let updatedUser = yield (0, users_2.getUserByEmail)(email);
+                let token = "";
+                if (updatedUser) {
+                    token = jsonwebtoken_1.default.sign({
+                        email: updatedUser.email,
+                        firstName: updatedUser.firstName,
+                    }, "968d8b95-72cd-4470-b13e-1017138d32cf", { expiresIn: "1h" });
+                }
+                if (updatedUser) {
+                    yield (0, sendEmailNode_1.send)("from", email, "Password recovery Instructions", JSON.stringify({ user: updatedUser, token }), "html", "passwordRecover");
+                    return updatedUser;
+                    // res.status(201).send({ updatedUser });
+                }
+                else {
+                    throw { errorMessage: "The provided email does not exist!" };
+                    // res
+                    //   .status(404)
+                    //   .send();
+                }
+            }
+            catch (err) {
+                throw { error: err };
+                // res.status(500).send();
+            }
+        }
+    });
+}
+function sendNotificationToAllUsers() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let users = yield (0, users_2.getAllInternalUsers)();
+        users === null || users === void 0 ? void 0 : users.forEach((user) => {
+            sendRecoverPasswordNotification(user === null || user === void 0 ? void 0 : user.email);
+        });
+    });
+}
+exports.sendNotificationToAllUsers = sendNotificationToAllUsers;

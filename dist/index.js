@@ -104,6 +104,7 @@ app.get("/file/:folder/:name", function (req, res, next) {
 });
 let server = app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`App listening on port ${PORT}`);
+    // sendNotificationToAllUsers()
     logger_1.logger.log({
         level: "info",
         message: `App started on port ${PORT}`,

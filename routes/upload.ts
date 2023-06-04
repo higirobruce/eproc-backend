@@ -214,6 +214,8 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
       return res.status(500);
     }
 
+    console.log(req.files)
+
     return res.status(200).send(req.files);
   });
 });

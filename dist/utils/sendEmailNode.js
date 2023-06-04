@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.send = void 0;
+exports.trySend = exports.send = void 0;
 const nodemailer = require("nodemailer");
 const mjml = require("mjml");
 // create transporter object with smtp server details
@@ -318,6 +318,48 @@ const passwordReset = (cred) => {
 </mj-body>
 </mjml>`;
 };
+const passwordRecovery = (emailObj) => {
+    var _a, _b;
+    return `<mjml>
+  <mj-body>
+    <!-- Company Header -->
+    <mj-section>
+      <mj-column>
+        <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image>
+        <mj-text align='center' font-style="" font-size="20px" color="#626262">
+          <mj-text>
+            Irembo Procure
+          </mj-text>
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <!-- Image Header -->
+
+    <!-- Intro text -->
+    <mj-section>
+      <mj-column width="500px">
+
+        <mj-text color="#525252">
+          Hi there, ${(_a = emailObj === null || emailObj === void 0 ? void 0 : emailObj.user) === null || _a === void 0 ? void 0 : _a.firstName} <br /><br />
+          Someone has requested a link to change your password in Irembo Procure. You can do this through the link below.<br /><br />
+
+        </mj-text>
+
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/auth/reset-password?userId=${(_b = emailObj === null || emailObj === void 0 ? void 0 : emailObj.user) === null || _b === void 0 ? void 0 : _b._id}&token=${emailObj === null || emailObj === void 0 ? void 0 : emailObj.token}>Reset password</mj-button>
+
+        <mj-text color="#525252">
+          If you didn't request this, please ignore this email. <br /><br />
+          Your password won't change until you access the link above and create a new one.
+
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>`;
+};
 const externalSignature = (emailObj, subject) => {
     return `<mjml>
 <mj-body>
@@ -512,6 +554,14 @@ function send(from, to, subject, text, html, type) {
                     text,
                     html: mjml(passwordReset(JSON.parse(text))).html,
                 });
+            else if (type === "passwordRecover")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(passwordRecovery(JSON.parse(text))).html,
+                });
             else if (type === "externalSignature")
                 return yield transporter.sendMail({
                     from: process.env.IRMB_SENDER_EMAIL,
@@ -529,7 +579,22 @@ function send(from, to, subject, text, html, type) {
                     html: mjml(internalSignature(JSON.parse(text))).html,
                 });
         }
-        catch (err) { }
+        catch (err) {
+            console.log(err);
+        }
     });
 }
 exports.send = send;
+//test email
+function trySend() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield transporter.sendMail({
+            from: "e-procurement@irembo.com",
+            to: "higirobru@gmail.com",
+            subject: "Test",
+            text: "It is a test",
+            // html: mjml().html,
+        });
+    });
+}
+exports.trySend = trySend;
