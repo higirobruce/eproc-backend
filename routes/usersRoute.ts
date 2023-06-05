@@ -307,7 +307,7 @@ async function sendRecoverPasswordNotification(email: string) {
             firstName: updatedUser.firstName,
           },
           "968d8b95-72cd-4470-b13e-1017138d32cf",
-          { expiresIn: "1h" }
+          { expiresIn: "14d" }
         );
       }
 
@@ -339,7 +339,7 @@ async function sendRecoverPasswordNotification(email: string) {
 
 export async function sendNotificationToAllUsers(){
   let users = await getAllInternalUsers() as [];
-  users?.forEach((user:any)=>{
-    sendRecoverPasswordNotification(user?.email)
+  users?.forEach(async (user:any)=>{
+    await sendRecoverPasswordNotification(user?.email)
   })
 }
