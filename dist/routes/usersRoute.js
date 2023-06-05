@@ -199,7 +199,7 @@ function sendRecoverPasswordNotification(email) {
                     token = jsonwebtoken_1.default.sign({
                         email: updatedUser.email,
                         firstName: updatedUser.firstName,
-                    }, "968d8b95-72cd-4470-b13e-1017138d32cf", { expiresIn: "1h" });
+                    }, "968d8b95-72cd-4470-b13e-1017138d32cf", { expiresIn: "14d" });
                 }
                 if (updatedUser) {
                     yield (0, sendEmailNode_1.send)("from", email, "Password recovery Instructions", JSON.stringify({ user: updatedUser, token }), "html", "preGoLive");
@@ -223,9 +223,9 @@ function sendRecoverPasswordNotification(email) {
 function sendNotificationToAllUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         let users = yield (0, users_2.getAllInternalUsers)();
-        users === null || users === void 0 ? void 0 : users.forEach((user) => {
-            sendRecoverPasswordNotification(user === null || user === void 0 ? void 0 : user.email);
-        });
+        users === null || users === void 0 ? void 0 : users.forEach((user) => __awaiter(this, void 0, void 0, function* () {
+            yield sendRecoverPasswordNotification(user === null || user === void 0 ? void 0 : user.email);
+        }));
     });
 }
 exports.sendNotificationToAllUsers = sendNotificationToAllUsers;
