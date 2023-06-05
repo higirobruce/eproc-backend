@@ -388,8 +388,6 @@ const preGoLive = (emailObj: any) => {
             <li>Click the button below</li>
             <li>Supply the new password (at least 8 characters) and press "Recover password"</li>
             <li>Finally login with your email and the new password.</li>
-
-
           </ul><br /><br />
 
         </mj-text>
