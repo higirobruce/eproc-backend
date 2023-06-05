@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ensureUserAuthorized = void 0;
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const usersRoute_1 = require("./routes/usersRoute");
@@ -26,12 +27,15 @@ const budgetLinesRoute_1 = require("./routes/budgetLinesRoute");
 const upload_1 = require("./routes/upload");
 const paymentRequestRoute_1 = require("./routes/paymentRequestRoute");
 const b1_1 = __importDefault(require("./services/b1"));
+const express_session_1 = __importDefault(require("express-session"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
 const node_localstorage_1 = require("node-localstorage");
 const path_1 = __importDefault(require("path"));
 const logger_1 = require("./utils/logger");
 let localstorage = new node_localstorage_1.LocalStorage("./scratch");
+const oneDay = 1000 * 60 * 60 * 24;
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999;
 const DB_USER = process.env.EPROC_DB_USER;
 const DB_PASSWORD = process.env.EPROC_DB_PASSWORD;
@@ -68,6 +72,30 @@ let auth = (req, res, next) => {
     res.status(401).send("Authentication required."); // custom message
 };
 const app = (0, express_1.default)();
+let ensureUserAuthorized = (req, res, next) => {
+    // req.session.user='bruce'
+    console.log(req.session);
+    next();
+    // if (req.session.accessToken == null) {
+    //   return res.status(401).json({ error: "Access-denied" });
+    // }
+    // try {
+    //   const verified = jwt.verify(req.session.accessToken, SALT) as JwtPayload;
+    //   // req.user = verified;
+    //   console.log(verified);
+    //   next();
+    // } catch (err) {
+    //   res.status(401).json({ error: "Invalid-token" });
+    // }
+};
+exports.ensureUserAuthorized = ensureUserAuthorized;
+app.use((0, express_session_1.default)({
+    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    saveUninitialized: true,
+    cookie: { maxAge: oneDay },
+    resave: false,
+}));
+app.use((0, cookie_parser_1.default)());
 app.use((0, cors_ts_1.default)());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -104,7 +132,7 @@ app.get("/file/:folder/:name", function (req, res, next) {
 });
 let server = app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`App listening on port ${PORT}`);
-    yield (0, usersRoute_1.sendNotificationToAllUsers)();
+    // await sendNotificationToAllUsers();
     logger_1.logger.log({
         level: "info",
         message: `App started on port ${PORT}`,

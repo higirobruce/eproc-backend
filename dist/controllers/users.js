@@ -415,8 +415,6 @@ function approveUser(id) {
                 console.log(name);
                 let series = yield getB1SeriesFromNames(name);
                 let createdCode = yield createSupplierinB1(name, "cSupplier", series);
-                console.log(series);
-                console.log(createdCode);
                 if (createdCode) {
                     user = yield users_1.UserModel.findByIdAndUpdate(id, {
                         $set: { status: "approved" },

@@ -19,6 +19,7 @@ exports.requetsRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, f
     res.send(yield (0, requests_2.getAllRequests)());
 }));
 exports.requetsRouter.get("/countsByDep", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.session);
     res.send(yield (0, requests_2.getReqCountsByDepartment)());
 }));
 exports.requetsRouter.get("/countsByStatus", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

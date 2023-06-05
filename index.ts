@@ -1,6 +1,10 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
-import { sendNotificationToAllUsers, userRouter } from "./routes/usersRoute";
+import {
+  SALT,
+  sendNotificationToAllUsers,
+  userRouter,
+} from "./routes/usersRoute";
 import { requetsRouter } from "./routes/requestsRoute";
 import { serviceCategoryRouter } from "./routes/serviceCategories";
 import { dptRouter } from "./routes/dptRoute";
@@ -12,6 +16,10 @@ import { budgetLinesRouter } from "./routes/budgetLinesRoute";
 import { uploadRouter } from "./routes/upload";
 import { paymentRequestRouter } from "./routes/paymentRequestRoute";
 import b1Router from "./services/b1";
+import session from "express-session";
+import cookieParser from "cookie-parser";
+import MongoStore = require("connect-mongo");
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 import bodyParser from "body-parser";
 import cors from "cors-ts";
@@ -20,6 +28,15 @@ import path from "path";
 import { logger } from "./utils/logger";
 
 let localstorage = new LocalStorage("./scratch");
+const oneDay = 1000 * 60 * 60 * 24;
+
+declare module "express-session" {
+  export interface SessionData {
+    user: any;
+    userId: any;
+    accessToken: any;
+  }
+}
 
 const PORT = process.env.EPROC_PORT ? process.env.EPROC_PORT : 9999;
 const DB_USER = process.env.EPROC_DB_USER;
@@ -69,6 +86,36 @@ let auth = (req: Request, res: Response, next: NextFunction) => {
 
 const app: Express = express();
 
+export let ensureUserAuthorized = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // req.session.user='bruce'
+  console.log(req.session);
+  next();
+  // if (req.session.accessToken == null) {
+  //   return res.status(401).json({ error: "Access-denied" });
+  // }
+
+  // try {
+  //   const verified = jwt.verify(req.session.accessToken, SALT) as JwtPayload;
+  //   // req.user = verified;
+  //   console.log(verified);
+  //   next();
+  // } catch (err) {
+  //   res.status(401).json({ error: "Invalid-token" });
+  // }
+};
+app.use(
+  session({
+    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    saveUninitialized: true,
+    cookie: { maxAge: oneDay },
+    resave: false,
+  })
+);
+app.use(cookieParser());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -107,7 +154,7 @@ app.get("/file/:folder/:name", function (req, res, next) {
 let server = app.listen(PORT, async () => {
   console.log(`App listening on port ${PORT}`);
 
-  await sendNotificationToAllUsers()
+  // await sendNotificationToAllUsers();
   logger.log({
     level: "info",
     message: `App started on port ${PORT}`,

@@ -387,9 +387,6 @@ export async function approveUser(id: String) {
 
       let createdCode = await createSupplierinB1(name!, "cSupplier", series);
 
-      console.log(series)
-
-      console.log(createdCode)
       if (createdCode) {
         user = await UserModel.findByIdAndUpdate(
           id,
@@ -407,6 +404,7 @@ export async function approveUser(id: String) {
         message: createdCode ? "" : "Could not connect to SAP B1.",
       };
     } else {
+      
       user = await UserModel.findByIdAndUpdate(
         id,
         {

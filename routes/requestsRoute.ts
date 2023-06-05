@@ -44,7 +44,9 @@ requetsRouter.get("/", async (req, res) => {
 
 
 requetsRouter.get("/countsByDep", async (req, res) => {
+  console.log(req.session)
   res.send(await getReqCountsByDepartment());
+
 });
 
 requetsRouter.get("/countsByStatus", async (req, res) => {

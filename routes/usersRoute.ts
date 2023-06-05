@@ -165,30 +165,41 @@ userRouter.post("/", async (req, res) => {
 });
 
 userRouter.post("/login", async (req, res) => {
-  let { email, password } = req.body;
+  try {
+    let { email, password } = req.body;
 
-  let user = await getUserByEmail(email);
+    let user = await getUserByEmail(email);
 
-  if (user) {
-    logger.log({
-      level: "info",
-      message: `${user?.email} successfully logged in`,
-    });
-    res.send({
-      allowed:
-        validPassword(password, user!.password) ||
-        validPassword(password, user!.tempPassword),
-      user: user,
-    });
-  } else {
-    logger.log({
-      level: "info",
-      message: `${email} failed to log in`,
-    });
-    res.send({
-      allowed: false,
-      user: {},
-    });
+    //genereate JWT
+    let accessToken = jwt.sign({ email: email, user: user?._id }, SALT);
+
+    if (user) {
+      req.session.user = user?._id;
+      req.session.accessToken = accessToken;
+
+      logger.log({
+        level: "info",
+        message: `${user?.email} successfully logged in`,
+      });
+      res.send({
+        allowed:
+          validPassword(password, user!.password) ||
+          validPassword(password, user!.tempPassword),
+        user: user,
+      });
+    } else {
+      logger.log({
+        level: "info",
+        message: `${email} failed to log in`,
+      });
+      res.send({
+        allowed: false,
+        user: {},
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(401).send({ error: err });
   }
 });
 
@@ -292,7 +303,7 @@ userRouter.put("/resetPassword/:id", async (req, res) => {
   }
 });
 
-async function sendRecoverPasswordNotification(email: string) {
+async function sendPostGoLiveNotification(email: string) {
   if (!email) throw { errorMessage: "No email specified" };
   // res.status(404).send();
   else {
@@ -336,10 +347,53 @@ async function sendRecoverPasswordNotification(email: string) {
   }
 }
 
+async function sendRecoverPasswordNotification(email: string) {
+  if (!email) throw { errorMessage: "No email specified" };
+  // res.status(404).send();
+  else {
+    try {
+      // let newPassword = hashPassword(generatePassword(8));
+      let updatedUser = await getUserByEmail(email);
+      let token = "";
+      if (updatedUser) {
+        token = jwt.sign(
+          {
+            email: updatedUser.email,
+            firstName: updatedUser.firstName,
+          },
+          "968d8b95-72cd-4470-b13e-1017138d32cf",
+          { expiresIn: "14d" }
+        );
+      }
 
-export async function sendNotificationToAllUsers(){
-  let users = await getAllInternalUsers() as [];
-  users?.forEach(async (user:any)=>{
-    await sendRecoverPasswordNotification(user?.email)
-  })
+      if (updatedUser) {
+        await send(
+          "from",
+          email,
+          "Password recovery Instructions",
+          JSON.stringify({ user: updatedUser, token }),
+          "html",
+          "passwordRecover"
+        );
+
+        return updatedUser;
+        // res.status(201).send({ updatedUser });
+      } else {
+        throw { errorMessage: "The provided email does not exist!" };
+        // res
+        //   .status(404)
+        //   .send();
+      }
+    } catch (err) {
+      throw { error: err };
+      // res.status(500).send();
+    }
+  }
+}
+
+export async function sendNotificationToAllUsers() {
+  let users = (await getAllInternalUsers()) as [];
+  users?.forEach(async (user: any) => {
+    await sendRecoverPasswordNotification(user?.email);
+  });
 }

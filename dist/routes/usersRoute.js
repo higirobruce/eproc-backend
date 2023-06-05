@@ -80,28 +80,38 @@ exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, fun
     res.status(201).send(createdUser);
 }));
 exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let { email, password } = req.body;
-    let user = yield (0, users_2.getUserByEmail)(email);
-    if (user) {
-        logger_1.logger.log({
-            level: "info",
-            message: `${user === null || user === void 0 ? void 0 : user.email} successfully logged in`,
-        });
-        res.send({
-            allowed: (0, users_3.validPassword)(password, user.password) ||
-                (0, users_3.validPassword)(password, user.tempPassword),
-            user: user,
-        });
+    try {
+        let { email, password } = req.body;
+        let user = yield (0, users_2.getUserByEmail)(email);
+        //genereate JWT
+        let accessToken = jsonwebtoken_1.default.sign({ email: email, user: user === null || user === void 0 ? void 0 : user._id }, exports.SALT);
+        if (user) {
+            req.session.user = user === null || user === void 0 ? void 0 : user._id;
+            req.session.accessToken = accessToken;
+            logger_1.logger.log({
+                level: "info",
+                message: `${user === null || user === void 0 ? void 0 : user.email} successfully logged in`,
+            });
+            res.send({
+                allowed: (0, users_3.validPassword)(password, user.password) ||
+                    (0, users_3.validPassword)(password, user.tempPassword),
+                user: user,
+            });
+        }
+        else {
+            logger_1.logger.log({
+                level: "info",
+                message: `${email} failed to log in`,
+            });
+            res.send({
+                allowed: false,
+                user: {},
+            });
+        }
     }
-    else {
-        logger_1.logger.log({
-            level: "info",
-            message: `${email} failed to log in`,
-        });
-        res.send({
-            allowed: false,
-            user: {},
-        });
+    catch (err) {
+        console.log(err);
+        res.status(401).send({ error: err });
     }
 }));
 exports.userRouter.post("/approve/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -185,7 +195,7 @@ exports.userRouter.put("/resetPassword/:id", (req, res) => __awaiter(void 0, voi
         }
     }
 }));
-function sendRecoverPasswordNotification(email) {
+function sendPostGoLiveNotification(email) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!email)
             throw { errorMessage: "No email specified" };
@@ -220,9 +230,44 @@ function sendRecoverPasswordNotification(email) {
         }
     });
 }
+function sendRecoverPasswordNotification(email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!email)
+            throw { errorMessage: "No email specified" };
+        // res.status(404).send();
+        else {
+            try {
+                // let newPassword = hashPassword(generatePassword(8));
+                let updatedUser = yield (0, users_2.getUserByEmail)(email);
+                let token = "";
+                if (updatedUser) {
+                    token = jsonwebtoken_1.default.sign({
+                        email: updatedUser.email,
+                        firstName: updatedUser.firstName,
+                    }, "968d8b95-72cd-4470-b13e-1017138d32cf", { expiresIn: "14d" });
+                }
+                if (updatedUser) {
+                    yield (0, sendEmailNode_1.send)("from", email, "Password recovery Instructions", JSON.stringify({ user: updatedUser, token }), "html", "passwordRecover");
+                    return updatedUser;
+                    // res.status(201).send({ updatedUser });
+                }
+                else {
+                    throw { errorMessage: "The provided email does not exist!" };
+                    // res
+                    //   .status(404)
+                    //   .send();
+                }
+            }
+            catch (err) {
+                throw { error: err };
+                // res.status(500).send();
+            }
+        }
+    });
+}
 function sendNotificationToAllUsers() {
     return __awaiter(this, void 0, void 0, function* () {
-        let users = yield (0, users_2.getAllInternalUsers)();
+        let users = (yield (0, users_2.getAllInternalUsers)());
         users === null || users === void 0 ? void 0 : users.forEach((user) => __awaiter(this, void 0, void 0, function* () {
             yield sendRecoverPasswordNotification(user === null || user === void 0 ? void 0 : user.email);
         }));
