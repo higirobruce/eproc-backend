@@ -174,9 +174,6 @@ userRouter.post("/login", async (req, res) => {
     let accessToken = jwt.sign({ email: email, user: user?._id }, SALT);
 
     if (user) {
-      req.session.user = user?._id;
-      req.session.accessToken = accessToken;
-
       logger.log({
         level: "info",
         message: `${user?.email} successfully logged in`,
@@ -186,6 +183,7 @@ userRouter.post("/login", async (req, res) => {
           validPassword(password, user!.password) ||
           validPassword(password, user!.tempPassword),
         user: user,
+        token: accessToken
       });
     } else {
       logger.log({

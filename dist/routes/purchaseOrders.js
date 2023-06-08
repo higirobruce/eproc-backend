@@ -45,6 +45,7 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
     let CardCode;
     yield (0, b1_1.getBusinessPartnerByName)((B1Data_Assets === null || B1Data_Assets === void 0 ? void 0 : B1Data_Assets.CardName) || B1Data_NonAssets.CardName)
         .then((res) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         let bp = res.value;
         if ((bp === null || bp === void 0 ? void 0 : bp.length) >= 1) {
             CardCode = bp[0].CardCode;
@@ -67,6 +68,7 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
                 let poToCreate = new purchaseOrders_1.PurchaseOrder(number, vendor, tender, request, createdBy, sections, items, status, deliveryProgress, signatories, reqAttachmentDocId, refs, rate, rateComment);
                 let createdPO = yield (0, purchaseOrders_2.savePO)(poToCreate);
                 if (createdPO) {
+                    (0, sendEmailNode_1.send)("from", (_a = signatories[0]) === null || _a === void 0 ? void 0 : _a.email, "Your Signature is needed", JSON.stringify({ docId: createdPO === null || createdPO === void 0 ? void 0 : createdPO._id, docType: 'purchase-orders' }), "", "internalSignature");
                     if ((refs === null || refs === void 0 ? void 0 : refs.length) >= 1) {
                         refs.forEach((r) => __awaiter(void 0, void 0, void 0, function* () {
                             yield (0, purchaseOrders_2.updateB1Po)(r, {
@@ -99,12 +101,12 @@ exports.poRouter.put("/progress/:id", (req, res) => __awaiter(void 0, void 0, vo
     res.send(yield (0, purchaseOrders_2.updateProgress)(id, updates));
 }));
 exports.poRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e;
+    var _b, _c, _d, _e, _f;
     let { id } = req.params;
     let { newPo, pending, paritallySigned, signed, signingIndex } = req.body;
-    let vendor = yield (0, users_1.getVendorByCompanyName)((_b = newPo === null || newPo === void 0 ? void 0 : newPo.signatories[((_a = newPo === null || newPo === void 0 ? void 0 : newPo.signatories) === null || _a === void 0 ? void 0 : _a.length) - 1]) === null || _b === void 0 ? void 0 : _b.onBehalfOf);
+    let vendor = yield (0, users_1.getVendorByCompanyName)((_c = newPo === null || newPo === void 0 ? void 0 : newPo.signatories[((_b = newPo === null || newPo === void 0 ? void 0 : newPo.signatories) === null || _b === void 0 ? void 0 : _b.length) - 1]) === null || _c === void 0 ? void 0 : _c.onBehalfOf);
     let nextSignatory = (newPo === null || newPo === void 0 ? void 0 : newPo.signatories.length) >= signingIndex + 2
-        ? (_c = newPo.signatories[signingIndex + 1]) === null || _c === void 0 ? void 0 : _c.email
+        ? (_d = newPo.signatories[signingIndex + 1]) === null || _d === void 0 ? void 0 : _d.email
         : null;
     if (pending) {
         newPo.status = "pending-signature";
@@ -115,7 +117,7 @@ exports.poRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, fun
         let _vendor = Object.assign({}, vendor);
         let tempPass = (0, crypto_1.randomUUID)();
         _vendor.tempEmail =
-            (_e = newPo === null || newPo === void 0 ? void 0 : newPo.signatories[((_d = newPo === null || newPo === void 0 ? void 0 : newPo.signatories) === null || _d === void 0 ? void 0 : _d.length) - 1]) === null || _e === void 0 ? void 0 : _e.email;
+            (_f = newPo === null || newPo === void 0 ? void 0 : newPo.signatories[((_e = newPo === null || newPo === void 0 ? void 0 : newPo.signatories) === null || _e === void 0 ? void 0 : _e.length) - 1]) === null || _f === void 0 ? void 0 : _f.email;
         _vendor.tempPassword = (0, users_2.hashPassword)(tempPass);
         yield (0, users_1.setTempFields)(vendor === null || vendor === void 0 ? void 0 : vendor._id, _vendor === null || _vendor === void 0 ? void 0 : _vendor.tempEmail, _vendor === null || _vendor === void 0 ? void 0 : _vendor.tempPassword);
         (0, sendEmailNode_1.send)("from", _vendor.tempEmail, "Your Purchase Order has been signed", JSON.stringify({ email: _vendor.tempEmail, password: tempPass, docType: 'purchase-orders', docId: newPo === null || newPo === void 0 ? void 0 : newPo._id }), "", "externalSignature");

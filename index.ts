@@ -91,21 +91,22 @@ export let ensureUserAuthorized = (
   res: Response,
   next: NextFunction
 ) => {
-  // req.session.user='bruce'
-  console.log(req.session);
-  next();
-  // if (req.session.accessToken == null) {
-  //   return res.status(401).json({ error: "Access-denied" });
-  // }
 
-  // try {
-  //   const verified = jwt.verify(req.session.accessToken, SALT) as JwtPayload;
-  //   // req.user = verified;
-  //   console.log(verified);
-  //   next();
-  // } catch (err) {
-  //   res.status(401).json({ error: "Invalid-token" });
-  // }
+  try {
+    let token = req.headers.token;
+    if (!token) {
+
+      res.status(401).send('Unauthorized')
+    } else {
+      let user = jwt.verify(token as string, SALT);
+      req.session.user = user
+
+      console.log(user)
+      next();
+    }
+  } catch (err) {
+    res.status(401).send('Please send a valid access token in the header')
+  }
 };
 app.use(
   session({
@@ -121,17 +122,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/users", auth, userRouter);
-app.use("/requests", requetsRouter);
-app.use("/dpts", dptRouter);
-app.use("/serviceCategories", serviceCategoryRouter);
-app.use("/tenders", tenderRouter);
-app.use("/submissions", submissionsRouter);
-app.use("/purchaseOrders", poRouter);
-app.use("/contracts", contractRouter);
-app.use("/budgetLines", auth, budgetLinesRouter);
-app.use("/paymentRequests", paymentRequestRouter);
+app.use("/requests", ensureUserAuthorized, requetsRouter);
+app.use("/dpts",ensureUserAuthorized, dptRouter);
+app.use("/serviceCategories",ensureUserAuthorized, serviceCategoryRouter);
+app.use("/tenders",ensureUserAuthorized, tenderRouter);
+app.use("/submissions",ensureUserAuthorized, submissionsRouter);
+app.use("/purchaseOrders",ensureUserAuthorized, poRouter);
+app.use("/contracts",ensureUserAuthorized, contractRouter);
+app.use("/budgetLines", auth,ensureUserAuthorized, budgetLinesRouter);
+app.use("/paymentRequests",ensureUserAuthorized, paymentRequestRouter);
 app.use("/uploads", uploadRouter);
-app.use("/b1", b1Router);
+app.use("/b1", ensureUserAuthorized,b1Router);
 app.get("/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
   var options = {

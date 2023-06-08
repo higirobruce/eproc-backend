@@ -29,6 +29,7 @@ const paymentRequestRoute_1 = require("./routes/paymentRequestRoute");
 const b1_1 = __importDefault(require("./services/b1"));
 const express_session_1 = __importDefault(require("express-session"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_ts_1 = __importDefault(require("cors-ts"));
 const node_localstorage_1 = require("node-localstorage");
@@ -73,20 +74,21 @@ let auth = (req, res, next) => {
 };
 const app = (0, express_1.default)();
 let ensureUserAuthorized = (req, res, next) => {
-    // req.session.user='bruce'
-    console.log(req.session);
-    next();
-    // if (req.session.accessToken == null) {
-    //   return res.status(401).json({ error: "Access-denied" });
-    // }
-    // try {
-    //   const verified = jwt.verify(req.session.accessToken, SALT) as JwtPayload;
-    //   // req.user = verified;
-    //   console.log(verified);
-    //   next();
-    // } catch (err) {
-    //   res.status(401).json({ error: "Invalid-token" });
-    // }
+    try {
+        let token = req.headers.token;
+        if (!token) {
+            res.status(401).send('Unauthorized');
+        }
+        else {
+            let user = jsonwebtoken_1.default.verify(token, usersRoute_1.SALT);
+            req.session.user = user;
+            console.log(user);
+            next();
+        }
+    }
+    catch (err) {
+        res.status(401).send('Please send a valid access token in the header');
+    }
 };
 exports.ensureUserAuthorized = ensureUserAuthorized;
 app.use((0, express_session_1.default)({
@@ -100,17 +102,17 @@ app.use((0, cors_ts_1.default)());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use("/users", auth, usersRoute_1.userRouter);
-app.use("/requests", requestsRoute_1.requetsRouter);
-app.use("/dpts", dptRoute_1.dptRouter);
-app.use("/serviceCategories", serviceCategories_1.serviceCategoryRouter);
-app.use("/tenders", tenders_1.tenderRouter);
-app.use("/submissions", bidSubmissionsRoute_1.submissionsRouter);
-app.use("/purchaseOrders", purchaseOrders_1.poRouter);
-app.use("/contracts", contracts_1.contractRouter);
-app.use("/budgetLines", auth, budgetLinesRoute_1.budgetLinesRouter);
-app.use("/paymentRequests", paymentRequestRoute_1.paymentRequestRouter);
+app.use("/requests", exports.ensureUserAuthorized, requestsRoute_1.requetsRouter);
+app.use("/dpts", exports.ensureUserAuthorized, dptRoute_1.dptRouter);
+app.use("/serviceCategories", exports.ensureUserAuthorized, serviceCategories_1.serviceCategoryRouter);
+app.use("/tenders", exports.ensureUserAuthorized, tenders_1.tenderRouter);
+app.use("/submissions", exports.ensureUserAuthorized, bidSubmissionsRoute_1.submissionsRouter);
+app.use("/purchaseOrders", exports.ensureUserAuthorized, purchaseOrders_1.poRouter);
+app.use("/contracts", exports.ensureUserAuthorized, contracts_1.contractRouter);
+app.use("/budgetLines", auth, exports.ensureUserAuthorized, budgetLinesRoute_1.budgetLinesRouter);
+app.use("/paymentRequests", exports.ensureUserAuthorized, paymentRequestRoute_1.paymentRequestRouter);
 app.use("/uploads", upload_1.uploadRouter);
-app.use("/b1", b1_1.default);
+app.use("/b1", exports.ensureUserAuthorized, b1_1.default);
 app.get("/file/:folder/:name", function (req, res, next) {
     var folder = req.params.folder;
     var options = {

@@ -119,7 +119,20 @@ poRouter.post("/", async (req, response) => {
 
           let createdPO = await savePO(poToCreate);
 
+
+
           if (createdPO) {
+
+            send(
+              "from",
+              signatories[0]?.email,
+              "Your Signature is needed",
+              JSON.stringify({ docId: createdPO?._id, docType: 'purchase-orders' }),
+              "",
+              "internalSignature"
+            );
+
+
             if (refs?.length >= 1) {
               refs.forEach(async (r) => {
                 await updateB1Po(r, {

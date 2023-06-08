@@ -86,8 +86,6 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
         //genereate JWT
         let accessToken = jsonwebtoken_1.default.sign({ email: email, user: user === null || user === void 0 ? void 0 : user._id }, exports.SALT);
         if (user) {
-            req.session.user = user === null || user === void 0 ? void 0 : user._id;
-            req.session.accessToken = accessToken;
             logger_1.logger.log({
                 level: "info",
                 message: `${user === null || user === void 0 ? void 0 : user.email} successfully logged in`,
@@ -96,6 +94,7 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
                 allowed: (0, users_3.validPassword)(password, user.password) ||
                     (0, users_3.validPassword)(password, user.tempPassword),
                 user: user,
+                token: accessToken
             });
         }
         else {
