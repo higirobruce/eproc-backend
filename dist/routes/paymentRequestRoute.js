@@ -12,7 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.paymentRequestRouter = void 0;
 const express_1 = require("express");
 const paymentRequests_1 = require("../controllers/paymentRequests");
+const users_1 = require("../models/users");
 const paymentRequests_2 = require("../services/paymentRequests");
+const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.paymentRequestRouter = (0, express_1.Router)();
 exports.paymentRequestRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -47,5 +49,11 @@ exports.paymentRequestRouter.get("/:id", (req, res) => __awaiter(void 0, void 0,
 exports.paymentRequestRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     let { updates } = req.body;
-    res.send(yield (0, paymentRequests_1.updateRequest)(id, updates));
+    let updatedRequest = yield (0, paymentRequests_1.updateRequest)(id, updates);
+    if (updates.notifyApprover && updates.approver) {
+        //send notification
+        let approver = yield users_1.UserModel.findById(updates.approver);
+        (0, sendEmailNode_1.send)('from', approver === null || approver === void 0 ? void 0 : approver.email, "Your Approval is needed", JSON.stringify(updatedRequest), 'html', 'approval');
+    }
+    res.send(updatedRequest);
 }));

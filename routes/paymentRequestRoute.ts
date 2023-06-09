@@ -7,7 +7,9 @@ import {
   savePaymentRequest,
   updateRequest,
 } from "../controllers/paymentRequests";
+import { UserModel } from "../models/users";
 import { generatePaymentRequestNumber } from "../services/paymentRequests";
+import { send } from "../utils/sendEmailNode";
 export const paymentRequestRouter = Router();
 
 paymentRequestRouter.get("/", async (req, res) => {
@@ -46,5 +48,12 @@ paymentRequestRouter.get("/:id", async (req, res) => {
 paymentRequestRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { updates } = req.body;
-  res.send(await updateRequest(id, updates));
+  let updatedRequest = await updateRequest(id, updates)
+  if(updates.notifyApprover && updates.approver){
+    //send notification
+    let approver = await UserModel.findById(updates.approver);
+
+    send('from',approver?.email,"Your Approval is needed",JSON.stringify(updatedRequest),'html','approval')
+  }
+  res.send(updatedRequest);
 });
