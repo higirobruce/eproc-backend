@@ -123,8 +123,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/users", auth, userRouter);
 app.use("/requests", ensureUserAuthorized, requetsRouter);
-app.use("/dpts",ensureUserAuthorized, dptRouter);
-app.use("/serviceCategories",ensureUserAuthorized, serviceCategoryRouter);
+app.use("/dpts", dptRouter);
+app.use("/serviceCategories", serviceCategoryRouter);
 app.use("/tenders",ensureUserAuthorized, tenderRouter);
 app.use("/submissions",ensureUserAuthorized, submissionsRouter);
 app.use("/purchaseOrders",ensureUserAuthorized, poRouter);
