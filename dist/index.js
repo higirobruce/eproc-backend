@@ -109,7 +109,7 @@ app.use("/tenders", exports.ensureUserAuthorized, tenders_1.tenderRouter);
 app.use("/submissions", exports.ensureUserAuthorized, bidSubmissionsRoute_1.submissionsRouter);
 app.use("/purchaseOrders", exports.ensureUserAuthorized, purchaseOrders_1.poRouter);
 app.use("/contracts", exports.ensureUserAuthorized, contracts_1.contractRouter);
-app.use("/budgetLines", auth, exports.ensureUserAuthorized, budgetLinesRoute_1.budgetLinesRouter);
+app.use("/budgetLines", exports.ensureUserAuthorized, budgetLinesRoute_1.budgetLinesRouter);
 app.use("/paymentRequests", exports.ensureUserAuthorized, paymentRequestRoute_1.paymentRequestRouter);
 app.use("/uploads", upload_1.uploadRouter);
 app.use("/b1", exports.ensureUserAuthorized, b1_1.default);

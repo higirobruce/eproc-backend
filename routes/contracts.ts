@@ -24,6 +24,7 @@ import {
   setTempFields,
   updateUser,
 } from "../controllers/users";
+import { UserModel } from "../models/users";
 import { generateContractNumber } from "../services/contracts";
 import { hashPassword } from "../services/users";
 import { logger } from "../utils/logger";
@@ -94,6 +95,14 @@ contractRouter.post("/", async (req, res) => {
 
   let createdContract = await saveContract(contractToCreate);
   if (createdContract) {
+    send(
+      "from",
+      (await getLegalOfficers()) as string | string[],
+      "Your Review is needed",
+      JSON.stringify({ docId: createdContract?._id, docType: "contracts" }),
+      "",
+      "contractReview"
+    );
     logger.log({
       level: "info",
       message: `Contract ${createdContract?._id} successfully created`,
@@ -195,3 +204,17 @@ contractRouter.put("/:id", async (req, res) => {
 
   res.status(200).send(updated);
 });
+
+export async function getLegalOfficers() {
+  try {
+    let legalOfficers = await UserModel.find(
+      { "permissions.canApproveAsLegal": true },
+      { email: 1 }
+    );
+    return legalOfficers.map((l) => {
+      return l.email;
+    });
+  } catch (err) {
+    return [""];
+  }
+}

@@ -255,7 +255,16 @@ export async function updateRequest(id: String, update: Request) {
   try {
     let newRequest = await RequestModel.findByIdAndUpdate(id, update, {
       new: true,
-    });
+    }).populate("createdBy")
+    .populate("level1Approver")
+    .populate({
+      path: "createdBy",
+      populate: {
+        path: "department",
+        model: "Department",
+      },
+    })
+    .populate("budgetLine");
     return newRequest;
   } catch (err) {
     return {

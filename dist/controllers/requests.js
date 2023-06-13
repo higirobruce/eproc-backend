@@ -238,7 +238,16 @@ function updateRequest(id, update) {
         try {
             let newRequest = yield requests_1.RequestModel.findByIdAndUpdate(id, update, {
                 new: true,
-            });
+            }).populate("createdBy")
+                .populate("level1Approver")
+                .populate({
+                path: "createdBy",
+                populate: {
+                    path: "department",
+                    model: "Department",
+                },
+            })
+                .populate("budgetLine");
             return newRequest;
         }
         catch (err) {

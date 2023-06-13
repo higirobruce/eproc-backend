@@ -9,14 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.contractRouter = void 0;
+exports.getLegalOfficers = exports.contractRouter = void 0;
 const crypto_1 = require("crypto");
 const express_1 = require("express");
 const contracts_1 = require("../classrepo/contracts");
 const contracts_2 = require("../controllers/contracts");
 const users_1 = require("../controllers/users");
+const users_2 = require("../models/users");
 const contracts_3 = require("../services/contracts");
-const users_2 = require("../services/users");
+const users_3 = require("../services/users");
 const logger_1 = require("../utils/logger");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
 exports.contractRouter = (0, express_1.Router)();
@@ -49,6 +50,7 @@ exports.contractRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0,
     let contractToCreate = new contracts_1.Contract(tender, number, vendor, request, createdBy, sections, status, deliveryProgress, contractStartDate, contractEndDate, signatories, reqAttachmentDocId);
     let createdContract = yield (0, contracts_2.saveContract)(contractToCreate);
     if (createdContract) {
+        (0, sendEmailNode_1.send)("from", (yield getLegalOfficers()), "Your Review is needed", JSON.stringify({ docId: createdContract === null || createdContract === void 0 ? void 0 : createdContract._id, docType: "contracts" }), "", "contractReview");
         logger_1.logger.log({
             level: "info",
             message: `Contract ${createdContract === null || createdContract === void 0 ? void 0 : createdContract._id} successfully created`,
@@ -86,7 +88,7 @@ exports.contractRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 
         let tempPass = (0, crypto_1.randomUUID)();
         _vendor.tempEmail =
             (_f = newContract === null || newContract === void 0 ? void 0 : newContract.signatories[((_e = newContract === null || newContract === void 0 ? void 0 : newContract.signatories) === null || _e === void 0 ? void 0 : _e.length) - 1]) === null || _f === void 0 ? void 0 : _f.email;
-        _vendor.tempPassword = (0, users_2.hashPassword)(tempPass);
+        _vendor.tempPassword = (0, users_3.hashPassword)(tempPass);
         yield (0, users_1.setTempFields)(vendor === null || vendor === void 0 ? void 0 : vendor._id, _vendor === null || _vendor === void 0 ? void 0 : _vendor.tempEmail, _vendor === null || _vendor === void 0 ? void 0 : _vendor.tempPassword);
         (0, sendEmailNode_1.send)("from", _vendor.tempEmail, "Your contract has been signed", JSON.stringify({
             email: _vendor.tempEmail,
@@ -111,3 +113,17 @@ exports.contractRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 
     }
     res.status(200).send(updated);
 }));
+function getLegalOfficers() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let legalOfficers = yield users_2.UserModel.find({ "permissions.canApproveAsLegal": true }, { email: 1 });
+            return legalOfficers.map((l) => {
+                return l.email;
+            });
+        }
+        catch (err) {
+            return [""];
+        }
+    });
+}
+exports.getLegalOfficers = getLegalOfficers;

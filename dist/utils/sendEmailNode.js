@@ -499,6 +499,49 @@ const internalSignature = (emailObj) => {
   </mj-body>
   </mjml>`;
 };
+const contractReview = (emailObj) => {
+    return `<mjml>
+  <mj-body>
+    <!-- Company Header -->
+    <mj-section>
+      <mj-column>
+      <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+        <mj-text>
+          Irembo Procure
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  
+    <!-- Image Header -->
+    <mj-section>
+      <mj-column width="600px">
+        <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your signature is needed</mj-text>
+      </mj-column>
+    </mj-section>
+  
+  
+    <!-- Intro text -->
+    <mj-section background-color="">
+      <mj-column width="500px">
+  
+        <mj-text color="#525252">
+          Hi there, <br />
+          We hope that you are well. <br/>
+          We would like to let you know that a contract awaits your review.<br/> <br/>
+          Please proceed to the e-procurement application by clicking the button below.<br/><br/>
+  
+        </mj-text>
+  
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/system/${emailObj.docType}/${emailObj.docId}>Go to application</mj-button>
+      </mj-column>
+    </mj-section>
+  
+    <!-- Social icons -->
+    <mj-section background-color=""></mj-section>
+  
+  </mj-body>
+  </mjml>`;
+};
 const externalSignaturePO = (cred) => {
     return `<mjml>
 <mj-body>
@@ -636,6 +679,14 @@ function send(from, to, subject, text, html, type) {
                     subject,
                     text,
                     html: mjml(internalSignature(JSON.parse(text))).html,
+                });
+            else if (type === "contractReview")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(contractReview(JSON.parse(text))).html,
                 });
         }
         catch (err) {
