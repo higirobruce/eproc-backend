@@ -21,7 +21,8 @@ export async function getAllPaymentRequests() {
         },
       })
       .populate("approver")
-      .populate("reviewedBy");
+      .populate("reviewedBy")
+      .populate('budgetLine')
     return paymentRequests;
   } catch (err) {
     throw err;
@@ -34,7 +35,7 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
       paymentRequest
     );
     return createdPaymentRequest.populate(
-      "purchaseOrder createdBy approver reviewedBy"
+      "purchaseOrder createdBy approver reviewedBy budgetLine"
     );
   } catch (err) {
     throw err;
@@ -46,7 +47,8 @@ export async function getPaymentRequestById(id: String) {
     .populate("createdBy")
     .populate("purchaseOrder")
     .populate("approver")
-    .populate("reviewedBy");
+    .populate("reviewedBy")
+    .populate('budgetLine')
   return reqs;
 }
 
@@ -55,7 +57,7 @@ export async function getAllRequestsByCreator(createdBy: String) {
   if (createdBy && createdBy !== "null")
     query = { createdBy, status: { $ne: "withdrawn" } };
   let reqs = await PaymentRequestModel.find(query).populate(
-    "createdBy purchaseOrder approver reviewedBy"
+    "createdBy purchaseOrder approver reviewedBy budgetLine"
   );
 
   return reqs;
@@ -78,7 +80,7 @@ export async function getAllRequestsByStatus(status: String, id: String) {
       : { status };
   if (id && id !== "null") query = { ...query, createdBy: id };
   let reqs = await PaymentRequestModel.find(query).populate(
-    "createdBy purchaseOrder approver reviewedBy"
+    "createdBy purchaseOrder approver reviewedBy budgetLine"
   );
   return reqs;
 }

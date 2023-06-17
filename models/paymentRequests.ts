@@ -49,6 +49,13 @@ export const PaymentRequestSchema = new Schema<iPaymentRequestDocument>(
     hof_approvalDate: {
       type: Date,
     },
+    budgeted: {
+      type: Boolean,
+    },
+    budgetLine: {
+      type: Types.ObjectId,
+      ref: "BudgetLine",
+    },
   },
   { timestamps: true }
 );

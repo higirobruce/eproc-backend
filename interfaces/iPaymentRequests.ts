@@ -40,4 +40,11 @@ export interface iPaymentRequestDocument
     type: Types.ObjectId,
     ref: "User",
   },
+  budgeted: {
+    type: Boolean,
+  },
+  budgetLine: {
+    type: Types.ObjectId,
+    ref: "BudgetLine",
+  },
 }
