@@ -24,7 +24,7 @@ export class PoLineItem {
         referenceLinks: string[],
         budgetLine: string,
         budgeted: boolean,
-        lineOfBusiness: string
+        lineOfBusiness: string,
     ) {
         this.itemId = itemId ? new mongoose.Types.ObjectId(itemId) : new mongoose.Types.ObjectId()
         this.quantity = quantity
@@ -37,5 +37,6 @@ export class PoLineItem {
         this.budgetLine = budgetLine
         this.budgeted = budgeted
         this.lineOfBusiness = lineOfBusiness
+        this.currency = currency
     }
 }

@@ -22,7 +22,7 @@ export class Request implements IRequest {
   pm_approvalDate: Date;
   rejectionDate: Date;
   level1Approver: Types.ObjectId;
-  sourcingMethod: string;
+  sourcingMethod: string
 
   constructor(
     createdBy: string,
