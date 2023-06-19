@@ -53,7 +53,7 @@ paymentRequestRouter.put("/:id", async (req, res) => {
     //send notification
     let approver = await UserModel.findById(updates.approver);
 
-    send('from',approver?.email,"Your Approval is needed",JSON.stringify(updatedRequest),'html','approval')
+    send('from',approver?.email,"Your Approval is needed",JSON.stringify(updatedRequest),'html','payment-request-approval')
   }
   res.send(updatedRequest);
 });
