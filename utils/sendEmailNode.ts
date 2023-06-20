@@ -677,7 +677,7 @@ export async function send(
         to,
         subject,
         text,
-        html: mjml(prApproval(JSON.parse(text))).html,
+        html: mjml(paymentRequestApproval(JSON.parse(text))).html,
       });
     else if (type === "rejection")
       return await transporter.sendMail({
