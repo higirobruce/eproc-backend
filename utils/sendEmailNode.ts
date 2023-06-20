@@ -642,7 +642,7 @@ export async function send(
     if (type === "newTender")
       return await transporter.sendMail({
         from: process.env.IRMB_SENDER_EMAIL,
-        to: to,
+        bcc: to,
         subject,
         text,
         html: mjml(newTender(JSON.parse(text))).html,
@@ -650,7 +650,7 @@ export async function send(
     else if (type === "bidEvaluationInvite")
       return await transporter.sendMail({
         from: process.env.IRMB_SENDER_EMAIL,
-        to,
+        bcc: to,
         subject,
         text,
         html: mjml(invitation(JSON.parse(text))).html,
@@ -715,7 +715,7 @@ export async function send(
       else if (type === "preGoLive")
       return await transporter.sendMail({
         from: process.env.IRMB_SENDER_EMAIL,
-        to,
+        bcc:to,
         subject,
         text,
         html: mjml(preGoLive(JSON.parse(text))).html,
