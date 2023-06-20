@@ -201,7 +201,6 @@ const paymentRequestApproval = (pr: any) => `<mjml>
     </mj-column>
   </mj-section>
 
-
   <!-- Intro text -->
   <mj-section background-color="">
     <mj-column width="500px">

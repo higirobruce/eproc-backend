@@ -38,5 +38,7 @@ export class PoLineItem {
         this.budgeted = budgeted
         this.lineOfBusiness = lineOfBusiness
         this.currency = currency
+
+        
     }
 }
