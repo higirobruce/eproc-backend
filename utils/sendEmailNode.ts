@@ -208,8 +208,8 @@ const paymentRequestApproval = (pr: any) => `<mjml>
       <mj-text color="#525252">
         Hi there, <br />
         I hope that you are well. <br/><br/>
-        I am reaching out to inform you that a new purchase request (Req Number ${pr?.number}) has been submitted for your approval.<br/><br/>
-        To review the request, please proceed to the e-procurement portal application by clicking the button below.<br>
+        I am reaching out to inform you that a new payment request (Req Number ${pr?.number}) has been submitted for your approval.<br/><br/>
+        To review the request, please proceed to the e-procurement application by clicking the button below.<br>
       </mj-text>
 
       <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/system/payment-requests/${pr?._id}>Go to application</mj-button>

@@ -1,4 +1,4 @@
-import { iPaymentRequest } from "../interfaces/iPaymentRequests";
+import { iPaymentRequest, PaymentRequestCategory } from "../interfaces/iPaymentRequests";
 
 export class PaymentRequest implements iPaymentRequest {
   number: number;
@@ -13,6 +13,8 @@ export class PaymentRequest implements iPaymentRequest {
   hof_approvalDate: Date;
   reasonForRejection: string;
   reviewedAt: Date;
+  category: PaymentRequestCategory;
+  currency: string
 
   constructor(
     number: number,
@@ -27,6 +29,8 @@ export class PaymentRequest implements iPaymentRequest {
     hof_approvalDate: Date,
     reviewedAt: Date,
     paymentProofDocs: [],
+    category: PaymentRequestCategory,
+    currency: string
   ) {
     this.number = number;
     this.description = description;
@@ -40,5 +44,7 @@ export class PaymentRequest implements iPaymentRequest {
     this.hof_approvalDate = hof_approvalDate;
     this.reviewedAt = reviewedAt;
     this.paymentProofDocs = paymentProofDocs
+    this.category = category
+    this.currency = currency
   }
 }

@@ -1,6 +1,6 @@
 import moment from "moment";
 import mongoose, { Schema, model, connect, Document, Types } from "mongoose";
-import { iPaymentRequestDocument } from "../interfaces/iPaymentRequests";
+import { iPaymentRequestDocument, PaymentRequestCategory } from "../interfaces/iPaymentRequests";
 
 export const PaymentRequestSchema = new Schema<iPaymentRequestDocument>(
   {
@@ -56,6 +56,14 @@ export const PaymentRequestSchema = new Schema<iPaymentRequestDocument>(
       type: Types.ObjectId,
       ref: "BudgetLine",
     },
+    category: {
+      type: String,
+      default: PaymentRequestCategory.internal
+    },
+    currency: {
+      type: String,
+      default: "RWF"
+    }
   },
   { timestamps: true }
 );

@@ -1,6 +1,11 @@
 import moment from "moment";
 import mongoose, { Types } from "mongoose";
 
+export enum PaymentRequestCategory {
+  external = "external",
+  internal = "internal"
+}
+
 export interface iPaymentRequest {
   number: number;
   description: string;
@@ -13,7 +18,9 @@ export interface iPaymentRequest {
   hod_approvalDate: Date;
   hof_approvalDate: Date;
   reviewedAt: Date;
-  paymentProofDocs:[]
+  paymentProofDocs:[];
+  category: PaymentRequestCategory
+  currency: String;
 }
 
 export interface iPaymentRequestDocument
