@@ -91,7 +91,6 @@ export let ensureUserAuthorized = (
   res: Response,
   next: NextFunction
 ) => {
-
   try {
     let token = req.headers.token;
     if (!token) {
@@ -100,8 +99,7 @@ export let ensureUserAuthorized = (
     } else {
       let user = jwt.verify(token as string, SALT);
       req.session.user = user
-
-      console.log(user)
+      
       next();
     }
   } catch (err) {
@@ -120,7 +118,6 @@ app.use(cookieParser());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use("/users", auth, userRouter);
 app.use("/requests", ensureUserAuthorized, requetsRouter);
 app.use("/dpts", dptRouter);
