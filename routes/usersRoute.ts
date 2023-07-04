@@ -19,6 +19,7 @@ import {
   saveUser,
   updateMyPassword,
   updateUser,
+  getUser
 } from "../controllers/users";
 import {
   generatePassword,
@@ -37,6 +38,11 @@ export const userRouter = Router();
 
 userRouter.get("/", async (req, res) => {
   res.send(await getAllUsers());
+});
+
+userRouter.get("/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getUser(id));
 });
 
 userRouter.get("/vendors", async (req, res) => {
