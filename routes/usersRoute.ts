@@ -182,7 +182,7 @@ userRouter.post("/login", async (req, res) => {
 
     //genereate JWT
     let accessToken = jwt.sign({ email: email, user: user?._id }, SALT, {
-      expiresIn: "5m", // expires in 24 hours
+      expiresIn: "8h", // expires in 24 hours
     });
 
     if (user) {
