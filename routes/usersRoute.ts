@@ -40,10 +40,7 @@ userRouter.get("/", async (req, res) => {
   res.send(await getAllUsers());
 });
 
-userRouter.get("/:id", async (req, res) => {
-  let { id } = req.params;
-  res.send(await getUser(id));
-});
+
 
 userRouter.get("/vendors", async (req, res) => {
   res.send(await getAllVendors());
@@ -82,8 +79,15 @@ userRouter.get("/internalUserById/:id", async (req, res) => {
 
 userRouter.get("/internal/byStatus/:status", async (req, res) => {
   let { status } = req.params;
+
+  console.log()
   if (status === "all") res.send(await getAllInternalUsers());
   else res.send(await getAllInternalUsersByStatus(status));
+});
+
+userRouter.get("/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getUser(id));
 });
 
 userRouter.post("/", async (req, res) => {
