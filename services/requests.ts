@@ -8,6 +8,7 @@ export const generateReqNumber = async () => {
     if (lastDocument && lastDocument.number) {
         newNumber = lastDocument.number + 1;
     }
+    
 
     // Return the new number
     return newNumber;
