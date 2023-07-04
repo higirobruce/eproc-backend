@@ -20,6 +20,13 @@ export async function getAllPaymentRequests() {
           model: "Request",
         },
       })
+      .populate({
+        path: "purchaseOrder",
+        populate: {
+          path: "request",
+          model: "Request",
+        },
+      })
       .populate("approver")
       .populate("reviewedBy")
       .populate('budgetLine')
@@ -44,11 +51,31 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
 
 export async function getPaymentRequestById(id: String) {
   let reqs = await PaymentRequestModel.findById(id)
-    .populate("createdBy")
-    .populate("purchaseOrder")
-    .populate("approver")
-    .populate("reviewedBy")
-    .populate('budgetLine')
+  .populate("createdBy purchaseOrder")
+  .populate({
+    path: "purchaseOrder",
+    populate: {
+      path: "tender",
+      model: "Tender",
+    },
+  })
+  .populate({
+    path: "purchaseOrder.tender",
+    populate: {
+      path: "purchaseRequest",
+      model: "Request",
+    },
+  })
+  .populate({
+    path: "purchaseOrder",
+    populate: {
+      path: "request",
+      model: "Request",
+    },
+  })
+  .populate("approver")
+  .populate("reviewedBy")
+  .populate('budgetLine')
   return reqs;
 }
 

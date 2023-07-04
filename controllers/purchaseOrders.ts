@@ -19,12 +19,23 @@ export async function getAllPOs() {
     .populate("tender")
     .populate("vendor")
     .populate("request")
+    .populate({
+      path:'request',
+      populate:{
+        path:"budgetLine",
+        model:"BudgetLine"
+      }
+    })
     .populate("createdBy")
     .populate({
       path: "tender",
       populate: {
         path: "purchaseRequest",
         model: "Request",
+        populate: {
+          path: "budgetLine",
+          model: "BudgetLine",
+        },
       },
     });
   return pos;
@@ -40,50 +51,83 @@ export async function getAllPOs() {
  */
 export async function getPOByTenderId(tenderId: String) {
   let pos = await PurchaseOrderModel.find({ tender: tenderId })
-    .populate("request")
-    .populate("tender")
-    .populate("vendor")
-    .populate("createdBy")
-    .populate({
-      path: "tender",
+  .populate("tender")
+  .populate("vendor")
+  .populate("request")
+  .populate({
+    path:'request',
+    populate:{
+      path:"budgetLine",
+      model:"BudgetLine"
+    }
+  })
+  .populate("createdBy")
+  .populate({
+    path: "tender",
+    populate: {
+      path: "purchaseRequest",
+      model: "Request",
       populate: {
-        path: "purchaseRequest",
-        model: "Request",
+        path: "budgetLine",
+        model: "BudgetLine",
       },
-    });
+    },
+  });
   return pos;
 }
 
 export async function getPOById(id: String) {
   let pos = await PurchaseOrderModel.findById(id)
-    .populate("request")
-    .populate("tender")
-    .populate("vendor")
-    .populate("createdBy")
-    .populate({
-      path: "tender",
+  .populate("tender")
+  .populate("vendor")
+  .populate("request")
+  .populate({
+    path:'request',
+    populate:{
+      path:"budgetLine",
+      model:"BudgetLine"
+    }
+  })
+  .populate("createdBy")
+  .populate({
+    path: "tender",
+    populate: {
+      path: "purchaseRequest",
+      model: "Request",
       populate: {
-        path: "purchaseRequest",
-        model: "Request",
+        path: "budgetLine",
+        model: "BudgetLine",
       },
-    });
+    },
+  });
   return pos;
 }
 
 
 export async function getPOByRequestId(requestId: String) {
   let pos = await PurchaseOrderModel.find({ request: requestId })
-    .populate("request")
-    .populate("tender")
-    .populate("vendor")
-    .populate("createdBy")
-    .populate({
-      path: "tender",
+  .populate("tender")
+  .populate("vendor")
+  .populate("request")
+  .populate({
+    path:'request',
+    populate:{
+      path:"budgetLine",
+      model:"BudgetLine"
+    }
+  })
+  .populate("createdBy")
+  .populate({
+    path: "tender",
+    populate: {
+      path: "purchaseRequest",
+      model: "Request",
       populate: {
-        path: "purchaseRequest",
-        model: "Request",
+        path: "budgetLine",
+        model: "BudgetLine",
       },
-    });
+    },
+  });
   return pos;
 }
 
@@ -97,10 +141,28 @@ export async function getPOByRequestId(requestId: String) {
  */
 export async function getPOByVendorId(vendorId: String) {
   let pos = await PurchaseOrderModel.find({ vendor: vendorId })
-    .populate("tender")
-    .populate("vendor")
-    .populate("createdBy");
-  return pos;
+  .populate("tender")
+  .populate("vendor")
+  .populate("request")
+  .populate({
+    path:'request',
+    populate:{
+      path:"budgetLine",
+      model:"BudgetLine"
+    }
+  })
+  .populate("createdBy")
+  .populate({
+    path: "tender",
+    populate: {
+      path: "purchaseRequest",
+      model: "Request",
+      populate: {
+        path: "budgetLine",
+        model: "BudgetLine",
+      },
+    },
+  });
 }
 
 /**
