@@ -171,7 +171,9 @@ userRouter.post("/login", async (req, res) => {
     let user = await getUserByEmail(email);
 
     //genereate JWT
-    let accessToken = jwt.sign({ email: email, user: user?._id }, SALT);
+    let accessToken = jwt.sign({ email: email, user: user?._id }, SALT, {
+      expiresIn: "8h", // expires in 24 hours
+    });
 
     if (user) {
       logger.log({
@@ -183,7 +185,7 @@ userRouter.post("/login", async (req, res) => {
           validPassword(password, user!.password) ||
           validPassword(password, user!.tempPassword),
         user: user,
-        token: accessToken
+        token: accessToken,
       });
     } else {
       logger.log({
@@ -205,11 +207,19 @@ userRouter.post("/approve/:id", async (req, res) => {
   let { id } = req.params;
   let { approvedBy, avgRate } = req.body;
   let result = await approveUser(id);
+  logger.log({
+    level: "info",
+    message: `Approval of User ${id} successfully done`,
+  });
   res.send(result).status(201);
 });
 
 userRouter.post("/decline/:id", async (req, res) => {
   let { id } = req.params;
+  logger.log({
+    level: "info",
+    message: `Declining of User ${id} successfully done`,
+  });
   res.send(await declineUser(id));
 });
 
@@ -227,7 +237,14 @@ userRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { newUser } = req.body;
 
-  res.send(await updateUser(id, newUser));
+  let updates = await updateUser(id, newUser);
+
+  logger.log({
+    level: "info",
+    message: `Update of User ${newUser} successfully done`,
+  });
+
+  res.send(updates);
 });
 
 userRouter.put("/updatePassword/:id", async (req, res) => {
