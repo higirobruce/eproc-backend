@@ -6,7 +6,11 @@ export type ContractStatus =
   | "extended"
   | "pending"
   | "awarded"
-  | "approved (hod)";
+  | "approved (hod)"
+  | "approved"
+  | "appoved (pm)"
+  | "withdrawn";
+
 export type PoStatus =
   | "active"
   | "on hold"
@@ -47,7 +51,12 @@ export type UserType =
   | "BoD-MEMBER"
   | "CEO"
   | "HEAD-OF-FINANCE";
-export type UserStatus = "pending-approval" | "active" | "inactive" | "approved" | "";
+export type UserStatus =
+  | "pending-approval"
+  | "active"
+  | "inactive"
+  | "approved"
+  | "";
 
 export type DocumentLines = {
   ItemDescription: String;

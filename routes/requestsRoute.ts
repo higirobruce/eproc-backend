@@ -67,8 +67,7 @@ requetsRouter.get("/byStatus/:status/:id", async (req, res) => {
   // console.log('Requester',req.session.user)
   let user = await UserModel.findById(req?.session?.user?.user)
   let permissions = user?.permissions;
-  console.log('Permissions ', permissions);
-  console.log('User 12 ', user);
+  
   
   let { status,id } = req.params;
   status === "all"
