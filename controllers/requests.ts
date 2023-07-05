@@ -35,7 +35,7 @@ export async function getRequestById(id: String) {
   return reqs;
 }
 
-export async function getAllRequestsByCreator(createdBy: String ) {
+export async function getAllRequestsByCreator(createdBy: String, user?: any, permissions?: any ) {
   
   /*
     if pm
@@ -60,21 +60,36 @@ export async function getAllRequestsByCreator(createdBy: String ) {
 
   if (createdBy && createdBy !== "null")
     query = { createdBy, status: { $ne: "withdrawn" } };
-  let reqs = await RequestModel.find(query)
-    .populate("createdBy")
-    .populate("level1Approver")
-    .populate({
-      path: "createdBy",
-      populate: {
-        path: "department",
-        model: "Department",
-      },
-    })
-    .populate("budgetLine");
-  return reqs;
+    let reqs = await RequestModel.find(query)
+      .populate("createdBy")
+      .populate("level1Approver")
+      .populate({
+        path: "createdBy",
+        populate: {
+          path: "department",
+          model: "Department",
+        },
+      })
+      .populate("budgetLine");
+      
+  return (
+    permissions?.canApproveAsPM 
+      ? reqs 
+      : permissions?.canApproveAsHof 
+      ? reqs.filter((item) => (
+        (item?.createdBy?._id == user?._id && item?.status == 'approved (hod)') 
+        || (item?.level1Approver?.userType !== null && item?.status == 'approved (hod)') 
+        || (item?.status == 'approved (hod)'))) 
+      : permissions?.canApproveAsHod
+      ? reqs.filter((item) => (
+        (item?.createdBy?._id == user?._id)
+        || (item?.level1Approver?._id == user?._id)
+      ))
+      : reqs.filter((item) => item?.createdBy?._id == user?._id)
+  ) 
 }
 
-export async function getAllRequestsByStatus(status: String, id: String) {
+export async function getAllRequestsByStatus(status: String, id: String, permissions: any, user: any) {
   let query: any =
     status === "pending"
       ? {
@@ -100,6 +115,10 @@ export async function getAllRequestsByStatus(status: String, id: String) {
       },
     })
     .populate("budgetLine");
+
+    console.log('Req 1', reqs);
+    console.log('Permissions 1', permissions);
+    console.log('User 1', user);
   return reqs;
 }
 

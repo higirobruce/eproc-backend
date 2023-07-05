@@ -5,7 +5,8 @@ export type ContractStatus =
   | "completed"
   | "extended"
   | "pending"
-  | "awarded";
+  | "awarded"
+  | "approved (hod)";
 export type PoStatus =
   | "active"
   | "on hold"

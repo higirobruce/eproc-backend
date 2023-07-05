@@ -26,10 +26,13 @@ export interface IRequest {
 
 export interface IRequestDocument extends IRequest, Document {
     createdBy: {
+        _id: any;
         type: Types.ObjectId,
         ref: 'User'
     },
     level1Approver: {
+        _id: string;
+        userType: null;
         type: Types.ObjectId,
         ref: 'User'
     },
