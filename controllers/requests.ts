@@ -35,8 +35,29 @@ export async function getRequestById(id: String) {
   return reqs;
 }
 
-export async function getAllRequestsByCreator(createdBy: String) {
+export async function getAllRequestsByCreator(createdBy: String ) {
+  
+  /*
+    if pm
+    query all
+
+    if hof
+    query for all approved (hod), for created by me, where level 1 approver is me, for not pending
+
+
+    if hod
+    query created by me, and where level 1 approver is me
+
+
+    if normal user
+    query for those created by me regardless of the status
+
+    */
+
   let query = {};
+
+    
+
   if (createdBy && createdBy !== "null")
     query = { createdBy, status: { $ne: "withdrawn" } };
   let reqs = await RequestModel.find(query)
