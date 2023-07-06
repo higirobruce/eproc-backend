@@ -141,7 +141,7 @@ export async function getPOByRequestId(requestId: String) {
 export async function getPOByVendorId(vendorId: String) {
   let pos = await PurchaseOrderModel.find({
     vendor: vendorId,
-    status: { $in: ["partially-signed", "signed"] },
+    status: { $in: ["partially-signed", "signed", "started"] },
   })
     .populate("tender")
     .populate("vendor")
