@@ -20,11 +20,11 @@ export async function getAllPOs() {
     .populate("vendor")
     .populate("request")
     .populate({
-      path:'request',
-      populate:{
-        path:"budgetLine",
-        model:"BudgetLine"
-      }
+      path: "request",
+      populate: {
+        path: "budgetLine",
+        model: "BudgetLine",
+      },
     })
     .populate("createdBy")
     .populate({
@@ -51,83 +51,82 @@ export async function getAllPOs() {
  */
 export async function getPOByTenderId(tenderId: String) {
   let pos = await PurchaseOrderModel.find({ tender: tenderId })
-  .populate("tender")
-  .populate("vendor")
-  .populate("request")
-  .populate({
-    path:'request',
-    populate:{
-      path:"budgetLine",
-      model:"BudgetLine"
-    }
-  })
-  .populate("createdBy")
-  .populate({
-    path: "tender",
-    populate: {
-      path: "purchaseRequest",
-      model: "Request",
+    .populate("tender")
+    .populate("vendor")
+    .populate("request")
+    .populate({
+      path: "request",
       populate: {
         path: "budgetLine",
         model: "BudgetLine",
       },
-    },
-  });
+    })
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+        populate: {
+          path: "budgetLine",
+          model: "BudgetLine",
+        },
+      },
+    });
   return pos;
 }
 
 export async function getPOById(id: String) {
   let pos = await PurchaseOrderModel.findById(id)
-  .populate("tender")
-  .populate("vendor")
-  .populate("request")
-  .populate({
-    path:'request',
-    populate:{
-      path:"budgetLine",
-      model:"BudgetLine"
-    }
-  })
-  .populate("createdBy")
-  .populate({
-    path: "tender",
-    populate: {
-      path: "purchaseRequest",
-      model: "Request",
+    .populate("tender")
+    .populate("vendor")
+    .populate("request")
+    .populate({
+      path: "request",
       populate: {
         path: "budgetLine",
         model: "BudgetLine",
       },
-    },
-  });
+    })
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+        populate: {
+          path: "budgetLine",
+          model: "BudgetLine",
+        },
+      },
+    });
   return pos;
 }
 
-
 export async function getPOByRequestId(requestId: String) {
   let pos = await PurchaseOrderModel.find({ request: requestId })
-  .populate("tender")
-  .populate("vendor")
-  .populate("request")
-  .populate({
-    path:'request',
-    populate:{
-      path:"budgetLine",
-      model:"BudgetLine"
-    }
-  })
-  .populate("createdBy")
-  .populate({
-    path: "tender",
-    populate: {
-      path: "purchaseRequest",
-      model: "Request",
+    .populate("tender")
+    .populate("vendor")
+    .populate("request")
+    .populate({
+      path: "request",
       populate: {
         path: "budgetLine",
         model: "BudgetLine",
       },
-    },
-  });
+    })
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+        populate: {
+          path: "budgetLine",
+          model: "BudgetLine",
+        },
+      },
+    });
   return pos;
 }
 
@@ -140,32 +139,34 @@ export async function getPOByRequestId(requestId: String) {
  * @return { Promise } The promise is resolved with an object with the following properties : tender : The user's tender createdBy : The user's created by
  */
 export async function getPOByVendorId(vendorId: String) {
-  let pos = await PurchaseOrderModel.find({ vendor: vendorId })
-  .populate("tender")
-  .populate("vendor")
-  .populate("request")
-  .populate({
-    path:'request',
-    populate:{
-      path:"budgetLine",
-      model:"BudgetLine"
-    }
+  let pos = await PurchaseOrderModel.find({
+    vendor: vendorId,
+    status: { $in: ["partially-signed", "signed"] },
   })
-  .populate("createdBy")
-  .populate({
-    path: "tender",
-    populate: {
-      path: "purchaseRequest",
-      model: "Request",
+    .populate("tender")
+    .populate("vendor")
+    .populate("request")
+    .populate({
+      path: "request",
       populate: {
         path: "budgetLine",
         model: "BudgetLine",
       },
-    },
-  });
+    })
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+        populate: {
+          path: "budgetLine",
+          model: "BudgetLine",
+        },
+      },
+    });
 
-  return pos
-  
+  return pos;
 }
 
 /**
@@ -202,11 +203,9 @@ export async function updatePOStatus(id: String, newStatus: String) {
  */
 export async function updateProgress(id: String, updates: String) {
   try {
-    let a = await PurchaseOrderModel.findByIdAndUpdate(
-      id,
-      updates,
-      { returnOriginal: false }
-    );
+    let a = await PurchaseOrderModel.findByIdAndUpdate(id, updates, {
+      returnOriginal: false,
+    });
     return a;
   } catch (err) {
     return {
@@ -229,7 +228,7 @@ export async function savePO(po: PurchaseOrder) {
     let createdRecord = await PurchaseOrderModel.create(po);
     return createdRecord;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     throw err;
   }
 }
@@ -243,66 +242,64 @@ export async function savePOInB1(
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
 
-    return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: `${localstorage.getItem("cookie")}`,
-      },
-      body: JSON.stringify({ CardCode, DocType, DocumentLines }),
-    })
+    return fetch(
+      `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `${localstorage.getItem("cookie")}`,
+        },
+        body: JSON.stringify({ CardCode, DocType, DocumentLines }),
+      }
+    )
       .then((res) => res.json())
       .then((res) => {
-        console.log(res)
-        return res
+        console.log(res);
+        return res;
       })
       .catch((err) => {
-        console.log({error:true, message: err?.message})
-        return {error:true, message: err?.message}
+        console.log({ error: true, message: err?.message });
+        return { error: true, message: err?.message };
       });
   });
 }
 
-export async function updateB1Po(
-  CardCode: String,
-  body: any
-) {
+export async function updateB1Po(CardCode: String, body: any) {
   return sapLogin().then(async (res) => {
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
 
-    return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders(${CardCode})`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: `${localstorage.getItem("cookie")}`,
-      },
-      body: JSON.stringify(body),
-    })
+    return fetch(
+      `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/PurchaseOrders(${CardCode})`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `${localstorage.getItem("cookie")}`,
+        },
+        body: JSON.stringify(body),
+      }
+    )
       .then((res) => res.json())
-      .then((res) => {return res})
+      .then((res) => {
+        return res;
+      })
       .catch((err) => {
-        return err
+        return err;
       });
   });
 }
 
-
-
 export async function updatePo(id: String, po: PurchaseOrder) {
- 
-  return await PurchaseOrderModel.findByIdAndUpdate(
-    id,
-    po,
-    { new: true }
-  );
+  return await PurchaseOrderModel.findByIdAndUpdate(id, po, { new: true });
 }
 
 export async function getVendorRate(id: string) {
   let pipeline = [
     {
       $match: {
-        vendor: new mongoose.Types.ObjectId(id)
+        vendor: new mongoose.Types.ObjectId(id),
       },
     },
     {
