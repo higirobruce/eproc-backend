@@ -40,6 +40,7 @@ export async function getAllRequestsByCreator(
   user?: any,
   permissions?: any
 ) {
+
   /*
     if pm
     query all
@@ -62,7 +63,7 @@ export async function getAllRequestsByCreator(
   if (createdBy && createdBy !== "null")
     query = { createdBy, status: { $ne: "withdrawn" } };
 
-  if (permissions?.canApproveAsHof && !createdBy)
+  if (permissions?.canApproveAsHof)
     query = {
       ...query,
       $or: [
@@ -77,7 +78,7 @@ export async function getAllRequestsByCreator(
       ],
     };
 
-  if (permissions?.canApproveAsHod && !createdBy) {
+  if (permissions?.canApproveAsHod) {
     query = permissions?.canApproveAsHof
       ? {
           ...query,
@@ -126,6 +127,7 @@ export async function getAllRequestsByStatus(
   permissions: any,
   user: any
 ) {
+
   let query: any =
     status === "pending"
       ? {
@@ -145,14 +147,14 @@ export async function getAllRequestsByStatus(
     query = {
       ...query,
       $or: [
-        { createdBy: user?._id },
+        { createdBy: id },
         {
           status: {
             $in: ["approved (hod)", "approved (pm)", "approved"],
             $nin: ["withdrawn"],
           },
         },
-        { status: { $in: ["pending"] }, level1Approver: user?._id },
+        { status: { $in: ["pending"] }, level1Approver: id },
       ],
     };
 
@@ -160,10 +162,10 @@ export async function getAllRequestsByStatus(
     query = permissions?.canApproveAsHof
       ? {
           ...query,
-          $or: [{ level1Approver: user?._id }, { createdBy: user?._id }],
+          $or: [{ level1Approver: id }, { createdBy: id }],
         }
       : {
-          $or: [{ level1Approver: user?._id }, { createdBy: user?._id }],
+          $or: [{ level1Approver: id }, { createdBy: id }],
         };
   }
 
