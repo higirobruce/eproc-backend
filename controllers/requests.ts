@@ -76,7 +76,7 @@ export async function getAllRequestsByCreator(
         { createdBy: user?._id },
         {
           status: {
-            $in: ["approved (hod)", "approved (pm)", "approved"],
+            $in: ["approved (hod)", "approved (pm)", "approved", "approved (fd)"],
           },
         },
         { status: { $in: ["pending"] }, level1Approver: user?._id },
@@ -150,7 +150,7 @@ export async function getAllRequestsByStatus(
         { createdBy: id },
         {
           status: {
-            $in: ["approved (hod)", "approved (pm)", "approved"],
+            $in: ["approved (hod)", "approved (pm)", "approved", "approved (fd)"],
             $nin: ["withdrawn"],
           },
         },
