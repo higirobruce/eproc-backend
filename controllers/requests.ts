@@ -40,7 +40,6 @@ export async function getAllRequestsByCreator(
   user?: any,
   permissions?: any
 ) {
-
   /*
     if pm
     query all
@@ -127,7 +126,6 @@ export async function getAllRequestsByStatus(
   permissions: any,
   user: any
 ) {
-
   let query: any =
     status === "pending"
       ? {
@@ -159,14 +157,10 @@ export async function getAllRequestsByStatus(
     };
 
   if (permissions?.canApproveAsHod) {
-    query = permissions?.canApproveAsHof
-      ? {
-          ...query,
-          $or: [{ level1Approver: id }, { createdBy: id }],
-        }
-      : {
-          $or: [{ level1Approver: id }, { createdBy: id }],
-        };
+    query = {
+      ...query,
+      $or: [{ level1Approver: id }, { createdBy: id }],
+    };
   }
 
   let reqs = await RequestModel.find(query)
