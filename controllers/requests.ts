@@ -160,10 +160,10 @@ export async function getAllRequestsByStatus(
     query = permissions?.canApproveAsHof
       ? {
           ...query,
-          $or: [{ level1Approved: user?._id }, { createdBy: user?._id }],
+          $or: [{ level1Approver: user?._id }, { createdBy: user?._id }],
         }
       : {
-          $or: [{ level1Approved: user?._id }, { createdBy: user?._id }],
+          $or: [{ level1Approver: user?._id }, { createdBy: user?._id }],
         };
   }
 
