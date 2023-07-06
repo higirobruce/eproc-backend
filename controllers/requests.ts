@@ -62,6 +62,13 @@ export async function getAllRequestsByCreator(
   if (createdBy && createdBy !== "null")
     query = { createdBy, status: { $ne: "withdrawn" } };
 
+  if (permissions?.canApproveAsHod) {
+    query = {
+      ...query,
+      $or: [{ level1Approver: user?._id }, { createdBy: user?._id }],
+    };
+  }
+
   if (permissions?.canApproveAsHof)
     query = {
       ...query,
@@ -70,19 +77,11 @@ export async function getAllRequestsByCreator(
         {
           status: {
             $in: ["approved (hod)", "approved (pm)", "approved"],
-            $nin: ["withdrawn"],
           },
         },
         { status: { $in: ["pending"] }, level1Approver: user?._id },
       ],
     };
-
-  if (permissions?.canApproveAsHod) {
-    query =  {
-      ...query,
-      $or: [{ level1Approver: user?._id }, { createdBy: user?._id }],
-    }
-  }
 
   let reqs = await RequestModel.find(query)
     .populate("createdBy")
@@ -137,6 +136,13 @@ export async function getAllRequestsByStatus(
       : { status };
   if (id && id !== "null") query = { ...query, createdBy: id };
 
+  if (permissions?.canApproveAsHod) {
+    query = {
+      ...query,
+      $or: [{ level1Approver: id }, { createdBy: id }],
+    };
+  }
+
   if (permissions?.canApproveAsHof)
     query = {
       ...query,
@@ -151,13 +157,6 @@ export async function getAllRequestsByStatus(
         { status: { $in: ["pending"] }, level1Approver: id },
       ],
     };
-
-  if (permissions?.canApproveAsHod) {
-    query = {
-      ...query,
-      $or: [{ level1Approver: id }, { createdBy: id }],
-    };
-  }
 
   let reqs = await RequestModel.find(query)
     .populate("createdBy")
