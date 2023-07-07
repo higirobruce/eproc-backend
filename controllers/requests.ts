@@ -62,14 +62,14 @@ export async function getAllRequestsByCreator(
   if (createdBy && createdBy !== "null")
     query = { createdBy, status: { $ne: "withdrawn" } };
 
-  if (permissions?.canApproveAsHod) {
+  if (permissions?.canApproveAsHod || permissions?.canApproveAsPM) {
     query = {
       ...query,
       $or: [{ level1Approver: user?._id }, { createdBy: user?._id }],
     };
   }
 
-  if (permissions?.canApproveAsHof)
+  if (permissions?.canApproveAsHof || permissions?.canApproveAsPM)
     query = {
       ...query,
       $or: [
@@ -136,14 +136,14 @@ export async function getAllRequestsByStatus(
       : { status };
   if (id && id !== "null") query = { ...query, createdBy: id };
 
-  if (permissions?.canApproveAsHod) {
+  if (permissions?.canApproveAsHod || permissions?.canApproveAsPM) {
     query = {
       ...query,
       $or: [{ level1Approver: id }, { createdBy: id }],
     };
   }
 
-  if (permissions?.canApproveAsHof)
+  if (permissions?.canApproveAsHof || permissions?.canApproveAsPM)
     query = {
       ...query,
       $or: [
