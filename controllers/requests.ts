@@ -35,10 +35,54 @@ export async function getRequestById(id: String) {
   return reqs;
 }
 
-export async function getAllRequestsByCreator(createdBy: String) {
+export async function getAllRequestsByCreator(
+  createdBy: String,
+  user?: any,
+  permissions?: any
+) {
+  /*
+    if pm
+    query all
+
+    if hof
+    query for all approved (hod), for created by me, where level 1 approver is me, not pending
+
+
+    if hod
+    query created by me, and where level 1 approver is me
+
+
+    if normal user
+    query for those created by me regardless of the status
+
+    */
+
   let query = {};
+
   if (createdBy && createdBy !== "null")
     query = { createdBy, status: { $ne: "withdrawn" } };
+
+  if (permissions?.canApproveAsHod) {
+    query = {
+      ...query,
+      $or: [{ level1Approver: user?._id }, { createdBy: user?._id }],
+    };
+  }
+
+  if (permissions?.canApproveAsHof)
+    query = {
+      ...query,
+      $or: [
+        { createdBy: user?._id },
+        {
+          status: {
+            $in: ["approved (hod)", "approved (pm)", "approved", "approved (fd)"],
+          },
+        },
+        { status: { $in: ["pending"] }, level1Approver: user?._id },
+      ],
+    };
+
   let reqs = await RequestModel.find(query)
     .populate("createdBy")
     .populate("level1Approver")
@@ -50,10 +94,33 @@ export async function getAllRequestsByCreator(createdBy: String) {
       },
     })
     .populate("budgetLine");
+
   return reqs;
+  // return permissions?.canApproveAsPM
+  //   ? reqs
+  //   : permissions?.canApproveAsHof
+  //   ? reqs.filter(
+  //       (item) =>
+  //         item?.createdBy?._id == user?._id ||
+  //         item?.status == "approved (hod)" ||
+  //         item?.status == "appoved (pm)" ||
+  //         item?.status == "approved"
+  //     )
+  //   : permissions?.canApproveAsHod
+  //   ? reqs.filter(
+  //       (item) =>
+  //         item?.createdBy?._id == user?._id ||
+  //         item?.level1Approver?._id == user?._id
+  //     )
+  //   : reqs.filter((item) => item?.createdBy?._id == user?._id);
 }
 
-export async function getAllRequestsByStatus(status: String, id: String) {
+export async function getAllRequestsByStatus(
+  status: String,
+  id: String,
+  permissions: any,
+  user: any
+) {
   let query: any =
     status === "pending"
       ? {
@@ -68,6 +135,29 @@ export async function getAllRequestsByStatus(status: String, id: String) {
         }
       : { status };
   if (id && id !== "null") query = { ...query, createdBy: id };
+
+  if (permissions?.canApproveAsHod) {
+    query = {
+      ...query,
+      $or: [{ level1Approver: id }, { createdBy: id }],
+    };
+  }
+
+  if (permissions?.canApproveAsHof)
+    query = {
+      ...query,
+      $or: [
+        { createdBy: id },
+        {
+          status: {
+            $in: ["approved (hod)", "approved (pm)", "approved", "approved (fd)"],
+            $nin: ["withdrawn"],
+          },
+        },
+        { status: { $in: ["pending"] }, level1Approver: id },
+      ],
+    };
+
   let reqs = await RequestModel.find(query)
     .populate("createdBy")
     .populate("level1Approver")
@@ -79,6 +169,7 @@ export async function getAllRequestsByStatus(status: String, id: String) {
       },
     })
     .populate("budgetLine");
+
   return reqs;
 }
 
@@ -87,7 +178,14 @@ export async function saveRequest(request: Request) {
 
   //Sending Email notification
   let approver = await UserModel.findById(request.level1Approver);
-  send("", approver?.email, "Purchase request approval", JSON.stringify(newReq), "", "approval");
+  send(
+    "",
+    approver?.email,
+    "Purchase request approval",
+    JSON.stringify(newReq),
+    "",
+    "approval"
+  );
 
   return newReq;
 }
@@ -255,16 +353,17 @@ export async function updateRequest(id: String, update: Request) {
   try {
     let newRequest = await RequestModel.findByIdAndUpdate(id, update, {
       new: true,
-    }).populate("createdBy")
-    .populate("level1Approver")
-    .populate({
-      path: "createdBy",
-      populate: {
-        path: "department",
-        model: "Department",
-      },
     })
-    .populate("budgetLine");
+      .populate("createdBy")
+      .populate("level1Approver")
+      .populate({
+        path: "createdBy",
+        populate: {
+          path: "department",
+          model: "Department",
+        },
+      })
+      .populate("budgetLine");
     return newRequest;
   } catch (err) {
     return {
@@ -317,26 +416,24 @@ export async function getReqCountsByDepartment() {
   ];
 
   let result = await RequestModel.aggregate(lookup);
-  return result.sort((a,b)=> a._id < b._id ? -1 : 1)
+  return result.sort((a, b) => (a._id < b._id ? -1 : 1));
 }
 
 export async function getReqCountsByStatus() {
   let lookup = [
     {
-      '$group': {
-        '_id': '$status', 
-        'count': {
-          '$count': {}
-        }
-      }
+      $group: {
+        _id: "$status",
+        count: {
+          $count: {},
+        },
+      },
     },
-    
   ];
-
 
   let result = await RequestModel.aggregate(lookup);
 
-  return result.sort((a,b)=> a._id < b._id ? -1 : 1)
+  return result.sort((a, b) => (a._id < b._id ? -1 : 1));
 }
 
 export async function getReqCountsByBudgetStatus() {
@@ -384,5 +481,5 @@ export async function getReqCountsByCategory() {
 
   let result = await RequestModel.aggregate(lookup);
 
-  return result.sort((a,b)=> a._id < b._id ? -1 : 1)
+  return result.sort((a, b) => (a._id < b._id ? -1 : 1));
 }

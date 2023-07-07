@@ -39,6 +39,7 @@ import { send } from "../utils/sendEmailNode";
 export const requetsRouter = Router();
 
 requetsRouter.get("/", async (req, res) => {
+
   res.send(await getAllRequests());
 });
 
@@ -63,10 +64,15 @@ requetsRouter.get("/countsByBudgetStatus", async (req, res) => {
 });
 
 requetsRouter.get("/byStatus/:status/:id", async (req, res) => {
+  // console.log('Requester',req.session.user)
+  let user = await UserModel.findById(req?.session?.user?.user)
+  let permissions = user?.permissions;
+  
+  
   let { status,id } = req.params;
   status === "all"
-    ? res.send(await getAllRequestsByCreator(id))
-    : res.send(await getAllRequestsByStatus(status,id));
+    ? res.send(await getAllRequestsByCreator(id, user, permissions))
+    : res.send(await getAllRequestsByStatus(status,id, user, permissions));
 });
 
 requetsRouter.get("/byCreator/:createdBy", async (req, res) => {

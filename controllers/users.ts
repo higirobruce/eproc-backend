@@ -29,6 +29,21 @@ export async function getAllUsers() {
   }
 }
 
+export async function getUser(id: string) {
+  
+  try {
+    let users = await UserModel.findById(id)
+
+    return users;
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
+
 export async function getAllVendors() {
   try {
     let pipeline = [
