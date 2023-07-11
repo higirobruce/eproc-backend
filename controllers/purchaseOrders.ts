@@ -103,6 +103,16 @@ export async function getPOById(id: String) {
   return pos;
 }
 
+export async function getAllPOsByStatus(status: string) {
+  let query = status == 'signed' ? 
+  {$or: [{status}, {status: 'started'}]} :
+  {status: { $in: status}};
+
+  let pos = await PurchaseOrderModel.find(query);
+
+  return pos;
+}
+
 export async function getPOByRequestId(requestId: String) {
   let pos = await PurchaseOrderModel.find({ request: requestId })
     .populate("tender")
