@@ -64,6 +64,11 @@ exports.userRouter.get("/internal/byStatus/:status", (req, res) => __awaiter(voi
     else
         res.send(yield (0, users_2.getAllInternalUsersByStatus)(status));
 }));
+exports.userRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { id } = req.params;
+    console.warn('Errror', id);
+    res.send(yield (0, users_2.getUser)(id));
+}));
 exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { userType, email, telephone, experienceDurationInYears, experienceDurationInMonths, webSite, status, password, createdOn, createdBy, rating, tin, companyName, notes, department, contactPersonNames, title, hqAddress, country, passportNid, services, permissions, rdbCertId, vatCertId, firstName, lastName, tempEmail, tempPassword, } = req.body;
     let password_new = userType == "VENDOR" ? password : (0, users_3.generatePassword)(8);
@@ -84,7 +89,9 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
         let { email, password } = req.body;
         let user = yield (0, users_2.getUserByEmail)(email);
         //genereate JWT
-        let accessToken = jsonwebtoken_1.default.sign({ email: email, user: user === null || user === void 0 ? void 0 : user._id }, exports.SALT);
+        let accessToken = jsonwebtoken_1.default.sign({ email: email, user: user === null || user === void 0 ? void 0 : user._id }, exports.SALT, {
+            expiresIn: "8h", // expires in 24 hours
+        });
         if (user) {
             logger_1.logger.log({
                 level: "info",
@@ -94,7 +101,7 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
                 allowed: (0, users_3.validPassword)(password, user.password) ||
                     (0, users_3.validPassword)(password, user.tempPassword),
                 user: user,
-                token: accessToken
+                token: accessToken,
             });
         }
         else {
@@ -117,10 +124,18 @@ exports.userRouter.post("/approve/:id", (req, res) => __awaiter(void 0, void 0, 
     let { id } = req.params;
     let { approvedBy, avgRate } = req.body;
     let result = yield (0, users_2.approveUser)(id);
+    logger_1.logger.log({
+        level: "info",
+        message: `Approval of User ${id} successfully done`,
+    });
     res.send(result).status(201);
 }));
 exports.userRouter.post("/decline/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
+    logger_1.logger.log({
+        level: "info",
+        message: `Declining of User ${id} successfully done`,
+    });
     res.send(yield (0, users_2.declineUser)(id));
 }));
 exports.userRouter.post("/ban/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -134,7 +149,12 @@ exports.userRouter.post("/activate/:id", (req, res) => __awaiter(void 0, void 0,
 exports.userRouter.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     let { newUser } = req.body;
-    res.send(yield (0, users_2.updateUser)(id, newUser));
+    let updates = yield (0, users_2.updateUser)(id, newUser);
+    logger_1.logger.log({
+        level: "info",
+        message: `Update of User ${newUser} successfully done`,
+    });
+    res.send(updates);
 }));
 exports.userRouter.put("/updatePassword/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;

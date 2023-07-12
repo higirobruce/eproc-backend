@@ -32,7 +32,7 @@ export async function getAllUsers() {
 export async function getUser(id: string) {
   
   try {
-    let users = await UserModel.findById(id)
+    let users = await UserModel.findOne({_id:id})
 
     return users;
   } catch (err) {
