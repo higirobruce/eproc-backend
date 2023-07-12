@@ -1,5 +1,6 @@
 /.history/
 /node_modules/
-/dist
-/dist
+/dist/
 
+.DS_Store
+*.log
