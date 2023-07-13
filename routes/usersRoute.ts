@@ -89,7 +89,6 @@ userRouter.get("/internal/byStatus/:status", async (req, res) => {
 userRouter.get("/:id", async (req, res) => {
 
   let { id } = req.params;
-  console.warn('Errror', id)
   res.send(await getUser(id));
 });
 

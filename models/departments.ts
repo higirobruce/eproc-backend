@@ -13,6 +13,6 @@ export const DepartmentSchema = new Schema<iDepartment>({
         type: String, unique: true,
         dropDups: true,
     }
-})
+},{timestamps: true})
 
 export const DepartmentModel = model<iDepartment>('Department', DepartmentSchema);

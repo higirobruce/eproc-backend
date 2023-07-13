@@ -94,7 +94,7 @@ export const UserSchema = new Schema<IUserDocument>({
   tempPassword:{
     type: String
   }
-});
+},{timestamps: true});
 
 
 // Method to set salt and hash the password for a user

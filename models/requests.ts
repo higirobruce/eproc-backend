@@ -58,6 +58,6 @@ export const RequestSchema = new Schema<IRequestDocument>({
   sourcingMethod: {
     type: String,
   },
-});
+}, {timestamps: true});
 
 export const RequestModel = model<IRequestDocument>("Request", RequestSchema);
