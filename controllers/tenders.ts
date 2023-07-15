@@ -154,11 +154,22 @@ export async function saveTender(tender: Tender) {
   let request = tender.purchaseRequest;
   let category = (await RequestModel.findById(request))?.serviceCategory;
 
-  //Send notifications to vendors in the tender's caterogry
-  let vendors = await UserModel.find({
-    services: { $elemMatch: { $eq: category } },
-    status: { $eq: "approved" },
-  });
+  console.log('Category ', category)
+
+  // //Send notifications to vendors in the tender's caterogry
+  let vendors;
+  
+  if(category == 'Others') {
+    vendors = await UserModel.find({
+      status: { $eq: "approved" },
+    });
+  } else {
+    vendors = await UserModel.find({
+      services: { $elemMatch: { $eq: category } },
+      status: { $eq: "approved" },
+    });
+  }
+  
   let vendorEmails = vendors?.map((v) => {
     return v?.email;
   });
