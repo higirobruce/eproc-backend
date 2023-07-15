@@ -76,7 +76,12 @@ export async function getAllRequestsByCreator(
         { createdBy: user?._id },
         {
           status: {
-            $in: ["approved (hod)", "approved (pm)", "approved", "approved (fd)"],
+            $in: [
+              "approved (hod)",
+              "approved (pm)",
+              "approved",
+              "approved (fd)",
+            ],
           },
         },
         { status: { $in: ["pending"] }, level1Approver: user?._id },
@@ -150,7 +155,12 @@ export async function getAllRequestsByStatus(
         { createdBy: id },
         {
           status: {
-            $in: ["approved (hod)", "approved (pm)", "approved", "approved (fd)"],
+            $in: [
+              "approved (hod)",
+              "approved (pm)",
+              "approved",
+              "approved (fd)",
+            ],
             $nin: ["withdrawn"],
           },
         },
@@ -350,6 +360,10 @@ export async function updateRequestSourcingMethod(
 }
 
 export async function updateRequest(id: String, update: Request) {
+  if (update.status === "pending") {
+    update.reasonForRejection = "";
+    update.declinedBy = "";
+  }
   try {
     let newRequest = await RequestModel.findByIdAndUpdate(id, update, {
       new: true,
