@@ -40,6 +40,6 @@ export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
     rateComment:{
         type: String
     }
-})
+},{timestamps: true})
 
 export const PurchaseOrderModel = model<IPurchaseOrderDocument>('PurchaseOrder', PurchaseOrderSchema);

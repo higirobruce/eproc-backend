@@ -38,6 +38,6 @@ export const Contract = new Schema<IContractDocument>({
   reqAttachmentDocId: {
     type: String,
   },
-});
+},{timestamps: true});
 
 export const ContractModel = model<IContractDocument>("Contract", Contract);

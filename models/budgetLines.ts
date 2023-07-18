@@ -8,6 +8,6 @@ export const BudgetLinesSchema = new Schema<IBudgetLines>({
         type: String
     },
     subLines: []
-})
+},{timestamps: true})
 
 export const BudgetLineModel = model<IBudgetLines>('BudgetLine', BudgetLinesSchema);
