@@ -51,11 +51,45 @@ function getRequestById(id) {
     });
 }
 exports.getRequestById = getRequestById;
-function getAllRequestsByCreator(createdBy) {
+function getAllRequestsByCreator(createdBy, user, permissions) {
     return __awaiter(this, void 0, void 0, function* () {
+        /*
+          if pm
+          query all
+      
+          if hof
+          query for all approved (hod), for created by me, where level 1 approver is me, not pending
+      
+      
+          if hod
+          query created by me, and where level 1 approver is me
+      
+      
+          if normal user
+          query for those created by me regardless of the status
+      
+          */
         let query = {};
         if (createdBy && createdBy !== "null")
             query = { createdBy, status: { $ne: "withdrawn" } };
+        if ((permissions === null || permissions === void 0 ? void 0 : permissions.canApproveAsHod) || (permissions === null || permissions === void 0 ? void 0 : permissions.canApproveAsPM)) {
+            query = Object.assign(Object.assign({}, query), { $or: [{ level1Approver: user === null || user === void 0 ? void 0 : user._id }, { createdBy: user === null || user === void 0 ? void 0 : user._id }] });
+        }
+        if ((permissions === null || permissions === void 0 ? void 0 : permissions.canApproveAsHof) || (permissions === null || permissions === void 0 ? void 0 : permissions.canApproveAsPM))
+            query = Object.assign(Object.assign({}, query), { $or: [
+                    { createdBy: user === null || user === void 0 ? void 0 : user._id },
+                    {
+                        status: {
+                            $in: [
+                                "approved (hod)",
+                                "approved (pm)",
+                                "approved",
+                                "approved (fd)",
+                            ],
+                        },
+                    },
+                    { status: { $in: ["pending"] }, level1Approver: user === null || user === void 0 ? void 0 : user._id },
+                ] });
         let reqs = yield requests_1.RequestModel.find(query)
             .populate("createdBy")
             .populate("level1Approver")
@@ -68,10 +102,27 @@ function getAllRequestsByCreator(createdBy) {
         })
             .populate("budgetLine");
         return reqs;
+        // return permissions?.canApproveAsPM
+        //   ? reqs
+        //   : permissions?.canApproveAsHof
+        //   ? reqs.filter(
+        //       (item) =>
+        //         item?.createdBy?._id == user?._id ||
+        //         item?.status == "approved (hod)" ||
+        //         item?.status == "appoved (pm)" ||
+        //         item?.status == "approved"
+        //     )
+        //   : permissions?.canApproveAsHod
+        //   ? reqs.filter(
+        //       (item) =>
+        //         item?.createdBy?._id == user?._id ||
+        //         item?.level1Approver?._id == user?._id
+        //     )
+        //   : reqs.filter((item) => item?.createdBy?._id == user?._id);
     });
 }
 exports.getAllRequestsByCreator = getAllRequestsByCreator;
-function getAllRequestsByStatus(status, id) {
+function getAllRequestsByStatus(status, id, permissions, user) {
     return __awaiter(this, void 0, void 0, function* () {
         let query = status === "pending"
             ? {
@@ -87,6 +138,25 @@ function getAllRequestsByStatus(status, id) {
             : { status };
         if (id && id !== "null")
             query = Object.assign(Object.assign({}, query), { createdBy: id });
+        if ((permissions === null || permissions === void 0 ? void 0 : permissions.canApproveAsHod) || (permissions === null || permissions === void 0 ? void 0 : permissions.canApproveAsPM)) {
+            query = Object.assign(Object.assign({}, query), { $or: [{ level1Approver: id }, { createdBy: id }] });
+        }
+        if ((permissions === null || permissions === void 0 ? void 0 : permissions.canApproveAsHof) || (permissions === null || permissions === void 0 ? void 0 : permissions.canApproveAsPM))
+            query = Object.assign(Object.assign({}, query), { $or: [
+                    { createdBy: id },
+                    {
+                        status: {
+                            $in: [
+                                "approved (hod)",
+                                "approved (pm)",
+                                "approved",
+                                "approved (fd)",
+                            ],
+                            $nin: ["withdrawn"],
+                        },
+                    },
+                    { status: { $in: ["pending"] }, level1Approver: id },
+                ] });
         let reqs = yield requests_1.RequestModel.find(query)
             .populate("createdBy")
             .populate("level1Approver")
@@ -235,10 +305,15 @@ function updateRequestSourcingMethod(id, sourcingMethod) {
 exports.updateRequestSourcingMethod = updateRequestSourcingMethod;
 function updateRequest(id, update) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (update.status === "pending") {
+            update.reasonForRejection = "";
+            update.declinedBy = "";
+        }
         try {
             let newRequest = yield requests_1.RequestModel.findByIdAndUpdate(id, update, {
                 new: true,
-            }).populate("createdBy")
+            })
+                .populate("createdBy")
                 .populate("level1Approver")
                 .populate({
                 path: "createdBy",
@@ -302,7 +377,7 @@ function getReqCountsByDepartment() {
             },
         ];
         let result = yield requests_1.RequestModel.aggregate(lookup);
-        return result.sort((a, b) => a._id < b._id ? -1 : 1);
+        return result.sort((a, b) => (a._id < b._id ? -1 : 1));
     });
 }
 exports.getReqCountsByDepartment = getReqCountsByDepartment;
@@ -310,16 +385,16 @@ function getReqCountsByStatus() {
     return __awaiter(this, void 0, void 0, function* () {
         let lookup = [
             {
-                '$group': {
-                    '_id': '$status',
-                    'count': {
-                        '$count': {}
-                    }
-                }
+                $group: {
+                    _id: "$status",
+                    count: {
+                        $count: {},
+                    },
+                },
             },
         ];
         let result = yield requests_1.RequestModel.aggregate(lookup);
-        return result.sort((a, b) => a._id < b._id ? -1 : 1);
+        return result.sort((a, b) => (a._id < b._id ? -1 : 1));
     });
 }
 exports.getReqCountsByStatus = getReqCountsByStatus;
@@ -368,7 +443,7 @@ function getReqCountsByCategory() {
             },
         ];
         let result = yield requests_1.RequestModel.aggregate(lookup);
-        return result.sort((a, b) => a._id < b._id ? -1 : 1);
+        return result.sort((a, b) => (a._id < b._id ? -1 : 1));
     });
 }
 exports.getReqCountsByCategory = getReqCountsByCategory;

@@ -66,7 +66,6 @@ exports.userRouter.get("/internal/byStatus/:status", (req, res) => __awaiter(voi
 }));
 exports.userRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
-    console.warn('Errror', id);
     res.send(yield (0, users_2.getUser)(id));
 }));
 exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

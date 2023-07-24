@@ -41,8 +41,6 @@ userRouter.get("/", async (req, res) => {
 });
 
 
-
-
 userRouter.get("/vendors", async (req, res) => {
   res.send(await getAllVendors());
 });
