@@ -82,7 +82,6 @@ let ensureUserAuthorized = (req, res, next) => {
         else {
             let user = jsonwebtoken_1.default.verify(token, usersRoute_1.SALT);
             req.session.user = user;
-            console.log(user);
             next();
         }
     }

@@ -387,6 +387,7 @@ export async function updateRequest(id: String, update: Request) {
   }
 }
 
+
 export async function getReqCountsByDepartment() {
   let lookup = [
     {
@@ -444,6 +445,7 @@ export async function getReqCountsByStatus() {
       },
     },
   ];
+  
 
   let result = await RequestModel.aggregate(lookup);
 

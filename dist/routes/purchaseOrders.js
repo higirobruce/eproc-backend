@@ -33,7 +33,14 @@ exports.poRouter.get("/byRequestId/:requestId", (req, res) => __awaiter(void 0, 
 }));
 exports.poRouter.get("/byVendorId/:vendorId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { vendorId } = req.params;
+    console.log(vendorId);
     res.send(yield (0, purchaseOrders_2.getPOByVendorId)(vendorId));
+}));
+exports.poRouter.get("/byStatus/:status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { status } = req.params;
+    status === "all"
+        ? res.send(yield (0, purchaseOrders_2.getAllPOs)())
+        : res.send(yield (0, purchaseOrders_2.getAllPOsByStatus)(status));
 }));
 exports.poRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;

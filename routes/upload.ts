@@ -2,6 +2,7 @@ import multer, { diskStorage } from "multer";
 import { Router } from "express";
 import fs from "fs";
 import { randomUUID } from "crypto";
+import path from "path";
 
 export let uploadRouter = Router();
 
@@ -13,8 +14,8 @@ uploadRouter.post("/termsOfReference/", (req, res) => {
 
     filename: function (req, file, cb) {
       // cb(null, req.query.id+'.pdf');
-      let fileName = randomUUID()
-      cb(null, fileName+'.pdf');
+      let fileName = randomUUID();
+      cb(null, fileName + ".pdf");
     },
   });
 
@@ -38,14 +39,12 @@ uploadRouter.post("/rdbCerts/", (req, res) => {
       cb(null, "dist/public/rdbCerts");
     },
     filename: function (req, file, cb) {
-      
-      cb(null, req.query.id+'.pdf');
+      cb(null, req.query.id + ".pdf");
     },
   });
 
   var upload = multer({ storage: storage }).single("file");
   upload(req, res, function (err) {
-    
     if (err instanceof multer.MulterError) {
       console.log(err);
       return res.status(500);
@@ -54,7 +53,7 @@ uploadRouter.post("/rdbCerts/", (req, res) => {
       return res.status(500);
     }
 
-    console.log(req.file)
+    console.log(req.file);
     return res.status(200).send(req.file);
   });
 });
@@ -65,7 +64,7 @@ uploadRouter.post("/vatCerts/", (req, res) => {
       cb(null, "dist/public/vatCerts");
     },
     filename: function (req, file, cb) {
-      cb(null, req.query.id+'.pdf');
+      cb(null, req.query.id + ".pdf");
     },
   });
 
@@ -89,7 +88,7 @@ uploadRouter.post("/tenderDocs/", (req, res) => {
       cb(null, "dist/public/tenderDocs");
     },
     filename: function (req, file, cb) {
-      cb(null, req.query.id+'.pdf');
+      cb(null, req.query.id + ".pdf");
     },
   });
 
@@ -113,7 +112,7 @@ uploadRouter.post("/bidDocs/", (req, res) => {
       cb(null, "dist/public/bidDocs");
     },
     filename: function (req, file, cb) {
-      cb(null, req.query.id+'.pdf');
+      cb(null, req.query.id + ".pdf");
     },
   });
 
@@ -137,7 +136,7 @@ uploadRouter.post("/evaluationReports/", (req, res) => {
       cb(null, "dist/public/evaluationReports");
     },
     filename: function (req, file, cb) {
-      cb(null, req.query.id+'.pdf');
+      cb(null, req.query.id + ".pdf");
     },
   });
 
@@ -161,7 +160,7 @@ uploadRouter.post("/reqAttachments/", (req, res) => {
       cb(null, "dist/public/reqAttachments");
     },
     filename: function (req, file, cb) {
-      cb(null, req.query.id+'.pdf');
+      cb(null, req.query.id + ".pdf");
     },
   });
 
@@ -180,15 +179,13 @@ uploadRouter.post("/reqAttachments/", (req, res) => {
 });
 
 uploadRouter.get("/:path", (req, res) => {
-  let {path} = req.params
+  let { path } = req.params;
 
   fs.stat(`public/termsOfReference/${path}`, (err, stats) => {
-    if(err) res.send({err})
-    if(stats) res.send({stats})
+    if (err) res.send({ err });
+    if (stats) res.send({ stats });
   });
 });
-
-
 
 uploadRouter.post("/paymentRequests/", (req, res) => {
   var storage = multer.diskStorage({
@@ -198,12 +195,10 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
 
     filename: function (req, file, cb) {
       // cb(null, req.query.id+'.pdf');
-      let fileName = randomUUID()
-      cb(null, fileName+'.pdf');
+      let fileName = randomUUID();
+      cb(null, fileName + ".pdf");
     },
   });
-
-
 
   var upload = multer({ storage: storage }).array("files[]");
   // var upload = multer({ storage: storage }).array('file',100)
@@ -216,8 +211,19 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
       return res.status(500);
     }
 
-    console.log(req.files)
+    console.log(req.files);
 
     return res.status(200).send(req.files);
   });
+});
+
+uploadRouter.get("/check/file/:folder/:name", function (req, res, next) {
+  var folder = req.params.folder;
+  let filePath = path.join(__dirname, "public/", folder);
+  console.log(filePath)
+  if (fs.existsSync(filePath)) {
+    res.send(true);
+  } else {
+    res.send(false);
+  }
 });

@@ -13,6 +13,7 @@ exports.requetsRouter = void 0;
 const express_1 = require("express");
 const requests_1 = require("../classrepo/requests");
 const requests_2 = require("../controllers/requests");
+const users_1 = require("../models/users");
 const requests_3 = require("../services/requests");
 exports.requetsRouter = (0, express_1.Router)();
 exports.requetsRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,10 +33,14 @@ exports.requetsRouter.get("/countsByBudgetStatus", (req, res) => __awaiter(void 
     res.send(yield (0, requests_2.getReqCountsByBudgetStatus)());
 }));
 exports.requetsRouter.get("/byStatus/:status/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    // console.log('Requester',req.session.user)
+    let user = yield users_1.UserModel.findById((_b = (_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.user);
+    let permissions = user === null || user === void 0 ? void 0 : user.permissions;
     let { status, id } = req.params;
     status === "all"
-        ? res.send(yield (0, requests_2.getAllRequestsByCreator)(id))
-        : res.send(yield (0, requests_2.getAllRequestsByStatus)(status, id));
+        ? res.send(yield (0, requests_2.getAllRequestsByCreator)(id, user, permissions))
+        : res.send(yield (0, requests_2.getAllRequestsByStatus)(status, id, user, permissions));
 }));
 exports.requetsRouter.get("/byCreator/:createdBy", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { createdBy } = req.params;

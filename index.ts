@@ -1,3 +1,4 @@
+import fs from 'fs';
 import express, { Express, NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import {
@@ -147,6 +148,18 @@ app.get("/file/:folder/:name", function (req, res, next) {
     } else {
     }
   });
+});
+
+app.get("/check/file/:folder/:name", function (req, res, next) {
+  var folder = req.params.folder;
+  var fileName = req.params.name
+  let filePath = path.join(__dirname, "public/", folder, `/${fileName}`);
+  console.log(filePath)
+  if (fs.existsSync(filePath)) {
+    res.send(true);
+  } else {
+    res.send(false);
+  }
 });
 
 let server = app.listen(PORT, async () => {

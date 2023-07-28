@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveBankDetails = exports.setTempFields = exports.resetPassword = exports.updateMyPassword = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getVendorByCompanyName = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsersByStatus = exports.getAllInternalUsers = exports.getInternalUserById = exports.getVendorById2 = exports.getAllLevel1Approvers = exports.getAllVendorsByStatus = exports.getVendorById = exports.getAllVendors = exports.getAllUsers = void 0;
+exports.saveBankDetails = exports.setTempFields = exports.resetPassword = exports.updateMyPassword = exports.updateUser = exports.activateUser = exports.banUser = exports.declineUser = exports.approveUser = exports.getVendorByCompanyName = exports.getUserByEmail = exports.saveUser = exports.getB1SeriesFromNames = exports.createSupplierinB1 = exports.getAllInternalUsersByStatus = exports.getAllInternalUsers = exports.getInternalUserById = exports.getVendorById2 = exports.getAllLevel1Approvers = exports.getAllVendorsByStatus = exports.getVendorById = exports.getAllVendors = exports.getUser = exports.getAllUsers = void 0;
 const users_1 = require("../models/users");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
 const series_1 = require("./series");
@@ -38,6 +38,21 @@ function getAllUsers() {
     });
 }
 exports.getAllUsers = getAllUsers;
+function getUser(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let users = yield users_1.UserModel.findById(id);
+            return users;
+        }
+        catch (err) {
+            return {
+                error: true,
+                errorMessage: `Error :${err}`,
+            };
+        }
+    });
+}
+exports.getUser = getUser;
 function getAllVendors() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

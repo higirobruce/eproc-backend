@@ -31,7 +31,7 @@ export async function getAllUsers() {
 
 export async function getUser(id: string) {
   try {
-    let users = await UserModel.findById({_id:id})
+    let users = await UserModel.findById(id)
 
     return users;
   } catch (err) {
