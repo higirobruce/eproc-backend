@@ -7,33 +7,31 @@ let localstorage = new LocalStorage("./scratch");
 let b1Router = Router();
 
 b1Router.get("/vatGroups", async (req, response) => {
-  await getVatGroups().then(res=>{
-    response.send(res)
-  })
+  await getVatGroups().then((res) => {
+    response.send(res);
+  });
 });
 
 b1Router.get("/fixedAssets", async (req, response) => {
-  await getFixedAssets().then(res=>{
-    response.send(res)
-  })
+  await getFixedAssets().then((res) => {
+    response.send(res);
+  });
 });
 
-b1Router.get('/businessPartner/:name', async (req,response)=>{
-  await getBusinessPartnerByName(req.params.name).then(res=>{
-    response.send(res.value)
-  })
-})
+b1Router.get("/businessPartner/:name", async (req, response) => {
+  await getBusinessPartnerByName(req.params.name).then((res) => {
+    response.send(res.value);
+  });
+});
 
-
-
-export function getVatGroups(){
+export function getVatGroups() {
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();
       let COOKIE = res.headers.get("set-cookie");
       localstorage.setItem("cookie", `${COOKIE}`);
       return fetch(
-       `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/VatGroups?$filter=Inactive eq 'tNO'&$select=Code,Name,Category`,
+        `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/VatGroups?$filter=Inactive eq 'tNO'&$select=Code,Name,Category`,
         {
           method: "GET",
           headers: {
@@ -41,46 +39,46 @@ export function getVatGroups(){
             Cookie: `${localstorage.getItem("cookie")}`,
           },
         }
-      ).then(res=>res.json())
-    }).catch(err=>{
-      return err
-      console.log(err)
+      ).then((res) => res.json());
     })
-   
+    .catch((err) => {
+      return err;
+      console.log(err);
+    });
 }
 
-export function getFixedAssets(){
+export function getFixedAssets() {
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();
       let COOKIE = res.headers.get("set-cookie");
       localstorage.setItem("cookie", `${COOKIE}`);
       return fetch(
-       `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Items?$filter= ItemType eq 'itFixedAssets' and CapitalizationDate eq null &$select=ItemCode,ItemName`,
+        `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/Items?$filter= ItemType eq 'itFixedAssets' and CapitalizationDate eq null &$select=ItemCode,ItemName`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             Cookie: `${localstorage.getItem("cookie")}`,
-            Prefer: 'odata.maxpagesize=1000'
+            Prefer: "odata.maxpagesize=1000",
           },
         }
-      ).then(res=>res.json())
-    }).catch(err=>{
-      return err
-      console.log(err)
+      ).then((res) => res.json());
     })
-   
+    .catch((err) => {
+      return err;
+      console.log(err);
+    });
 }
 
-export function getBusinessPartnerByName(CardName:String){
+export function getBusinessPartnerByName(CardName: String) {
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();
       let COOKIE = res.headers.get("set-cookie");
       localstorage.setItem("cookie", `${COOKIE}`);
       return fetch(
-       `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners?$select=CardName,CardCode&$filter=CardName eq '${CardName}'`,
+        `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners?$select=CardName,CardCode&$filter=CardName eq '${CardName}'`,
         {
           method: "GET",
           headers: {
@@ -88,12 +86,24 @@ export function getBusinessPartnerByName(CardName:String){
             Cookie: `${localstorage.getItem("cookie")}`,
           },
         }
-      ).then(res=>res.json())
-    }).catch(err=>{
-      return err
+      )
+        .then((res) => {
+          console.log(res.status)
+          if (res.status !== 200) {
+            return {error:true, message:"Could not fetch! Please check the bp name"}
+          } else {
+            return res.json();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
     })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
 }
-
-
 
 export default b1Router;

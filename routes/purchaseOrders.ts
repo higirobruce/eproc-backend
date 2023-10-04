@@ -13,7 +13,7 @@ import {
   updatePo,
   updatePOStatus,
   updateProgress,
-  getAllPOsByStatus
+  getAllPOsByStatus,
 } from "../controllers/purchaseOrders";
 import { getVendorByCompanyName, setTempFields } from "../controllers/users";
 import { getBusinessPartnerByName } from "../services/b1";
@@ -39,12 +39,11 @@ poRouter.get("/byRequestId/:requestId", async (req, res) => {
 
 poRouter.get("/byVendorId/:vendorId", async (req, res) => {
   let { vendorId } = req.params;
-  console.log(vendorId)
+  console.log(vendorId);
   res.send(await getPOByVendorId(vendorId));
 });
 
 poRouter.get("/byStatus/:status", async (req, res) => {
-  
   let { status } = req.params;
   status === "all"
     ? res.send(await getAllPOs())
@@ -81,88 +80,93 @@ poRouter.post("/", async (req, response) => {
   )
     .then(async (res) => {
       let bp = res.value;
-      if (bp?.length >= 1) {
-        CardCode = bp[0].CardCode;
+      if (res.error) {
+        response.status(500).send({
+          error: {
+            message: { value: "Could not fetch the partner's info!" },
+          },
+        });
+      } else {
+        if (bp?.length >= 1) {
+          CardCode = bp[0].CardCode;
 
-        let b1Response_assets = B1Data_Assets
-          ? await savePOInB1(
-              CardCode,
-              B1Data_Assets.DocType,
-              B1Data_Assets.DocumentLines
-            )
-          : null;
+          let b1Response_assets = B1Data_Assets
+            ? await savePOInB1(
+                CardCode,
+                B1Data_Assets.DocType,
+                B1Data_Assets.DocumentLines
+              )
+            : null;
 
-        let b1Response_nonAssets = B1Data_NonAssets
-          ? await savePOInB1(
-              CardCode,
-              B1Data_NonAssets.DocType,
-              B1Data_NonAssets.DocumentLines
-            )
-          : null;
+          let b1Response_nonAssets = B1Data_NonAssets
+            ? await savePOInB1(
+                CardCode,
+                B1Data_NonAssets.DocType,
+                B1Data_NonAssets.DocumentLines
+              )
+            : null;
 
-        if (b1Response_assets?.error || b1Response_nonAssets?.error) {
-          response
-            .status(500)
-            .send(b1Response_assets || b1Response_nonAssets);
-        } else {
-          let number = await generatePONumber();
-          let refs = [];
-          b1Response_assets && refs.push(b1Response_assets.DocNum);
-          b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
+          if (b1Response_assets?.error || b1Response_nonAssets?.error) {
+            response
+              .status(500)
+              .send(b1Response_assets || b1Response_nonAssets);
+          } else {
+            let number = await generatePONumber();
+            let refs = [];
+            b1Response_assets && refs.push(b1Response_assets.DocNum);
+            b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
 
-          let poToCreate = new PurchaseOrder(
-            number,
-            vendor,
-            tender,
-            request,
-            createdBy,
-            sections,
-            items,
-            status,
-            deliveryProgress,
-            signatories,
-            reqAttachmentDocId,
-            refs,
-            rate,
-            rateComment
-          );
-
-          let createdPO = await savePO(poToCreate);
-
-
-
-          if (createdPO) {
-
-            send(
-              "from",
-              signatories[0]?.email,
-              "Your Signature is needed",
-              JSON.stringify({ docId: createdPO?._id, docType: 'purchase-orders' }),
-              "",
-              "internalSignature"
+            let poToCreate = new PurchaseOrder(
+              number,
+              vendor,
+              tender,
+              request,
+              createdBy,
+              sections,
+              items,
+              status,
+              deliveryProgress,
+              signatories,
+              reqAttachmentDocId,
+              refs,
+              rate,
+              rateComment
             );
 
+            let createdPO = await savePO(poToCreate);
 
-            if (refs?.length >= 1) {
-              refs.forEach(async (r) => {
-                await updateB1Po(r, {
-                  Comments: `Refer to PO number ${createdPO?.number} in the e-procurement tool.`,
+            if (createdPO) {
+              send(
+                "from",
+                signatories[0]?.email,
+                "Your Signature is needed",
+                JSON.stringify({
+                  docId: createdPO?._id,
+                  docType: "purchase-orders",
+                }),
+                "",
+                "internalSignature"
+              );
+
+              if (refs?.length >= 1) {
+                refs.forEach(async (r) => {
+                  await updateB1Po(r, {
+                    Comments: `Refer to PO number ${createdPO?.number} in the e-procurement tool.`,
+                  });
                 });
-              });
+              }
             }
-          }
 
-          response.status(201).send({ createdTender: createdPO });
+            response.status(201).send({ createdTender: createdPO });
+          }
+        } else {
+          response
+            .status(500)
+            .send({ error: true, message: "Business Partner not found!" });
         }
-      } else {
-        response
-          .status(500)
-          .send({ error: true, message: "Business Partner not found!" });
       }
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => {});
 });
 
 poRouter.put("/status/:id", async (req, res) => {
@@ -188,7 +192,7 @@ poRouter.put("/:id", async (req, res) => {
     newPo?.signatories.length >= signingIndex + 2
       ? newPo.signatories[signingIndex + 1]?.email
       : null;
-  
+
   if (pending) {
     newPo.status = "pending-signature";
   }
@@ -207,7 +211,12 @@ poRouter.put("/:id", async (req, res) => {
       "from",
       _vendor.tempEmail,
       "Your Purchase Order has been signed",
-      JSON.stringify({ email: _vendor.tempEmail, password: tempPass, docType: 'purchase-orders', docId: newPo?._id }),
+      JSON.stringify({
+        email: _vendor.tempEmail,
+        password: tempPass,
+        docType: "purchase-orders",
+        docId: newPo?._id,
+      }),
       "",
       "externalSignature"
     );
@@ -218,13 +227,12 @@ poRouter.put("/:id", async (req, res) => {
 
   let updated = await updatePo(id, newPo);
 
-
-  if(nextSignatory && !paritallySigned){
+  if (nextSignatory && !paritallySigned) {
     send(
       "from",
       nextSignatory,
       "Your Signature is needed",
-      JSON.stringify({ docId: newPo?._id, docType: 'purchase-orders' }),
+      JSON.stringify({ docId: newPo?._id, docType: "purchase-orders" }),
       "",
       "internalSignature"
     );
