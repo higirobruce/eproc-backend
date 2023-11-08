@@ -7,5 +7,5 @@ exports.ServiceCategory = new mongoose_1.Schema({
         type: String, unique: true,
         dropDups: true,
     }
-});
+}, { timestamps: true });
 exports.ServiceCategoryModel = (0, mongoose_1.model)('ServiceCategory', exports.ServiceCategory);

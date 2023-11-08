@@ -53,7 +53,7 @@ exports.paymentRequestRouter.put("/:id", (req, res) => __awaiter(void 0, void 0,
     if (updates.notifyApprover && updates.approver) {
         //send notification
         let approver = yield users_1.UserModel.findById(updates.approver);
-        (0, sendEmailNode_1.send)('from', approver === null || approver === void 0 ? void 0 : approver.email, "Your Approval is needed", JSON.stringify(updatedRequest), 'html', 'approval');
+        (0, sendEmailNode_1.send)('from', approver === null || approver === void 0 ? void 0 : approver.email, "Your Approval is needed", JSON.stringify(updatedRequest), 'html', 'payment-request-approval');
     }
     res.send(updatedRequest);
 }));

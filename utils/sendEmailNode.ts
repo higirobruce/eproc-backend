@@ -637,7 +637,7 @@ export async function send(
   html: string,
   type: string
 ) {
-  // console.log("sent");
+  console.log("sending...");
   try {
     if (type === "newTender")
       return await transporter.sendMail({
@@ -751,8 +751,19 @@ export async function send(
 
 //test email
 export async function trySend() {
+  const transporter = nodemailer.createTransport({
+    host: 'imparage.aos.rw',
+    port: 465,
+    secure: true,
+    auth: {
+      user: "manifesto2429@manifesto24-29.rw",//process.env.IRMB_SENDER_EMAIL,
+      pass: "niccyh-qUhtah-nefqy4",//process.env.IRMB_SENDER_PASSWORD,
+    },
+    from:"manifesto2429@manifesto24-29.rw",// process.env.IRMB_SENDER_EMAIL,
+  });
+
   return await transporter.sendMail({
-    from: "e-procurement@irembo.com", //process.env.IRMB_SENDER_EMAIL,
+    from: "manifesto2429@manifesto24-29.rw", //process.env.IRMB_SENDER_EMAIL,
     to: "higirobru@gmail.com",
     subject: "Test",
     text: "It is a test",

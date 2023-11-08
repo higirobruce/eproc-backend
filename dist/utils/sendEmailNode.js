@@ -188,6 +188,45 @@ const prApproval = (pr) => `<mjml>
 
 </mj-body>
 </mjml>`;
+const paymentRequestApproval = (pr) => `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your Approval is needed</mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+        Hi there, <br />
+        I hope that you are well. <br/><br/>
+        I am reaching out to inform you that a new payment request (Req Number ${pr === null || pr === void 0 ? void 0 : pr.number}) has been submitted for your approval.<br/><br/>
+        To review the request, please proceed to the e-procurement application by clicking the button below.<br>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/system/payment-requests/${pr === null || pr === void 0 ? void 0 : pr._id}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
 const prRejection = (pr) => `<mjml>
 <mj-body>
   <!-- Company Header -->
@@ -590,12 +629,12 @@ const externalSignaturePO = (cred) => {
 // send email
 function send(from, to, subject, text, html, type) {
     return __awaiter(this, void 0, void 0, function* () {
-        // console.log("sent");
+        console.log("sending...");
         try {
             if (type === "newTender")
                 return yield transporter.sendMail({
                     from: process.env.IRMB_SENDER_EMAIL,
-                    to: to,
+                    bcc: to,
                     subject,
                     text,
                     html: mjml(newTender(JSON.parse(text))).html,
@@ -603,7 +642,7 @@ function send(from, to, subject, text, html, type) {
             else if (type === "bidEvaluationInvite")
                 return yield transporter.sendMail({
                     from: process.env.IRMB_SENDER_EMAIL,
-                    to,
+                    bcc: to,
                     subject,
                     text,
                     html: mjml(invitation(JSON.parse(text))).html,
@@ -623,6 +662,14 @@ function send(from, to, subject, text, html, type) {
                     subject,
                     text,
                     html: mjml(prApproval(JSON.parse(text))).html,
+                });
+            else if (type === "payment-request-approval")
+                return yield transporter.sendMail({
+                    from: process.env.IRMB_SENDER_EMAIL,
+                    to,
+                    subject,
+                    text,
+                    html: mjml(paymentRequestApproval(JSON.parse(text))).html,
                 });
             else if (type === "rejection")
                 return yield transporter.sendMail({
@@ -659,7 +706,7 @@ function send(from, to, subject, text, html, type) {
             else if (type === "preGoLive")
                 return yield transporter.sendMail({
                     from: process.env.IRMB_SENDER_EMAIL,
-                    to,
+                    bcc: to,
                     subject,
                     text,
                     html: mjml(preGoLive(JSON.parse(text))).html,
@@ -698,8 +745,18 @@ exports.send = send;
 //test email
 function trySend() {
     return __awaiter(this, void 0, void 0, function* () {
+        const transporter = nodemailer.createTransport({
+            host: 'imparage.aos.rw',
+            port: 465,
+            secure: true,
+            auth: {
+                user: "manifesto2429@manifesto24-29.rw",
+                pass: "niccyh-qUhtah-nefqy4", //process.env.IRMB_SENDER_PASSWORD,
+            },
+            from: "manifesto2429@manifesto24-29.rw", // process.env.IRMB_SENDER_EMAIL,
+        });
         return yield transporter.sendMail({
-            from: "e-procurement@irembo.com",
+            from: "manifesto2429@manifesto24-29.rw",
             to: "higirobru@gmail.com",
             subject: "Test",
             text: "It is a test",

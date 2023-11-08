@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sapLogout = exports.sapLogin = exports.COOKIE = exports.SESSION_ID = void 0;
 const node_localstorage_1 = require("node-localstorage");
-let localstorage = new node_localstorage_1.LocalStorage("./scratch");
+let localstorage = new node_localstorage_1.LocalStorage("./dist");
 var config = {
     CompanyDB: process.env.IRMB_B1_COMPANY_DB,
     UserName: process.env.IRMB_B1_USERNAME,

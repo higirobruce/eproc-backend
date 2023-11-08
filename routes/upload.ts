@@ -82,6 +82,7 @@ uploadRouter.post("/vatCerts/", (req, res) => {
   });
 });
 
+
 uploadRouter.post("/tenderDocs/", (req, res) => {
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -101,7 +102,6 @@ uploadRouter.post("/tenderDocs/", (req, res) => {
       console.log(err);
       return res.status(500);
     }
-
     return res.status(200).send(req.file);
   });
 });
@@ -178,6 +178,7 @@ uploadRouter.post("/reqAttachments/", (req, res) => {
   });
 });
 
+
 uploadRouter.get("/:path", (req, res) => {
   let { path } = req.params;
 
@@ -214,6 +215,30 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
     console.log(req.files);
 
     return res.status(200).send(req.files);
+  });
+});
+
+uploadRouter.post("/updatePaymentRequests/", (req, res) => {
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "dist/public/paymentRequests");
+    },
+    filename: function (req, file, cb) {
+      cb(null, req.query.id + ".pdf");
+    },
+  });
+  
+  console.log('fillles')
+  var upload = multer({ storage: storage }).single("file");
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      console.log(err);
+      return res.status(500);
+    } else if (err) {
+      console.log(err);
+      return res.status(500);
+    }
+    return res.status(200).send(req.file);
   });
 });
 

@@ -13,7 +13,7 @@ exports.getBusinessPartnerByName = exports.getFixedAssets = exports.getVatGroups
 const express_1 = require("express");
 const node_localstorage_1 = require("node-localstorage");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
-let localstorage = new node_localstorage_1.LocalStorage("./scratch");
+let localstorage = new node_localstorage_1.LocalStorage("./dist");
 let b1Router = (0, express_1.Router)();
 b1Router.get("/vatGroups", (req, response) => __awaiter(void 0, void 0, void 0, function* () {
     yield getVatGroups().then(res => {

@@ -51,5 +51,5 @@ exports.BidSubmissionSchema = new mongoose_1.Schema({
     bankAccountName: {
         type: String,
     },
-});
+}, { timestamps: true });
 exports.BidSubmissionModel = (0, mongoose_1.model)("BidSubmission", exports.BidSubmissionSchema);

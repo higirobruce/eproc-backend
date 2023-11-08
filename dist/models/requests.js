@@ -58,5 +58,5 @@ exports.RequestSchema = new mongoose_1.Schema({
     sourcingMethod: {
         type: String,
     },
-});
+}, { timestamps: true });
 exports.RequestModel = (0, mongoose_1.model)("Request", exports.RequestSchema);

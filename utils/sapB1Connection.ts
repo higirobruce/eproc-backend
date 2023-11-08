@@ -1,6 +1,6 @@
 import { LocalStorage } from "node-localstorage";
 
-let localstorage = new LocalStorage("./scratch");
+let localstorage = new LocalStorage("./dist");
 
 var config = {
   CompanyDB: process.env.IRMB_B1_COMPANY_DB,

@@ -11,7 +11,7 @@ import {
 import { send } from "../utils/sendEmailNode";
 import mongoose from "mongoose";
 
-let localstorage = new LocalStorage("./scratch");
+let localstorage = new LocalStorage("./dist");
 
 export async function getAllUsers() {
   
