@@ -88,7 +88,8 @@ poRouter.post("/", async (req, response) => {
           ? await savePOInB1(
               CardCode,
               B1Data_Assets.DocType,
-              B1Data_Assets.DocumentLines
+              B1Data_Assets.DocumentLines,
+              B1Data_Assets.DocCurrency
             )
           : null;
 
@@ -96,7 +97,8 @@ poRouter.post("/", async (req, response) => {
           ? await savePOInB1(
               CardCode,
               B1Data_NonAssets.DocType,
-              B1Data_NonAssets.DocumentLines
+              B1Data_NonAssets.DocumentLines,
+              B1Data_NonAssets.DocCurrency
             )
           : null;
 
