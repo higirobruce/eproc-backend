@@ -93,6 +93,9 @@ export const UserSchema = new Schema<IUserDocument>({
   },
   tempPassword:{
     type: String
+  },
+  sapCode:{
+    type: String
   }
 },{timestamps: true});
 

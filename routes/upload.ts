@@ -93,6 +93,7 @@ uploadRouter.post("/tenderDocs/", (req, res) => {
     },
   });
 
+  console.log('Tender doc')
   var upload = multer({ storage: storage }).single("file");
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {

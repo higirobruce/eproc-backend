@@ -14,7 +14,6 @@ import mongoose from "mongoose";
 let localstorage = new LocalStorage("./dist");
 
 export async function getAllUsers() {
-  
   try {
     let users = await UserModel.find()
       .populate("department")
@@ -31,7 +30,7 @@ export async function getAllUsers() {
 
 export async function getUser(id: string) {
   try {
-    let users = await UserModel.findById(id)
+    let users = await UserModel.findById(id);
 
     return users;
   } catch (err) {
@@ -41,7 +40,6 @@ export async function getUser(id: string) {
     };
   }
 }
-
 
 export async function getAllVendors() {
   try {
@@ -274,9 +272,7 @@ export async function getVendorById2(id: string) {
   }
 }
 
-
 export async function getInternalUserById(id: string) {
- 
   try {
     let users = await UserModel.findOne({
       _id: id,
@@ -321,38 +317,50 @@ export async function getAllInternalUsersByStatus(status: string) {
 export async function createSupplierinB1(
   CardName: String,
   CardType: String,
-  Series: any
+  Series: any,
+  tin: any,
+  phone: any,
+  email: any,
+  currency: any
 ) {
   let options = {
     // "CardCode": "SA0003",
     CardName,
     CardType,
     Series,
+    FederalTaxID: tin,
+    Phone1: phone,
+    Cellular: phone,
+    EmailAddress: email,
+    Currency: currency,
+    DebitorAccount: phone.indexOf("+250") !== -1 ? "2101030001" : "2101030002",
   };
   return sapLogin().then(async (res) => {
-
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
-    return fetch(`${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: `${localstorage.getItem("cookie")}`,
-      },
-      body: JSON.stringify(options),
-    })
+    return fetch(
+      `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `${localstorage.getItem("cookie")}`,
+        },
+        body: JSON.stringify(options),
+      }
+    )
       .then((res) => res.json())
       .then(async (res) => {
-        console.log(res)
-        if (res?.error && res?.error.code == 301) {
+        console.log(res);
+        if (res?.error) {
           console.log("Tried many times, we cant login");
           return false;
-        } else {
-          return true;
+        }  else {
+          return res;
         }
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         return false;
       });
   });
@@ -390,22 +398,33 @@ export async function getVendorByCompanyName(name: String) {
 }
 
 export async function approveUser(id: String) {
-
   try {
     let user = await UserModel.findById(id).populate("department");
     let name = user?.companyName;
+    let tin = user?.tin;
+    let phone = user?.telephone;
+    let email = user?.email;
+    let currency = "##";
 
-    if (user?.userType === "VENDOR" && user?.status === 'pending-approval') {
-      console.log(name)
+    if (user?.userType === "VENDOR" && user?.status === "pending-approval") {
+      console.log(name);
       let series = await getB1SeriesFromNames(name!);
 
-      let createdCode = await createSupplierinB1(name!, "cSupplier", series);
+      let createdCode = await createSupplierinB1(
+        name!,
+        "cSupplier",
+        series,
+        tin,
+        phone,
+        email,
+        currency
+      );
 
       if (createdCode) {
         user = await UserModel.findByIdAndUpdate(
           id,
           {
-            $set: { status: "approved" },
+            $set: { status: "approved", sapCode: createdCode?.value?.CardCode },
           },
           { $new: true }
         ).populate("department");
@@ -418,7 +437,6 @@ export async function approveUser(id: String) {
         message: createdCode ? "" : "Could not connect to SAP B1.",
       };
     } else {
-      
       user = await UserModel.findByIdAndUpdate(
         id,
         {

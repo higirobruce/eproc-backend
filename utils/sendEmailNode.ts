@@ -756,14 +756,14 @@ export async function trySend() {
     port: 465,
     secure: true,
     auth: {
-      user: "manifesto2429@manifesto24-29.rw",//process.env.IRMB_SENDER_EMAIL,
-      pass: "niccyh-qUhtah-nefqy4",//process.env.IRMB_SENDER_PASSWORD,
+      user: process.env.SENDER_EMAIL,
+      pass: process.env.SENDER_PASSWORD,
     },
-    from:"manifesto2429@manifesto24-29.rw",// process.env.IRMB_SENDER_EMAIL,
+    from: process.env.SENDER_EMAIL,
   });
 
   return await transporter.sendMail({
-    from: "manifesto2429@manifesto24-29.rw", //process.env.IRMB_SENDER_EMAIL,
+    from: process.env.SENDER_EMAIL,
     to: "higirobru@gmail.com",
     subject: "Test",
     text: "It is a test",

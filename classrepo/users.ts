@@ -32,6 +32,7 @@ export class User implements IUser {
   lastName: String;
   tempEmail: String;
   tempPassword: String;
+  sapCode: String;
 
   constructor(
     userType: UserType,
@@ -62,7 +63,8 @@ export class User implements IUser {
     firstName: String,
     lastName: String,
     tempEmail: String,
-    tempPassword: string
+    tempPassword: string,
+    sapCode: string
   ) {
     this.userType = userType;
     this.email = email;
@@ -97,5 +99,6 @@ export class User implements IUser {
     this.lastName = lastName;
     this.tempEmail = tempEmail;
     this.tempPassword = tempPassword;
+    this.sapCode = sapCode;
   }
 }

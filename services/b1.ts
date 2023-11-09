@@ -2,7 +2,7 @@ import { Router } from "express";
 import { LocalStorage } from "node-localstorage";
 import { sapLogin, sapLogout } from "../utils/sapB1Connection";
 
-let localstorage = new LocalStorage("./scratch");
+let localstorage = new LocalStorage("./dist");
 
 let b1Router = Router();
 
