@@ -333,7 +333,10 @@ export async function createSupplierinB1(
     Cellular: phone,
     EmailAddress: email,
     Currency: currency,
+    DefaultCurrency: "RWF",
     DebitorAccount: phone.indexOf("+250") !== -1 ? "2101030001" : "2101030002",
+    // Valid: 'N',
+    // Frozen: 'Y'
   };
   return sapLogin().then(async (res) => {
     let COOKIE = res.headers.get("set-cookie");
@@ -355,7 +358,51 @@ export async function createSupplierinB1(
         if (res?.error) {
           console.log("Tried many times, we cant login");
           return false;
-        }  else {
+        } else {
+          return res;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+  });
+}
+
+export async function updateSupplierinB1(CardCode: String, options: any) {
+  console.log(
+    `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners('${CardCode}')`
+  );
+  return sapLogin().then(async (res) => {
+    let COOKIE = res.headers.get("set-cookie");
+    localstorage.setItem("cookie", `${COOKIE}`);
+    return fetch(
+      `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners('${CardCode}')`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `${localstorage.getItem("cookie")}`,
+        },
+        body: JSON.stringify(options),
+      }
+    )
+      .then((res) => {
+        if(res.status === 204){
+          return {
+            error: false,
+            message: 'Successfull'
+          }
+        } else {
+          return res.json()
+        }
+      })
+      .then(async (res) => {
+        console.log(res);
+        if (res?.error) {
+          console.log(res?.error);
+          return false;
+        } else {
           return res;
         }
       })
@@ -424,7 +471,7 @@ export async function approveUser(id: String) {
         user = await UserModel.findByIdAndUpdate(
           id,
           {
-            $set: { status: "approved", sapCode: createdCode?.value?.CardCode },
+            $set: { status: "approved", sapCode: createdCode?.CardCode },
           },
           { $new: true }
         ).populate("department");
@@ -444,7 +491,9 @@ export async function approveUser(id: String) {
         },
         { new: true }
       ).populate("department");
-
+      if (user) {
+        await updateSupplierinB1(user?.sapCode, { Valid: "Y", Frozen: "N" });
+      }
       return user;
     }
   } catch (err) {
@@ -463,6 +512,9 @@ export async function declineUser(id: String) {
       { $set: { status: "rejected" } },
       { new: true }
     ).populate("department");
+    if (user) {
+      await updateSupplierinB1(user?.sapCode, { Valid: "N", Frozen: "Y" });
+    }
     return user;
   } catch (err) {
     return {
@@ -479,6 +531,9 @@ export async function banUser(id: String) {
       { $set: { status: "banned" } },
       { new: true }
     ).populate("department");
+    if (user) {
+      await updateSupplierinB1(user?.sapCode, { Valid: "N", Frozen: "Y" });
+    }
     return user;
   } catch (err) {
     return {
@@ -495,6 +550,10 @@ export async function activateUser(id: String) {
       { $set: { status: "approved" } },
       { new: true }
     ).populate("department");
+
+    if (user) {
+      await updateSupplierinB1(user?.sapCode, { Valid: "Y", Frozen: "N" });
+    }
     return user;
   } catch (err) {
     return {

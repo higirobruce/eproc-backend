@@ -57,10 +57,10 @@ exports.poRouter.post("/", (req, response) => __awaiter(void 0, void 0, void 0, 
         if ((bp === null || bp === void 0 ? void 0 : bp.length) >= 1) {
             CardCode = bp[0].CardCode;
             let b1Response_assets = B1Data_Assets
-                ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_Assets.DocType, B1Data_Assets.DocumentLines)
+                ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_Assets.DocType, B1Data_Assets.DocumentLines, B1Data_Assets.DocCurrency)
                 : null;
             let b1Response_nonAssets = B1Data_NonAssets
-                ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_NonAssets.DocType, B1Data_NonAssets.DocumentLines)
+                ? yield (0, purchaseOrders_2.savePOInB1)(CardCode, B1Data_NonAssets.DocType, B1Data_NonAssets.DocumentLines, B1Data_NonAssets.DocCurrency)
                 : null;
             if ((b1Response_assets === null || b1Response_assets === void 0 ? void 0 : b1Response_assets.error) || (b1Response_nonAssets === null || b1Response_nonAssets === void 0 ? void 0 : b1Response_nonAssets.error)) {
                 response
