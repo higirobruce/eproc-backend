@@ -95,7 +95,8 @@ export const UserSchema = new Schema<IUserDocument>({
     type: String
   },
   sapCode:{
-    type: String
+    type: String,
+    default: ''
   }
 },{timestamps: true});
 

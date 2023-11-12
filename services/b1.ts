@@ -73,7 +73,7 @@ export function getFixedAssets(){
    
 }
 
-export function getBusinessPartnerByName(CardName:String){
+export function getBusinessPartnerByName(CardName:String|string|undefined){
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();

@@ -10,6 +10,7 @@ import {
 } from "../services/users";
 import { send } from "../utils/sendEmailNode";
 import mongoose from "mongoose";
+import { getBusinessPartnerByName } from "../services/b1";
 
 let localstorage = new LocalStorage("./dist");
 
@@ -388,13 +389,13 @@ export async function updateSupplierinB1(CardCode: String, options: any) {
       }
     )
       .then((res) => {
-        if(res.status === 204){
+        if (res.status === 204) {
           return {
             error: false,
-            message: 'Successfull'
-          }
+            message: "Successfull",
+          };
         } else {
-          return res.json()
+          return res.json();
         }
       })
       .then(async (res) => {
@@ -452,6 +453,13 @@ export async function approveUser(id: String) {
     let phone = user?.telephone;
     let email = user?.email;
     let currency = "##";
+
+    if (!user?.sapCode && user) {
+      let u = await getBusinessPartnerByName(name);
+      let code = u?.value && u?.value[0]?.CardCode;
+      user.sapCode = code;
+      await user.save();
+    }
 
     if (user?.userType === "VENDOR" && user?.status === "pending-approval") {
       console.log(name);
@@ -512,6 +520,13 @@ export async function declineUser(id: String) {
       { $set: { status: "rejected" } },
       { new: true }
     ).populate("department");
+    let name = user?.companyName;
+    if (!user?.sapCode && user) {
+      let u = await getBusinessPartnerByName(name);
+      let code = u?.value && u?.value[0]?.CardCode;
+      user.sapCode = code;
+      await user.save();
+    }
     if (user) {
       await updateSupplierinB1(user?.sapCode, { Valid: "N", Frozen: "Y" });
     }
@@ -531,6 +546,14 @@ export async function banUser(id: String) {
       { $set: { status: "banned" } },
       { new: true }
     ).populate("department");
+
+    let name = user?.companyName;
+    if (!user?.sapCode && user) {
+      let u = await getBusinessPartnerByName(name);
+      let code = u?.value && u?.value[0]?.CardCode;
+      user.sapCode = code;
+      await user.save();
+    }
     if (user) {
       await updateSupplierinB1(user?.sapCode, { Valid: "N", Frozen: "Y" });
     }
@@ -550,6 +573,13 @@ export async function activateUser(id: String) {
       { $set: { status: "approved" } },
       { new: true }
     ).populate("department");
+    let name = user?.companyName;
+    if (!user?.sapCode && user) {
+      let u = await getBusinessPartnerByName(name);
+      let code = u?.value && u?.value[0]?.CardCode;
+      user.sapCode = code;
+      await user.save();
+    }
 
     if (user) {
       await updateSupplierinB1(user?.sapCode, { Valid: "Y", Frozen: "N" });
