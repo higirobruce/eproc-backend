@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ensureUserAuthorized = void 0;
+const fs_1 = __importDefault(require("fs"));
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const usersRoute_1 = require("./routes/usersRoute");
@@ -130,6 +131,18 @@ app.get("/file/:folder/:name", function (req, res, next) {
         else {
         }
     });
+});
+app.get("/check/file/:folder/:name", function (req, res, next) {
+    var folder = req.params.folder;
+    var fileName = req.params.name;
+    let filePath = path_1.default.join(__dirname, "public/", folder, `/${fileName}`);
+    console.log(filePath);
+    if (fs_1.default.existsSync(filePath)) {
+        res.send(true);
+    }
+    else {
+        res.send(false);
+    }
 });
 let server = app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`App listening on port ${PORT}`);

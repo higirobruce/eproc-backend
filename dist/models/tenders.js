@@ -30,5 +30,5 @@ exports.TenderSchema = new mongoose_1.Schema({
     invitees: [],
     docId: String,
     evaluationReportId: String
-});
+}, { timestamps: true });
 exports.TenderModel = (0, mongoose_1.model)("Tender", exports.TenderSchema);

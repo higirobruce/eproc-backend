@@ -18,6 +18,7 @@ class PoLineItem {
         this.budgetLine = budgetLine;
         this.budgeted = budgeted;
         this.lineOfBusiness = lineOfBusiness;
+        this.currency = currency;
     }
 }
 exports.PoLineItem = PoLineItem;

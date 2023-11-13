@@ -7,5 +7,5 @@ exports.BudgetLinesSchema = new mongoose_1.Schema({
         type: String
     },
     subLines: []
-});
+}, { timestamps: true });
 exports.BudgetLineModel = (0, mongoose_1.model)('BudgetLine', exports.BudgetLinesSchema);

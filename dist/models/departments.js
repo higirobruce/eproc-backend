@@ -11,5 +11,5 @@ exports.DepartmentSchema = new mongoose_1.Schema({
         type: String, unique: true,
         dropDups: true,
     }
-});
+}, { timestamps: true });
 exports.DepartmentModel = (0, mongoose_1.model)('Department', exports.DepartmentSchema);

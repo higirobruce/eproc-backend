@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getVendorRate = exports.updatePo = exports.updateB1Po = exports.savePOInB1 = exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getPOById = exports.getPOByTenderId = exports.getAllPOs = void 0;
+exports.getVendorRate = exports.updatePo = exports.updateB1Po = exports.savePOInB1 = exports.savePO = exports.updateProgress = exports.updatePOStatus = exports.getPOByVendorId = exports.getPOByRequestId = exports.getAllPOsByStatus = exports.getPOById = exports.getPOByTenderId = exports.getAllPOs = void 0;
 const purchaseOrders_1 = require("../models/purchaseOrders");
 const node_localstorage_1 = require("node-localstorage");
 const sapB1Connection_1 = require("../utils/sapB1Connection");
@@ -30,12 +30,23 @@ function getAllPOs() {
             .populate("tender")
             .populate("vendor")
             .populate("request")
+            .populate({
+            path: "request",
+            populate: {
+                path: "budgetLine",
+                model: "BudgetLine",
+            },
+        })
             .populate("createdBy")
             .populate({
             path: "tender",
             populate: {
                 path: "purchaseRequest",
                 model: "Request",
+                populate: {
+                    path: "budgetLine",
+                    model: "BudgetLine",
+                },
             },
         });
         return pos;
@@ -53,15 +64,26 @@ exports.getAllPOs = getAllPOs;
 function getPOByTenderId(tenderId) {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield purchaseOrders_1.PurchaseOrderModel.find({ tender: tenderId })
-            .populate("request")
             .populate("tender")
             .populate("vendor")
+            .populate("request")
+            .populate({
+            path: "request",
+            populate: {
+                path: "budgetLine",
+                model: "BudgetLine",
+            },
+        })
             .populate("createdBy")
             .populate({
             path: "tender",
             populate: {
                 path: "purchaseRequest",
                 model: "Request",
+                populate: {
+                    path: "budgetLine",
+                    model: "BudgetLine",
+                },
             },
         });
         return pos;
@@ -71,33 +93,65 @@ exports.getPOByTenderId = getPOByTenderId;
 function getPOById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield purchaseOrders_1.PurchaseOrderModel.findById(id)
-            .populate("request")
             .populate("tender")
             .populate("vendor")
+            .populate("request")
+            .populate({
+            path: "request",
+            populate: {
+                path: "budgetLine",
+                model: "BudgetLine",
+            },
+        })
             .populate("createdBy")
             .populate({
             path: "tender",
             populate: {
                 path: "purchaseRequest",
                 model: "Request",
+                populate: {
+                    path: "budgetLine",
+                    model: "BudgetLine",
+                },
             },
         });
         return pos;
     });
 }
 exports.getPOById = getPOById;
+function getAllPOsByStatus(status) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let query = status == 'signed' ?
+            { $or: [{ status }, { status: 'started' }] } :
+            { status: { $in: status } };
+        let pos = yield purchaseOrders_1.PurchaseOrderModel.find(query);
+        return pos;
+    });
+}
+exports.getAllPOsByStatus = getAllPOsByStatus;
 function getPOByRequestId(requestId) {
     return __awaiter(this, void 0, void 0, function* () {
         let pos = yield purchaseOrders_1.PurchaseOrderModel.find({ request: requestId })
-            .populate("request")
             .populate("tender")
             .populate("vendor")
+            .populate("request")
+            .populate({
+            path: "request",
+            populate: {
+                path: "budgetLine",
+                model: "BudgetLine",
+            },
+        })
             .populate("createdBy")
             .populate({
             path: "tender",
             populate: {
                 path: "purchaseRequest",
                 model: "Request",
+                populate: {
+                    path: "budgetLine",
+                    model: "BudgetLine",
+                },
             },
         });
         return pos;
@@ -114,10 +168,32 @@ exports.getPOByRequestId = getPOByRequestId;
  */
 function getPOByVendorId(vendorId) {
     return __awaiter(this, void 0, void 0, function* () {
-        let pos = yield purchaseOrders_1.PurchaseOrderModel.find({ vendor: vendorId })
+        let pos = yield purchaseOrders_1.PurchaseOrderModel.find({
+            vendor: vendorId,
+            status: { $in: ["partially-signed", "signed", "started"] },
+        })
             .populate("tender")
             .populate("vendor")
-            .populate("createdBy");
+            .populate("request")
+            .populate({
+            path: "request",
+            populate: {
+                path: "budgetLine",
+                model: "BudgetLine",
+            },
+        })
+            .populate("createdBy")
+            .populate({
+            path: "tender",
+            populate: {
+                path: "purchaseRequest",
+                model: "Request",
+                populate: {
+                    path: "budgetLine",
+                    model: "BudgetLine",
+                },
+            },
+        });
         return pos;
     });
 }
@@ -160,7 +236,9 @@ exports.updatePOStatus = updatePOStatus;
 function updateProgress(id, updates) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let a = yield purchaseOrders_1.PurchaseOrderModel.findByIdAndUpdate(id, updates, { returnOriginal: false });
+            let a = yield purchaseOrders_1.PurchaseOrderModel.findByIdAndUpdate(id, updates, {
+                returnOriginal: false,
+            });
             return a;
         }
         catch (err) {
@@ -233,7 +311,9 @@ function updateB1Po(CardCode, body) {
                 body: JSON.stringify(body),
             })
                 .then((res) => res.json())
-                .then((res) => { return res; })
+                .then((res) => {
+                return res;
+            })
                 .catch((err) => {
                 return err;
             });
@@ -252,7 +332,7 @@ function getVendorRate(id) {
         let pipeline = [
             {
                 $match: {
-                    vendor: new mongoose_1.default.Types.ObjectId(id)
+                    vendor: new mongoose_1.default.Types.ObjectId(id),
                 },
             },
             {

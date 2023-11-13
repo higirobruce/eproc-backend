@@ -40,5 +40,5 @@ exports.PurchaseOrderSchema = new mongoose_1.Schema({
     rateComment: {
         type: String
     }
-});
+}, { timestamps: true });
 exports.PurchaseOrderModel = (0, mongoose_1.model)('PurchaseOrder', exports.PurchaseOrderSchema);

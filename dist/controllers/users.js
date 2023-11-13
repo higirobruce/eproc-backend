@@ -20,7 +20,7 @@ const node_localstorage_1 = require("node-localstorage");
 const users_2 = require("../services/users");
 const sendEmailNode_1 = require("../utils/sendEmailNode");
 const mongoose_1 = __importDefault(require("mongoose"));
-let localstorage = new node_localstorage_1.LocalStorage("./scratch");
+let localstorage = new node_localstorage_1.LocalStorage("./dist");
 function getAllUsers() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

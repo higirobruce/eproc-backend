@@ -104,9 +104,10 @@ export async function getPOById(id: String) {
 }
 
 export async function getAllPOsByStatus(status: string) {
-  let query = status == 'signed' ? 
-  {$or: [{status}, {status: 'started'}]} :
-  {status: { $in: status}};
+  let query =
+    status == "signed"
+      ? { $or: [{ status }, { status: "started" }] }
+      : { status: { $in: status } };
 
   let pos = await PurchaseOrderModel.find(query);
 
@@ -246,7 +247,8 @@ export async function savePO(po: PurchaseOrder) {
 export async function savePOInB1(
   CardCode: String,
   DocType: String,
-  DocumentLines: DocumentLines[]
+  DocumentLines: DocumentLines[],
+  DocCurrency: String
 ) {
   return sapLogin().then(async (res) => {
     let COOKIE = res.headers.get("set-cookie");
@@ -260,7 +262,7 @@ export async function savePOInB1(
           "Content-Type": "application/json",
           Cookie: `${localstorage.getItem("cookie")}`,
         },
-        body: JSON.stringify({ CardCode, DocType, DocumentLines }),
+        body: JSON.stringify({ CardCode, DocType, DocumentLines, DocCurrency }),
       }
     )
       .then((res) => res.json())

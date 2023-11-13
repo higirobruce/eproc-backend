@@ -39,5 +39,5 @@ exports.Contract = new mongoose_1.Schema({
     reqAttachmentDocId: {
         type: String,
     },
-});
+}, { timestamps: true });
 exports.ContractModel = (0, mongoose_1.model)("Contract", exports.Contract);

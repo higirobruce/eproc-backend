@@ -153,7 +153,8 @@ userRouter.post("/", async (req, res) => {
     firstName,
     lastName,
     tempEmail,
-    hashPassword(tempPassword || "tempPassword")
+    hashPassword(tempPassword || "tempPassword"),
+    ''
   );
 
   let createdUser = await saveUser(userToCreate);

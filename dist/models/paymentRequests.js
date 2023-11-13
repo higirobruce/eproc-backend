@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentRequestModel = exports.PaymentRequestSchema = void 0;
 const moment_1 = __importDefault(require("moment"));
 const mongoose_1 = require("mongoose");
+const iPaymentRequests_1 = require("../interfaces/iPaymentRequests");
 exports.PaymentRequestSchema = new mongoose_1.Schema({
     number: Number,
     description: String,
@@ -52,5 +53,20 @@ exports.PaymentRequestSchema = new mongoose_1.Schema({
     hof_approvalDate: {
         type: Date,
     },
+    budgeted: {
+        type: Boolean,
+    },
+    budgetLine: {
+        type: mongoose_1.Types.ObjectId,
+        ref: "BudgetLine",
+    },
+    category: {
+        type: String,
+        default: iPaymentRequests_1.PaymentRequestCategory.internal
+    },
+    currency: {
+        type: String,
+        default: "RWF"
+    }
 }, { timestamps: true });
 exports.PaymentRequestModel = (0, mongoose_1.model)("PaymentRequest", exports.PaymentRequestSchema);

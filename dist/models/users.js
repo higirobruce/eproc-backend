@@ -98,7 +98,7 @@ exports.UserSchema = new mongoose_1.Schema({
     tempPassword: {
         type: String
     }
-});
+}, { timestamps: true });
 // Method to set salt and hash the password for a user
 exports.UserSchema.methods.setPassword = function (password) {
     // Creating a unique salt for a particular user

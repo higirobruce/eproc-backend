@@ -35,8 +35,16 @@ function getAllPaymentRequests() {
                     model: "Request",
                 },
             })
+                .populate({
+                path: "purchaseOrder",
+                populate: {
+                    path: "request",
+                    model: "Request",
+                },
+            })
                 .populate("approver")
-                .populate("reviewedBy");
+                .populate("reviewedBy")
+                .populate('budgetLine');
             return paymentRequests;
         }
         catch (err) {
@@ -49,7 +57,7 @@ function savePaymentRequest(paymentRequest) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let createdPaymentRequest = yield paymentRequests_1.PaymentRequestModel.create(paymentRequest);
-            return createdPaymentRequest.populate("purchaseOrder createdBy approver reviewedBy");
+            return createdPaymentRequest.populate("purchaseOrder createdBy approver reviewedBy budgetLine");
         }
         catch (err) {
             throw err;
@@ -60,10 +68,31 @@ exports.savePaymentRequest = savePaymentRequest;
 function getPaymentRequestById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         let reqs = yield paymentRequests_1.PaymentRequestModel.findById(id)
-            .populate("createdBy")
-            .populate("purchaseOrder")
+            .populate("createdBy purchaseOrder")
+            .populate({
+            path: "purchaseOrder",
+            populate: {
+                path: "tender",
+                model: "Tender",
+            },
+        })
+            .populate({
+            path: "purchaseOrder.tender",
+            populate: {
+                path: "purchaseRequest",
+                model: "Request",
+            },
+        })
+            .populate({
+            path: "purchaseOrder",
+            populate: {
+                path: "request",
+                model: "Request",
+            },
+        })
             .populate("approver")
-            .populate("reviewedBy");
+            .populate("reviewedBy")
+            .populate('budgetLine');
         return reqs;
     });
 }
@@ -73,7 +102,7 @@ function getAllRequestsByCreator(createdBy) {
         let query = {};
         if (createdBy && createdBy !== "null")
             query = { createdBy, status: { $ne: "withdrawn" } };
-        let reqs = yield paymentRequests_1.PaymentRequestModel.find(query).populate("createdBy purchaseOrder approver reviewedBy");
+        let reqs = yield paymentRequests_1.PaymentRequestModel.find(query).populate("createdBy purchaseOrder approver reviewedBy budgetLine");
         return reqs;
     });
 }
@@ -95,7 +124,7 @@ function getAllRequestsByStatus(status, id) {
                 : { status };
         if (id && id !== "null")
             query = Object.assign(Object.assign({}, query), { createdBy: id });
-        let reqs = yield paymentRequests_1.PaymentRequestModel.find(query).populate("createdBy purchaseOrder approver reviewedBy");
+        let reqs = yield paymentRequests_1.PaymentRequestModel.find(query).populate("createdBy purchaseOrder approver reviewedBy budgetLine");
         return reqs;
     });
 }

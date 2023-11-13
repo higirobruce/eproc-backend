@@ -80,57 +80,67 @@ poRouter.post("/", async (req, response) => {
   )
     .then(async (res) => {
       let bp = res.value;
-      if (res.error) {
-        response.status(500).send({
-          error: {
-            message: { value: "Could not fetch the partner's info!" },
-          },
-        });
-      } else {
-        if (bp?.length >= 1) {
-          CardCode = bp[0].CardCode;
+      if (bp?.length >= 1) {
+        CardCode = bp[0].CardCode;
 
-          let b1Response_assets = B1Data_Assets
-            ? await savePOInB1(
-                CardCode,
-                B1Data_Assets.DocType,
-                B1Data_Assets.DocumentLines
-              )
-            : null;
+        let b1Response_assets = B1Data_Assets
+          ? await savePOInB1(
+              CardCode,
+              B1Data_Assets.DocType,
+              B1Data_Assets.DocumentLines,
+              B1Data_Assets.DocCurrency
+            )
+          : null;
 
-          let b1Response_nonAssets = B1Data_NonAssets
-            ? await savePOInB1(
-                CardCode,
-                B1Data_NonAssets.DocType,
-                B1Data_NonAssets.DocumentLines
-              )
-            : null;
+        let b1Response_nonAssets = B1Data_NonAssets
+          ? await savePOInB1(
+              CardCode,
+              B1Data_NonAssets.DocType,
+              B1Data_NonAssets.DocumentLines,
+              B1Data_NonAssets.DocCurrency
+            )
+          : null;
 
-          if (b1Response_assets?.error || b1Response_nonAssets?.error) {
-            response
-              .status(500)
-              .send(b1Response_assets || b1Response_nonAssets);
-          } else {
-            let number = await generatePONumber();
-            let refs = [];
-            b1Response_assets && refs.push(b1Response_assets.DocNum);
-            b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
+        if (b1Response_assets?.error || b1Response_nonAssets?.error) {
+          response
+            .status(500)
+            .send(b1Response_assets || b1Response_nonAssets);
+        } else {
+          let number = await generatePONumber();
+          let refs = [];
+          b1Response_assets && refs.push(b1Response_assets.DocNum);
+          b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
 
-            let poToCreate = new PurchaseOrder(
-              number,
-              vendor,
-              tender,
-              request,
-              createdBy,
-              sections,
-              items,
-              status,
-              deliveryProgress,
-              signatories,
-              reqAttachmentDocId,
-              refs,
-              rate,
-              rateComment
+          let poToCreate = new PurchaseOrder(
+            number,
+            vendor,
+            tender,
+            request,
+            createdBy,
+            sections,
+            items,
+            status,
+            deliveryProgress,
+            signatories,
+            reqAttachmentDocId,
+            refs,
+            rate,
+            rateComment
+          );
+
+          let createdPO = await savePO(poToCreate);
+
+
+
+          if (createdPO) {
+
+            send(
+              "from",
+              signatories[0]?.email,
+              "Your Signature is needed",
+              JSON.stringify({ docId: createdPO?._id, docType: 'purchase-orders' }),
+              "",
+              "internalSignature"
             );
 
             let createdPO = await savePO(poToCreate);

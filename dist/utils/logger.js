@@ -13,7 +13,7 @@ exports.logger = winston.createLogger({
         // - Write all logs with importance level of `error` or less to `error.log`
         // - Write all logs with importance level of `info` or less to `combined.log`
         //
-        new winston.transports.File({ filename: './dist/logs/error.log', level: 'error' }),
-        new winston.transports.File({ filename: './dist/logs/combined.log' }),
+        new winston.transports.File({ filename: './dist/error.log', level: 'error' }),
+        new winston.transports.File({ filename: './dist/combined.log' }),
     ],
 });

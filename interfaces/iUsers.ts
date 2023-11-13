@@ -30,6 +30,7 @@ export interface IUser {
     lastName: String,
     tempEmail: String,
     tempPassword: String
+    sapCode: String
 
 }
 

@@ -173,11 +173,20 @@ function saveTender(tender) {
         let newTender = yield tenders_1.TenderModel.create(tender);
         let request = tender.purchaseRequest;
         let category = (_a = (yield requests_1.RequestModel.findById(request))) === null || _a === void 0 ? void 0 : _a.serviceCategory;
-        //Send notifications to vendors in the tender's caterogry
-        let vendors = yield users_1.UserModel.find({
-            services: { $elemMatch: { $eq: category } },
-            status: { $eq: "approved" },
-        });
+        console.log('Category ', category);
+        // //Send notifications to vendors in the tender's caterogry
+        let vendors;
+        if (category == 'Others') {
+            vendors = yield users_1.UserModel.find({
+                status: { $eq: "approved" },
+            });
+        }
+        else {
+            vendors = yield users_1.UserModel.find({
+                services: { $elemMatch: { $eq: category } },
+                status: { $eq: "approved" },
+            });
+        }
         let vendorEmails = vendors === null || vendors === void 0 ? void 0 : vendors.map((v) => {
             return v === null || v === void 0 ? void 0 : v.email;
         });
