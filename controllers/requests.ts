@@ -4,7 +4,11 @@ import { Request } from "../classrepo/requests";
 import { RequestModel } from "../models/requests";
 import { UserModel } from "../models/users";
 import { send } from "../utils/sendEmailNode";
-import { postSlackMessage } from "../utils/postToSlack";
+import {
+  getUserIdByEmail,
+  postSlackMessage,
+  sendMessage,
+} from "../utils/postToSlack";
 
 export async function getAllRequests() {
   let reqs = await RequestModel.find({ status: { $ne: "withdrawn" } })
@@ -198,7 +202,23 @@ export async function saveRequest(request: Request) {
     "approval"
   );
 
-  await postSlackMessage(`${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/system/requests/${newReq?._id}`,'Bruce Higiro',newReq)
+  // await postSlackMessage(
+  //   `${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/system/requests/${newReq?._id}`,
+  //   "Bruce Higiro",
+  //   newReq
+  // );
+
+  let r: any = newReq;
+
+  r.message = "A new request was created!";
+  let slackUserId = await getUserIdByEmail(approver?.email);
+
+  if (slackUserId)
+    await sendMessage(
+      slackUserId,
+      r,
+      `${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/system/requests/${newReq?._id}`
+    );
 
   return newReq;
 }
@@ -390,7 +410,6 @@ export async function updateRequest(id: String, update: Request) {
   }
 }
 
-
 export async function getReqCountsByDepartment() {
   let lookup = [
     {
@@ -448,7 +467,6 @@ export async function getReqCountsByStatus() {
       },
     },
   ];
-  
 
   let result = await RequestModel.aggregate(lookup);
 
