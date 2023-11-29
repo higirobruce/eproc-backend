@@ -3,6 +3,7 @@ import { Router } from "express";
 import fs from "fs";
 import { randomUUID } from "crypto";
 import path from "path";
+import { updateRequestFileName } from "../controllers/paymentRequests";
 
 export let uploadRouter = Router();
 
@@ -82,7 +83,6 @@ uploadRouter.post("/vatCerts/", (req, res) => {
   });
 });
 
-
 uploadRouter.post("/tenderDocs/", (req, res) => {
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -93,7 +93,7 @@ uploadRouter.post("/tenderDocs/", (req, res) => {
     },
   });
 
-  console.log('Tender doc')
+  console.log("Tender doc");
   var upload = multer({ storage: storage }).single("file");
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
@@ -179,7 +179,6 @@ uploadRouter.post("/reqAttachments/", (req, res) => {
   });
 });
 
-
 uploadRouter.get("/:path", (req, res) => {
   let { path } = req.params;
 
@@ -198,7 +197,7 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
     filename: function (req, file, cb) {
       // cb(null, req.query.id+'.pdf');
       let fileName = randomUUID();
-      cb(null, fileName + ".pdf");
+      cb(null, file.originalname);
     },
   });
 
@@ -213,8 +212,6 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
       return res.status(500);
     }
 
-    console.log(req.files);
-
     return res.status(200).send(req.files);
   });
 });
@@ -225,11 +222,15 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
       cb(null, "dist/public/paymentRequests");
     },
     filename: function (req, file, cb) {
-      cb(null, req.query.id + ".pdf");
+      //update the request with the new file name
+      updateRequestFileName(req.query.id+'.pdf', file.originalname).then(()=>{
+
+        console.log('File name updated',req.query.id)
+      })
+      cb(null, file.originalname);
     },
   });
-  
-  console.log('fillles')
+
   var upload = multer({ storage: storage }).single("file");
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
@@ -246,7 +247,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
 uploadRouter.get("/check/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
   let filePath = path.join(__dirname, "public/", folder);
-  console.log(filePath)
+  console.log(filePath);
   if (fs.existsSync(filePath)) {
     res.send(true);
   } else {

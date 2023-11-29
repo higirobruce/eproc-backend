@@ -152,8 +152,8 @@ export async function getUsersListFromWorkspace() {
 }
 
 // Function to send a message to a user
-export async function sendMessage(userId: any,request: any, url: any,) {
-  let { title, dueDate, number, message } = request;
+export async function sendMessage(userId: any, request: any, url: any) {
+  let { title, dueDate, number, message, description, serviceCategory } = request;
   const blocks = [
     // {
     //   type: "section",
@@ -181,6 +181,14 @@ export async function sendMessage(userId: any,request: any, url: any,) {
         {
           type: "mrkdwn",
           text: `*Title:* ${title}`,
+        },
+        {
+          type: "mrkdwn",
+          text: `*Description:* ${description}`,
+        },
+        {
+          type: "mrkdwn",
+          text: `*Service category:* ${serviceCategory}`,
         },
         {
           type: "mrkdwn",
@@ -231,7 +239,7 @@ export async function sendMessage(userId: any,request: any, url: any,) {
     const result = await app.client.chat.postMessage({
       channel: userId,
       text: message,
-      blocks
+      blocks,
     });
 
     if (result.ok) {

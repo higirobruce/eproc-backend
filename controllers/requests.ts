@@ -210,9 +210,10 @@ export async function saveRequest(request: Request) {
 
   let r: any = newReq;
 
-  r.message = "A new request was created!";
+  r.message = `You a request from *<fakeLink.toEmployeeProfile.com|Bruce Higiro>*`;
   let slackUserId = await getUserIdByEmail(approver?.email);
 
+  console.log(slackUserId)
   if (slackUserId)
     await sendMessage(
       slackUserId,
