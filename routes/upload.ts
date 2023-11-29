@@ -197,7 +197,13 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
     filename: function (req, file, cb) {
       // cb(null, req.query.id+'.pdf');
       let fileName = randomUUID();
-      cb(null, file.originalname);
+      cb(
+        null,
+        file.originalname.split(path.extname(file.originalname))[0] +
+          "_" +
+          Date.now() +
+          path.extname(file.originalname)
+      );
     },
   });
 
@@ -223,11 +229,34 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
     },
     filename: function (req, file, cb) {
       //update the request with the new file name
-      updateRequestFileName(req.query.id+'.pdf', file.originalname).then(()=>{
 
-        console.log('File name updated',req.query.id)
-      })
-      cb(null, file.originalname);
+      if (req.query.paymentProof === "false") {
+        updateRequestFileName(
+          req.query.id + ".pdf",
+          file.originalname.split(path.extname(file.originalname))[0] +
+            "_" +
+            Date.now() +
+            path.extname(file.originalname),
+          false
+        ).then(() => {});
+      } else {
+        updateRequestFileName(
+          req.query.id + ".pdf",
+          file.originalname.split(path.extname(file.originalname))[0] +
+            "_" +
+            Date.now() +
+            path.extname(file.originalname),
+          true
+        ).then(() => {});
+      }
+
+      cb(
+        null,
+        file.originalname.split(path.extname(file.originalname))[0] +
+          "_" +
+          Date.now() +
+          path.extname(file.originalname)
+      );
     },
   });
 
