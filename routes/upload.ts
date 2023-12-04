@@ -238,8 +238,9 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
             "_" +
             Date.now() +
             path.extname(file.originalname),
-          false
-        ).then(() => {});
+          false,
+          cb
+        );
       } else {
         
         updateRequestFileName(
@@ -248,17 +249,10 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
             "_" +
             Date.now() +
             path.extname(file.originalname),
-          true
-        ).then(() => {});
+          true,
+          cb
+        )
       }
-
-      cb(
-        null,
-        file.originalname.split(path.extname(file.originalname))[0] +
-          "_" +
-          Date.now() +
-          path.extname(file.originalname)
-      );
     },
   });
 
