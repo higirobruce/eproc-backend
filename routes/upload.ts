@@ -223,6 +223,7 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
 });
 
 uploadRouter.post("/updatePaymentRequests/", (req, res) => {
+  console.log(req.query.id)
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
@@ -232,7 +233,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
 
       if (req.query.paymentProof === "false") {
         updateRequestFileName(
-          req.query.id + ".pdf",
+          req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
             Date.now() +
@@ -242,7 +243,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
       } else {
         
         updateRequestFileName(
-          req.query.id + ".pdf",
+          req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
             Date.now() +
