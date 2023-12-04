@@ -210,16 +210,15 @@ export async function saveRequest(request: Request) {
 
   let r: any = newReq;
 
-  r.message = `You a request from *<fakeLink.toEmployeeProfile.com|Bruce Higiro>*`;
-  let slackUserId = await getUserIdByEmail(approver?.email);
+  // r.message = `You a request from *<fakeLink.toEmployeeProfile.com|Bruce Higiro>*`;
+  // let slackUserId = await getUserIdByEmail(approver?.email);
 
-  console.log(slackUserId)
-  if (slackUserId)
-    await sendMessage(
-      slackUserId,
-      r,
-      `${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/system/requests/${newReq?._id}`
-    );
+  // if (slackUserId)
+  //   await sendMessage(
+  //     slackUserId,
+  //     r,
+  //     `${process.env.IRMB_APP_SERVER}:${process.env.IRMB_APP_PORT}/system/requests/${newReq?._id}`
+  //   );
 
   return newReq;
 }
