@@ -84,7 +84,8 @@ poRouter.post("/", async (req, response) => {
       if (bp?.length >= 1) {
         CardCode = bp[0].CardCode;
 
-        let b1Response_assets = B1Data_Assets
+        let b1Response_assets;
+        b1Response_assets = B1Data_Assets
           ? await savePOInB1(
               CardCode,
               B1Data_Assets.DocType,
@@ -108,7 +109,7 @@ poRouter.post("/", async (req, response) => {
             .send(b1Response_assets || b1Response_nonAssets);
         } else {
           let number = await generatePONumber();
-          let refs = [];
+          let refs:any[] = [];
           b1Response_assets && refs.push(b1Response_assets.DocNum);
           b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
 

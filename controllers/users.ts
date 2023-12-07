@@ -636,7 +636,7 @@ export async function updateMyPassword(
 }
 
 export async function resetPassword(email: String) {
-  let user = null;
+  let user;
   try {
     let newPassword = generatePassword(8);
     user = await UserModel.findOneAndUpdate(
@@ -650,7 +650,7 @@ export async function resetPassword(email: String) {
         "",
         email,
         "Password reset",
-        JSON.stringify({ email: user.email, password: newPassword }),
+        JSON.stringify({ email: user?.email, password: newPassword }),
         "",
         "passwordReset"
       );
