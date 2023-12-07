@@ -4,7 +4,7 @@ import fs from "fs";
 import { randomUUID } from "crypto";
 import path from "path";
 import { updateRequestFileName } from "../controllers/paymentRequests";
-import moment from "moment";
+import dayjs from "dayjs";
 
 export let uploadRouter = Router();
 
@@ -202,7 +202,7 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
         null,
         file.originalname.split(path.extname(file.originalname))[0] +
           "_" +
-          Date.now() +
+          dayjs().format('DD-MMM-YYYY_h:m:sa') +
           path.extname(file.originalname)
       );
     },
@@ -237,7 +237,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
-            Date.now() +
+            dayjs().format('DD-MMM-YYYY_h:m:sa') +
             path.extname(file.originalname),
           false,
           cb
@@ -248,7 +248,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
-            Date.now() +
+            dayjs().format('DD-MMM-YYYY_h:m:sa') +
             path.extname(file.originalname),
           true,
           cb
