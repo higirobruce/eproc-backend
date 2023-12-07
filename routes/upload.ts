@@ -189,13 +189,14 @@ uploadRouter.get("/:path", (req, res) => {
 });
 
 uploadRouter.post("/paymentRequests/", (req, res) => {
+
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
     },
 
     filename: function (req, file, cb) {
-      // cb(null, req.query.id+'.pdf');
+     
       let fileName = randomUUID();
       cb(
         null,
