@@ -268,25 +268,22 @@ export async function getReqCountsByStatus() {
   return result.sort((a, b) => (a._id < b._id ? -1 : 1));
 }
 
-export function updateRequestFileName(
+export async function updateRequestFileName(
   oldFileName: any,
   newFileName: string,
   paymentProof: boolean,
   cb: any
 ) {
   let updatedRequest = !paymentProof
-    ? PaymentRequestModel.updateOne(
+    ? await PaymentRequestModel.updateOne(
         { docIds: oldFileName },
         { $set: { "docIds.$": newFileName } }
-      ).then(() => {
-        cb(null, newFileName);
-      })
-    : PaymentRequestModel.updateOne(
+      )
+    : await PaymentRequestModel.updateOne(
         { paymentProofDocs: oldFileName },
         { $set: { "paymentProofDocs.$": newFileName } }
-      ).then(() => {
-        cb(null, newFileName);
-      });
+      );
 
+  cb(null, newFileName);
   return updatedRequest;
 }

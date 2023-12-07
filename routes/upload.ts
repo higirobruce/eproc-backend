@@ -202,7 +202,7 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
         null,
         file.originalname.split(path.extname(file.originalname))[0] +
           "_" +
-          moment().format('DD-MMM-YYYY_h:m:sa') +
+          Date.now() +
           path.extname(file.originalname)
       );
     },
@@ -237,7 +237,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
-            moment().format('DD-MMM-YYYY_h:m:sa') +
+            Date.now() +
             path.extname(file.originalname),
           false,
           cb
@@ -248,7 +248,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
-            moment().format('DD-MMM-YYYY_h:m:sa') +
+            Date.now() +
             path.extname(file.originalname),
           true,
           cb
@@ -259,13 +259,13 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
 
   var upload = multer({ storage: storage }).single("file");
   upload(req, res, function (err) {
-    // if (err instanceof multer.MulterError) {
-    //   console.log(err);
-    //   return res.status(500).send(req.file);
-    // } else if (err) {
-    //   console.log(err);
-    //   return res.status(500).send(req.file);
-    // }
+    if (err instanceof multer.MulterError) {
+      console.log(err);
+      return res.status(500);
+    } else if (err) {
+      console.log(err);
+      return res.status(500);
+    }
     return res.status(200).send(req.file);
   });
 });
