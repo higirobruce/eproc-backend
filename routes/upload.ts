@@ -190,7 +190,6 @@ uploadRouter.get("/:path", (req, res) => {
 });
 
 uploadRouter.post("/paymentRequests/", (req, res) => {
-  let date = dayjs().format("DD-MMM-YYYY_h:m:sa");
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
@@ -203,7 +202,7 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
         null,
         file.originalname.split(path.extname(file.originalname))[0] +
           "_" +
-          date +
+          new Date().toISOString() +
           path.extname(file.originalname)
       );
     },
@@ -225,8 +224,7 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
 });
 
 uploadRouter.post("/updatePaymentRequests/", (req, res) => {
-  let date = dayjs().format("DD-MMM-YYYY_h:m:sa");
-  console.log(req.query.id);
+  console.log(req.query.id)
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
@@ -239,21 +237,22 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
-            date +
+            new Date().toISOString() +
             path.extname(file.originalname),
           false,
           cb
         );
       } else {
+        
         updateRequestFileName(
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
-            date +
+            new Date().toISOString() +
             path.extname(file.originalname),
           true,
           cb
-        );
+        )
       }
     },
   });
