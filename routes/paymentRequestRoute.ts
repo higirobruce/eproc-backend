@@ -29,6 +29,7 @@ paymentRequestRouter.post("/", async (req, res) => {
     let newPaymentRequest = await savePaymentRequest(req.body);
     res.status(201).send(newPaymentRequest);
   } catch (err) {
+    console.log(err)
     res.status(500).send({ error: `${err}` });
   }
 });
@@ -57,3 +58,4 @@ paymentRequestRouter.put("/:id", async (req, res) => {
   }
   res.send(updatedRequest);
 });
+

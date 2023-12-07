@@ -33,6 +33,7 @@ exports.paymentRequestRouter.post("/", (req, res) => __awaiter(void 0, void 0, v
         res.status(201).send(newPaymentRequest);
     }
     catch (err) {
+        console.log(err);
         res.status(500).send({ error: `${err}` });
     }
 }));

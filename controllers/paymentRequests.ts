@@ -29,7 +29,7 @@ export async function getAllPaymentRequests() {
       })
       .populate("approver")
       .populate("reviewedBy")
-      .populate('budgetLine')
+      .populate("budgetLine");
     return paymentRequests;
   } catch (err) {
     throw err;
@@ -51,31 +51,31 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
 
 export async function getPaymentRequestById(id: String) {
   let reqs = await PaymentRequestModel.findById(id)
-  .populate("createdBy purchaseOrder")
-  .populate({
-    path: "purchaseOrder",
-    populate: {
-      path: "tender",
-      model: "Tender",
-    },
-  })
-  .populate({
-    path: "purchaseOrder.tender",
-    populate: {
-      path: "purchaseRequest",
-      model: "Request",
-    },
-  })
-  .populate({
-    path: "purchaseOrder",
-    populate: {
-      path: "request",
-      model: "Request",
-    },
-  })
-  .populate("approver")
-  .populate("reviewedBy")
-  .populate('budgetLine')
+    .populate("createdBy purchaseOrder")
+    .populate({
+      path: "purchaseOrder",
+      populate: {
+        path: "tender",
+        model: "Tender",
+      },
+    })
+    .populate({
+      path: "purchaseOrder.tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+      },
+    })
+    .populate({
+      path: "purchaseOrder",
+      populate: {
+        path: "request",
+        model: "Request",
+      },
+    })
+    .populate("approver")
+    .populate("reviewedBy")
+    .populate("budgetLine");
   return reqs;
 }
 
@@ -266,4 +266,24 @@ export async function getReqCountsByStatus() {
   let result = await PaymentRequestModel.aggregate(lookup);
 
   return result.sort((a, b) => (a._id < b._id ? -1 : 1));
+}
+
+export async function updateRequestFileName(
+  oldFileName: any,
+  newFileName: string,
+  paymentProof: boolean,
+  cb: any
+) {
+  let updatedRequest = !paymentProof
+    ? await PaymentRequestModel.updateOne(
+        { docIds: oldFileName },
+        { $set: { "docIds.$": newFileName } }
+      )
+    : await PaymentRequestModel.updateOne(
+        { paymentProofDocs: oldFileName },
+        { $set: { "paymentProofDocs.$": newFileName } }
+      );
+
+  cb(null, newFileName);
+  return updatedRequest;
 }
