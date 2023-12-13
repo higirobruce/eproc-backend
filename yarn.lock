@@ -1511,6 +1511,13 @@
   "resolved" "https://registry.npmjs.org/cors-ts/-/cors-ts-1.0.3.tgz"
   "version" "1.0.3"
 
+"cross-fetch@^4.0.0":
+  "integrity" "sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g=="
+  "resolved" "https://registry.npmjs.org/cross-fetch/-/cross-fetch-4.0.0.tgz"
+  "version" "4.0.0"
+  dependencies:
+    "node-fetch" "^2.6.12"
+
 "crypto@^1.0.1":
   "integrity" "sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig=="
   "resolved" "https://registry.npmjs.org/crypto/-/crypto-1.0.1.tgz"
@@ -3003,10 +3010,10 @@
   dependencies:
     "lower-case" "^1.1.1"
 
-"node-fetch@^2.6.0":
-  "integrity" "sha512-DJm/CJkZkRjKKj4Zi4BsKVZh3ValV5IR5s7LVZnW+6YMh0W1BfNA8XSs6DLMGYlId5F3KnA70uu2qepcR08Qqg=="
-  "resolved" "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.9.tgz"
-  "version" "2.6.9"
+"node-fetch@^2.6.0", "node-fetch@^2.6.12":
+  "integrity" "sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A=="
+  "resolved" "https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz"
+  "version" "2.7.0"
   dependencies:
     "whatwg-url" "^5.0.0"
 

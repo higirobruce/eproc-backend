@@ -2,6 +2,7 @@ import { Router } from "express";
 import { LocalStorage } from "node-localstorage";
 import { sapLogin, sapLogout } from "../utils/sapB1Connection";
 
+import fetch from 'cross-fetch';
 let localstorage = new LocalStorage("./dist");
 
 let b1Router = Router();
@@ -14,6 +15,14 @@ b1Router.get("/vatGroups", async (req, response) => {
 
 b1Router.get("/fixedAssets", async (req, response) => {
   await getFixedAssets().then((res) => {
+    response.send(res);
+  });
+});
+
+
+b1Router.get("/accounts", async (req, response) => {
+  await getAccounts().then((res) => {
+    console.log(res)
     response.send(res);
   });
 });
@@ -39,7 +48,9 @@ export function getVatGroups() {
             Cookie: `${localstorage.getItem("cookie")}`,
           },
         }
-      ).then((res) => res.json());
+      ).then((res) => res.json()).catch((err)=>{
+        console.log(err)
+      })
     })
     .catch((err) => {
       return err;
@@ -63,11 +74,43 @@ export function getFixedAssets() {
             Prefer: "odata.maxpagesize=1000",
           },
         }
-      ).then((res) => res.json());
+      ).then((res) => res.json()) .catch((err) => {
+        console.log(err);
+        return err;
+      });
     })
     .catch((err) => {
-      return err;
       console.log(err);
+      return err;
+    });
+}
+
+
+
+export function getAccounts() {
+  return sapLogin()
+    .then(async (res) => {
+      let resJson = await res.json();
+      let COOKIE = res.headers.get("set-cookie");
+      localstorage.setItem("cookie", `${COOKIE}`);
+      return fetch(
+        `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/ChartOfAccounts?$filter= AccountLevel eq 5&$select=Name,Code,AccountLevel,AcctCurrency`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `${localstorage.getItem("cookie")}`,
+            Prefer: "odata.maxpagesize=1000",
+          },
+        }
+      ).then((res) => res.json()) .catch((err) => {
+        console.log(err);
+        return err;
+      });
+    })
+    .catch((err) => {
+      // console.log(err);
+      return err;
     });
 }
 
