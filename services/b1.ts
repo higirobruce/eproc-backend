@@ -22,7 +22,6 @@ b1Router.get("/fixedAssets", async (req, response) => {
 
 b1Router.get("/accounts", async (req, response) => {
   await getAccounts().then((res) => {
-    console.log(res)
     response.send(res);
   });
 });
@@ -109,7 +108,7 @@ export function getAccounts() {
       )
         .then((res) => res.json())
         .catch((err) => {
-          console.log(err);
+          
           return err;
         });
     })
