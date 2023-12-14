@@ -21,11 +21,10 @@ b1Router.get("/fixedAssets", async (req, response) => {
 });
 
 b1Router.get("/accounts", async (req, response) => {
-  response.send(getAccounts());
-  // await getAccounts().then((res) => {
-  //   console.log(res)
-  //   response.send(res);
-  // });
+  await getAccounts().then((res) => {
+    console.log(res)
+    response.send(res);
+  });
 });
 
 b1Router.get("/businessPartner/:name", async (req, response) => {
