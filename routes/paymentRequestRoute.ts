@@ -77,5 +77,21 @@ paymentRequestRouter.put("/:id", async (req, res) => {
           message: `Error: ${err}`
         });
       });
+  } else {
+    let updatedRequest = await updateRequest(id, updates);
+    if (updates.notifyApprover && updates.approver) {
+      //send notification
+      let approver = await UserModel.findById(updates.approver);
+
+      send(
+        "from",
+        approver?.email,
+        "Your Approval is needed",
+        JSON.stringify(updatedRequest),
+        "html",
+        "payment-request-approval"
+      );
+    }
+    res.send(updates);
   }
 });
