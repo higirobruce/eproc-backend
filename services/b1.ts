@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { LocalStorage } from "node-localstorage";
 import { sapLogin, sapLogout } from "../utils/sapB1Connection";
+import { JournalEntryLine } from "../types/types";
 
-import fetch from 'cross-fetch';
+import fetch from "cross-fetch";
 let localstorage = new LocalStorage("./dist");
 
 let b1Router = Router();
@@ -19,12 +20,12 @@ b1Router.get("/fixedAssets", async (req, response) => {
   });
 });
 
-
 b1Router.get("/accounts", async (req, response) => {
-  await getAccounts().then((res) => {
-    console.log(res)
-    response.send(res);
-  });
+  response.send(getAccounts());
+  // await getAccounts().then((res) => {
+  //   console.log(res)
+  //   response.send(res);
+  // });
 });
 
 b1Router.get("/businessPartner/:name", async (req, response) => {
@@ -48,9 +49,11 @@ export function getVatGroups() {
             Cookie: `${localstorage.getItem("cookie")}`,
           },
         }
-      ).then((res) => res.json()).catch((err)=>{
-        console.log(err)
-      })
+      )
+        .then((res) => res.json())
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       return err;
@@ -74,10 +77,12 @@ export function getFixedAssets() {
             Prefer: "odata.maxpagesize=1000",
           },
         }
-      ).then((res) => res.json()) .catch((err) => {
-        console.log(err);
-        return err;
-      });
+      )
+        .then((res) => res.json())
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
     })
     .catch((err) => {
       console.log(err);
@@ -85,9 +90,8 @@ export function getFixedAssets() {
     });
 }
 
-
-
 export function getAccounts() {
+  
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();
@@ -103,10 +107,12 @@ export function getAccounts() {
             Prefer: "odata.maxpagesize=1000",
           },
         }
-      ).then((res) => res.json()) .catch((err) => {
-        console.log(err);
-        return err;
-      });
+      )
+        .then((res) => res.json())
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
     })
     .catch((err) => {
       // console.log(err);
@@ -114,9 +120,9 @@ export function getAccounts() {
     });
 }
 
-
-export function getBusinessPartnerByName(CardName:String|string|undefined){
-
+export function getBusinessPartnerByName(
+  CardName: String | string | undefined
+) {
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();
@@ -133,9 +139,12 @@ export function getBusinessPartnerByName(CardName:String|string|undefined){
         }
       )
         .then((res) => {
-          console.log(res.status)
+          console.log(res.status);
           if (res.status !== 200) {
-            return {error:true, message:"Could not fetch! Please check the bp name"}
+            return {
+              error: true,
+              message: "Could not fetch! Please check the bp name",
+            };
           } else {
             return res.json();
           }
@@ -149,6 +158,42 @@ export function getBusinessPartnerByName(CardName:String|string|undefined){
       console.log(err);
       return err;
     });
+}
+
+export async function saveJournalEntry(
+  Memo: String,
+  ReferenceDate: Date,
+  JournalEntryLines: JournalEntryLine[]
+) {
+  return sapLogin().then(async (res) => {
+    let COOKIE = res.headers.get("set-cookie");
+    localstorage.setItem("cookie", `${COOKIE}`);
+
+    return fetch(
+      `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/JournalEntries`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `${localstorage.getItem("cookie")}`,
+        },
+        body: JSON.stringify({
+          Memo,
+          ReferenceDate,
+          JournalEntryLines,
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        return res;
+      })
+      .catch((err) => {
+        console.log({ error: true, message: err?.message });
+        return { error: true, message: err?.message };
+      });
+  });
 }
 
 export default b1Router;

@@ -10,6 +10,7 @@ import {
 import { UserModel } from "../models/users";
 import { generatePaymentRequestNumber } from "../services/paymentRequests";
 import { send } from "../utils/sendEmailNode";
+import { saveJournalEntry } from "../services/b1";
 export const paymentRequestRouter = Router();
 
 paymentRequestRouter.get("/", async (req, res) => {
@@ -49,6 +50,13 @@ paymentRequestRouter.get("/:id", async (req, res) => {
 paymentRequestRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { updates } = req.body;
+  // console.log(updates)
+  if(updates?.journalEntry){
+    let {Memo, ReferenceDate, JournalEntryLines} = updates?.journalEntry
+    await saveJournalEntry(
+        Memo,ReferenceDate, JournalEntryLines
+    )
+  }
   let updatedRequest = await updateRequest(id, updates)
   if(updates.notifyApprover && updates.approver){
     //send notification
@@ -56,6 +64,6 @@ paymentRequestRouter.put("/:id", async (req, res) => {
 
     send('from',approver?.email,"Your Approval is needed",JSON.stringify(updatedRequest),'html','payment-request-approval')
   }
-  res.send(updatedRequest);
+  res.send(updates);
 });
 
