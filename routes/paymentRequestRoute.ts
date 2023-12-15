@@ -55,6 +55,7 @@ paymentRequestRouter.put("/:id", async (req, res) => {
     let { Memo, ReferenceDate, JournalEntryLines } = updates?.journalEntry;
     saveJournalEntry(Memo, ReferenceDate, JournalEntryLines)
       .then(async (response) => {
+        updates.journalEntry = response?.JdtNum
         let updatedRequest = await updateRequest(id, updates);
         if (updates.notifyApprover && updates.approver) {
           //send notification

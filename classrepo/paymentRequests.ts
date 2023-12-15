@@ -15,6 +15,7 @@ export class PaymentRequest implements iPaymentRequest {
   reviewedAt: Date;
   category: PaymentRequestCategory;
   currency: string
+  journalEntry: number;
 
   constructor(
     number: number,
@@ -30,7 +31,8 @@ export class PaymentRequest implements iPaymentRequest {
     reviewedAt: Date,
     paymentProofDocs: [],
     category: PaymentRequestCategory,
-    currency: string
+    currency: string,
+    journalEntry: number
   ) {
     this.number = number;
     this.description = description;
@@ -46,5 +48,6 @@ export class PaymentRequest implements iPaymentRequest {
     this.paymentProofDocs = paymentProofDocs
     this.category = category
     this.currency = currency
+    this.journalEntry = journalEntry
   }
 }
