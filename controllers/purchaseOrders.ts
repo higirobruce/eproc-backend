@@ -393,5 +393,6 @@ export async function getPOPaymentRequests(id: string) {
     return pipelineResult[0] || { totalPaymentVal: 0, poVal: -1 };
   } catch (err: any) {
     console.log(err);
+    return { totalPaymentVal: 0, poVal: -1 }
   }
 }
