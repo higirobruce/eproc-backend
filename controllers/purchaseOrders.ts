@@ -4,7 +4,8 @@ import { DocumentLines } from "../types/types";
 import { updateRequestStatus } from "./requests";
 import { LocalStorage } from "node-localstorage";
 import { sapLogin } from "../utils/sapB1Connection";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
+import { PaymentRequestModel } from "../models/paymentRequests";
 
 let localstorage = new LocalStorage("./scratch");
 
@@ -331,5 +332,59 @@ export async function getVendorRate(id: string) {
       error: true,
       errorMessage: `Error :${err}`,
     };
+  }
+}
+
+export async function getPOPaymentRequests(id: string) {
+  let pipeline = [
+    {
+      '$match': {
+        'purchaseOrder': new mongoose.Types.ObjectId('64b25361125896f034d7d9f7')
+      }
+    }, {
+      '$lookup': {
+        'from': 'purchaseorders', 
+        'localField': 'purchaseOrder', 
+        'foreignField': '_id', 
+        'as': 'purchaseOrderInfo'
+      }
+    }, {
+      '$unwind': '$purchaseOrderInfo'
+    }, {
+      '$unwind': {
+        'path': '$purchaseOrderInfo.items', 
+        'preserveNullAndEmptyArrays': true
+      }
+    }, {
+      '$group': {
+        '_id': {
+          'po': '$purchaseOrder', 
+          'poVal': {
+            '$multiply': [
+              '$purchaseOrderInfo.items.quantity', '$purchaseOrderInfo.items.estimatedUnitCost'
+            ]
+          }
+        }, 
+        'totalPaymentVal': {
+          '$sum': '$amount'
+        }
+      }
+    }, {
+      '$addFields': {
+        'poId': '$_id.po', 
+        'poVal': '$_id.poVal'
+      }
+    }, {
+      '$project': {
+        '_id': 0
+      }
+    }
+  ]
+  try {
+    let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
+    console.log(pipelineResult[0]);
+    return pipelineResult[0];
+  } catch (err: any) {
+    console.log(err);
   }
 }

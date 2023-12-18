@@ -13,7 +13,8 @@ import {
   updatePo,
   updatePOStatus,
   updateProgress,
-  getAllPOsByStatus
+  getAllPOsByStatus,
+  getPOPaymentRequests
 } from "../controllers/purchaseOrders";
 import { getVendorByCompanyName, setTempFields } from "../controllers/users";
 import { getBusinessPartnerByName } from "../services/b1";
@@ -49,6 +50,11 @@ poRouter.get("/byStatus/:status", async (req, res) => {
   status === "all"
     ? res.send(await getAllPOs())
     : res.send(await getAllPOsByStatus(status));
+});
+
+poRouter.get("/paymentProgress/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getPOPaymentRequests(id));
 });
 
 poRouter.get("/:id", async (req, res) => {
