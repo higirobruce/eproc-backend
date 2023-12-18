@@ -338,52 +338,59 @@ export async function getVendorRate(id: string) {
 export async function getPOPaymentRequests(id: string) {
   let pipeline = [
     {
-      '$match': {
-        'purchaseOrder': new mongoose.Types.ObjectId('64b25361125896f034d7d9f7')
-      }
-    }, {
-      '$lookup': {
-        'from': 'purchaseorders', 
-        'localField': 'purchaseOrder', 
-        'foreignField': '_id', 
-        'as': 'purchaseOrderInfo'
-      }
-    }, {
-      '$unwind': '$purchaseOrderInfo'
-    }, {
-      '$unwind': {
-        'path': '$purchaseOrderInfo.items', 
-        'preserveNullAndEmptyArrays': true
-      }
-    }, {
-      '$group': {
-        '_id': {
-          'po': '$purchaseOrder', 
-          'poVal': {
-            '$multiply': [
-              '$purchaseOrderInfo.items.quantity', '$purchaseOrderInfo.items.estimatedUnitCost'
-            ]
-          }
-        }, 
-        'totalPaymentVal': {
-          '$sum': '$amount'
-        }
-      }
-    }, {
-      '$addFields': {
-        'poId': '$_id.po', 
-        'poVal': '$_id.poVal'
-      }
-    }, {
-      '$project': {
-        '_id': 0
-      }
-    }
-  ]
+      $match: {
+        purchaseOrder: new mongoose.Types.ObjectId(id),
+      },
+    },
+    {
+      $lookup: {
+        from: "purchaseorders",
+        localField: "purchaseOrder",
+        foreignField: "_id",
+        as: "purchaseOrderInfo",
+      },
+    },
+    {
+      $unwind: "$purchaseOrderInfo",
+    },
+    {
+      $unwind: {
+        path: "$purchaseOrderInfo.items",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          po: "$purchaseOrder",
+          poVal: {
+            $multiply: [
+              "$purchaseOrderInfo.items.quantity",
+              "$purchaseOrderInfo.items.estimatedUnitCost",
+            ],
+          },
+        },
+        totalPaymentVal: {
+          $sum: "$amount",
+        },
+      },
+    },
+    {
+      $addFields: {
+        poId: "$_id.po",
+        poVal: "$_id.poVal",
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+      },
+    },
+  ];
   try {
     let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
-    console.log(pipelineResult[0]);
-    return pipelineResult[0];
+
+    return pipelineResult[0] || { totalPaymentVal: 0, poVal: -1 };
   } catch (err: any) {
     console.log(err);
   }
