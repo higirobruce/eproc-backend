@@ -101,7 +101,7 @@ export function getAccounts() {
       let COOKIE = res.headers.get("set-cookie");
       localstorage.setItem("cookie", `${COOKIE}`);
       return fetch(
-        `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/ChartOfAccounts?$filter= AccountLevel eq 5&$select=Name,Code,AccountLevel,AcctCurrency`,
+        `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/ChartOfAccounts?$filter= AccountLevel eq 5, ActiveAccount eq 'tYES'&$select=Name,Code,AccountLevel,AcctCurrency`,
         {
           method: "GET",
           headers: {
