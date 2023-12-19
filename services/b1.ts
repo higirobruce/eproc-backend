@@ -26,6 +26,12 @@ b1Router.get("/accounts", async (req, response) => {
   });
 });
 
+b1Router.get("/distributionRules", async (req, response) => {
+  await getDistributionRules().then((res) => {
+    response.send(res);
+  });
+});
+
 b1Router.get("/businessPartner/:name", async (req, response) => {
   await getBusinessPartnerByName(req.params.name).then((res) => {
     response.send(res.value);
@@ -89,7 +95,6 @@ export function getFixedAssets() {
 }
 
 export function getAccounts() {
-  
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();
@@ -108,7 +113,34 @@ export function getAccounts() {
       )
         .then((res) => res.json())
         .catch((err) => {
-          
+          return err;
+        });
+    })
+    .catch((err) => {
+      // console.log(err);
+      return err;
+    });
+}
+
+export function getDistributionRules() {
+  return sapLogin()
+    .then(async (res) => {
+      let resJson = await res.json();
+      let COOKIE = res.headers.get("set-cookie");
+      localstorage.setItem("cookie", `${COOKIE}`);
+      return fetch(
+        `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/DistributionRules?$select= FactorCode, FactorDescription&$filter= Active eq 'tYES'`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `${localstorage.getItem("cookie")}`,
+            Prefer: "odata.maxpagesize=1000",
+          },
+        }
+      )
+        .then((res) => res.json())
+        .catch((err) => {
           return err;
         });
     })
@@ -184,7 +216,6 @@ export async function saveJournalEntry(
     )
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         return res;
       })
       .catch((err) => {
