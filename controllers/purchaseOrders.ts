@@ -390,6 +390,7 @@ export async function getPOPaymentRequests(id: string) {
   ];
   try {
     let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
+    console.log(pipelineResult)
 
     return pipelineResult[0] || { totalPaymentVal: 0, poVal: -1 };
   } catch (err: any) {
