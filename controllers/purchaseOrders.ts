@@ -340,7 +340,7 @@ export async function getPOPaymentRequests(id: string) {
     {
       $match: {
         purchaseOrder: new mongoose.Types.ObjectId(id),
-        status:"paid"
+        status: "paid",
       },
     },
     {
@@ -366,8 +366,8 @@ export async function getPOPaymentRequests(id: string) {
           po: "$purchaseOrder",
           poVal: {
             $multiply: [
-              "$purchaseOrderInfo.items.quantity",
-              "$purchaseOrderInfo.items.estimatedUnitCost",
+              { $toInt: "$purchaseOrderInfo.items.quantity" },
+              { $toInt: "$purchaseOrderInfo.items.estimatedUnitCost" },
             ],
           },
         },
@@ -390,11 +390,11 @@ export async function getPOPaymentRequests(id: string) {
   ];
   try {
     let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
-    console.log(pipelineResult)
+    console.log(pipelineResult);
 
     return pipelineResult[0] || { totalPaymentVal: 0, poVal: -1 };
   } catch (err: any) {
     console.log(err);
-    return { totalPaymentVal: 0, poVal: -1 }
+    return { totalPaymentVal: 0, poVal: -1 };
   }
 }
