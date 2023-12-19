@@ -366,8 +366,12 @@ export async function getPOPaymentRequests(id: string) {
           po: "$purchaseOrder",
           poVal: {
             $multiply: [
-              { $toInt: "$purchaseOrderInfo.items.quantity" },
-              { $toInt: "$purchaseOrderInfo.items.estimatedUnitCost" },
+              {
+                $toInt: "$purchaseOrderInfo.items.quantity",
+              },
+              {
+                $toInt: "$purchaseOrderInfo.items.estimatedUnitCost",
+              },
             ],
           },
         },
@@ -386,6 +390,43 @@ export async function getPOPaymentRequests(id: string) {
       $project: {
         _id: 0,
       },
+    },
+    {
+      $group:
+        /**
+         * _id: The id of the group.
+         * fieldN: The first field name.
+         */
+        {
+          _id: {
+            poId: "$poId",
+            totalPaymentVal: "$totalPaymentVal",
+          },
+          poVal: {
+            $sum: "$poVal",
+          },
+        },
+    },
+    {
+      $addFields:
+        /**
+         * newField: The new field name.
+         * expression: The new field expression.
+         */
+        {
+          totalPaymentVal: "$_id.totalPaymentVal",
+          poId: "$_id.poId",
+        },
+    },
+    {
+      $project:
+        /**
+         * specifications: The fields to
+         *   include or exclude.
+         */
+        {
+          _id: 0,
+        },
     },
   ];
   try {
