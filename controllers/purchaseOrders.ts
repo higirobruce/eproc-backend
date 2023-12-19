@@ -340,6 +340,7 @@ export async function getPOPaymentRequests(id: string) {
     {
       $match: {
         purchaseOrder: new mongoose.Types.ObjectId(id),
+        status:"paid"
       },
     },
     {
