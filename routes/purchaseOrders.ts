@@ -14,7 +14,8 @@ import {
   updatePOStatus,
   updateProgress,
   getAllPOsByStatus,
-  getPOPaymentRequests
+  getPOPaymentRequests,
+  getPOPaidRequests,
 } from "../controllers/purchaseOrders";
 import { getVendorByCompanyName, setTempFields } from "../controllers/users";
 import { getBusinessPartnerByName } from "../services/b1";
@@ -40,12 +41,11 @@ poRouter.get("/byRequestId/:requestId", async (req, res) => {
 
 poRouter.get("/byVendorId/:vendorId", async (req, res) => {
   let { vendorId } = req.params;
-  console.log(vendorId)
+  console.log(vendorId);
   res.send(await getPOByVendorId(vendorId));
 });
 
 poRouter.get("/byStatus/:status", async (req, res) => {
-  
   let { status } = req.params;
   status === "all"
     ? res.send(await getAllPOs())
@@ -55,6 +55,11 @@ poRouter.get("/byStatus/:status", async (req, res) => {
 poRouter.get("/paymentProgress/:id", async (req, res) => {
   let { id } = req.params;
   res.send(await getPOPaymentRequests(id));
+});
+
+poRouter.get("/paymentsDone/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getPOPaidRequests(id));
 });
 
 poRouter.get("/:id", async (req, res) => {
@@ -109,9 +114,7 @@ poRouter.post("/", async (req, response) => {
           : null;
 
         if (b1Response_assets?.error || b1Response_nonAssets?.error) {
-          response
-            .status(500)
-            .send(b1Response_assets || b1Response_nonAssets);
+          response.status(500).send(b1Response_assets || b1Response_nonAssets);
         } else {
           let number = await generatePONumber();
           let refs = [];
@@ -137,19 +140,18 @@ poRouter.post("/", async (req, response) => {
 
           let createdPO = await savePO(poToCreate);
 
-
-
           if (createdPO) {
-
             send(
               "from",
               signatories[0]?.email,
               "Your Signature is needed",
-              JSON.stringify({ docId: createdPO?._id, docType: 'purchase-orders' }),
+              JSON.stringify({
+                docId: createdPO?._id,
+                docType: "purchase-orders",
+              }),
               "",
               "internalSignature"
             );
-
 
             if (refs?.length >= 1) {
               refs.forEach(async (r) => {
@@ -196,7 +198,7 @@ poRouter.put("/:id", async (req, res) => {
     newPo?.signatories.length >= signingIndex + 2
       ? newPo.signatories[signingIndex + 1]?.email
       : null;
-  
+
   if (pending) {
     newPo.status = "pending-signature";
   }
@@ -215,7 +217,12 @@ poRouter.put("/:id", async (req, res) => {
       "from",
       _vendor.tempEmail,
       "Your Purchase Order has been signed",
-      JSON.stringify({ email: _vendor.tempEmail, password: tempPass, docType: 'purchase-orders', docId: newPo?._id }),
+      JSON.stringify({
+        email: _vendor.tempEmail,
+        password: tempPass,
+        docType: "purchase-orders",
+        docId: newPo?._id,
+      }),
       "",
       "externalSignature"
     );
@@ -226,13 +233,12 @@ poRouter.put("/:id", async (req, res) => {
 
   let updated = await updatePo(id, newPo);
 
-
-  if(nextSignatory && !paritallySigned){
+  if (nextSignatory && !paritallySigned) {
     send(
       "from",
       nextSignatory,
       "Your Signature is needed",
-      JSON.stringify({ docId: newPo?._id, docType: 'purchase-orders' }),
+      JSON.stringify({ docId: newPo?._id, docType: "purchase-orders" }),
       "",
       "internalSignature"
     );
