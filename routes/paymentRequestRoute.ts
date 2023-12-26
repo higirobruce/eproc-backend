@@ -62,7 +62,7 @@ paymentRequestRouter.put("/:id", async (req, res) => {
           console.log(response)
           res.send({
             error: true,
-            message: response?.error?.message,
+            message: response?.error?.message.value,
           });
         } else {
           let updatedRequest = response?.JdtNum
