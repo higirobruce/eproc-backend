@@ -58,9 +58,10 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         updates.journalEntry = response?.JdtNum;
 
         if(response.error){
+          console.log(response)
           return response;
         }
-        
+
         let updatedRequest = response?.JdtNum
           ? await updateRequest(id, updates)
           : updates;
