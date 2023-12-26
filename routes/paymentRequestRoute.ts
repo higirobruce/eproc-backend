@@ -58,30 +58,30 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         updates.journalEntry = response?.JdtNum;
 
         if (response.error) {
-          return {
+          res.send({
             error: true,
             message: response?.error?.message,
-          };
+          });
+        } else {
+          let updatedRequest = response?.JdtNum
+            ? await updateRequest(id, updates)
+            : updates;
+          if (updates.notifyApprover && updates.approver) {
+            //send notification
+            let approver = await UserModel.findById(updates.approver);
+
+            send(
+              "from",
+              approver?.email,
+              "Your Approval is needed",
+              JSON.stringify(updatedRequest),
+              "html",
+              "payment-request-approval"
+            );
+          }
+
+          res.send(updates);
         }
-
-        let updatedRequest = response?.JdtNum
-          ? await updateRequest(id, updates)
-          : updates;
-        if (updates.notifyApprover && updates.approver) {
-          //send notification
-          let approver = await UserModel.findById(updates.approver);
-
-          send(
-            "from",
-            approver?.email,
-            "Your Approval is needed",
-            JSON.stringify(updatedRequest),
-            "html",
-            "payment-request-approval"
-          );
-        }
-
-        res.send(updates);
       })
       .catch((err) => {
         console.log(err);
