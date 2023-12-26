@@ -73,7 +73,6 @@ paymentRequestRouter.put("/:id", async (req, res) => {
             "payment-request-approval"
           );
         }
-        console.log(response)
         res.send(updates);
       })
       .catch((err) => {
