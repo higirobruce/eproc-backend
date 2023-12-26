@@ -50,14 +50,14 @@ paymentRequestRouter.get("/:id", async (req, res) => {
 paymentRequestRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { updates } = req.body;
-  // console.log(updates)
   if (updates?.journalEntry) {
     let { Memo, ReferenceDate, JournalEntryLines } = updates?.journalEntry;
     saveJournalEntry(Memo, ReferenceDate, JournalEntryLines)
-      .then(async (response) => {
-        updates.journalEntry = response?.JdtNum;
-        updates.journalEntryLines = JSON.parse(JournalEntryLines);
-
+    .then(async (response) => {
+      updates.journalEntry = response?.JdtNum;
+      updates.journalEntryLines = JournalEntryLines;
+      
+      console.log(updates)
         if (response.error) {
           console.log(response);
           res.send({
