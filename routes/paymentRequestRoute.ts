@@ -56,10 +56,10 @@ paymentRequestRouter.put("/:id", async (req, res) => {
     saveJournalEntry(Memo, ReferenceDate, JournalEntryLines)
       .then(async (response) => {
         updates.journalEntry = response?.JdtNum;
+        updates.journalEntryLines = JournalEntryLines;
 
         if (response.error) {
-
-          console.log(response)
+          console.log(response);
           res.send({
             error: true,
             message: response?.error?.message.value,
