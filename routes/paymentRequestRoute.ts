@@ -73,9 +73,11 @@ paymentRequestRouter.put("/:id", async (req, res) => {
             "payment-request-approval"
           );
         }
+        console.log(response)
         res.send(updates);
       })
       .catch((err) => {
+        console.log(err)
         res.status(500).send({
           error: true,
           message: `Error: ${err}`,
