@@ -66,6 +66,9 @@ export const PaymentRequestSchema = new Schema<iPaymentRequestDocument>(
     },
     journalEntry:{
       type: Number
+    },
+    journalEntryLines:{
+      type: []
     }
   },
   { timestamps: true }
