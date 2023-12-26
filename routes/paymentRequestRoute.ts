@@ -57,9 +57,11 @@ paymentRequestRouter.put("/:id", async (req, res) => {
       .then(async (response) => {
         updates.journalEntry = response?.JdtNum;
 
-        if(response.error){
-          console.log(response)
-          return response;
+        if (response.error) {
+          return {
+            error: true,
+            message: response?.error?.message,
+          };
         }
 
         let updatedRequest = response?.JdtNum
@@ -78,11 +80,11 @@ paymentRequestRouter.put("/:id", async (req, res) => {
             "payment-request-approval"
           );
         }
-        
+
         res.send(updates);
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         res.status(500).send({
           error: true,
           message: `Error: ${err}`,
