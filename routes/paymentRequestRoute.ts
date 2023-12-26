@@ -55,8 +55,11 @@ paymentRequestRouter.put("/:id", async (req, res) => {
     let { Memo, ReferenceDate, JournalEntryLines } = updates?.journalEntry;
     saveJournalEntry(Memo, ReferenceDate, JournalEntryLines)
       .then(async (response) => {
-        updates.journalEntry = response?.JdtNum
-        let updatedRequest = await updateRequest(id, updates);
+        updates.journalEntry = response?.JdtNum;
+
+        let updatedRequest = response?.JdtNum
+          ? await updateRequest(id, updates)
+          : updates;
         if (updates.notifyApprover && updates.approver) {
           //send notification
           let approver = await UserModel.findById(updates.approver);
@@ -75,7 +78,7 @@ paymentRequestRouter.put("/:id", async (req, res) => {
       .catch((err) => {
         res.status(500).send({
           error: true,
-          message: `Error: ${err}`
+          message: `Error: ${err}`,
         });
       });
   } else {
