@@ -284,6 +284,9 @@ export async function updateRequestFileName(
         { $set: { "paymentProofDocs.$": newFileName } }
       );
 
-  cb(null, newFileName);
-  return updatedRequest;
+  console.log(newFileName)
+  setTimeout(() => {
+    cb(null, newFileName);
+    return updatedRequest;
+  }, 2000);
 }
