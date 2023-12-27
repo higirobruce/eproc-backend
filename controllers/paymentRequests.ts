@@ -275,18 +275,34 @@ export async function updateRequestFileName(
   cb: any
 ) {
   let updatedRequest = !paymentProof
-    ? await PaymentRequestModel.updateOne(
+    ? PaymentRequestModel.updateOne(
         { docIds: oldFileName },
         { $set: { "docIds.$": newFileName } }
       )
-    : await PaymentRequestModel.updateOne(
+        .then((value) => {
+          console.log(newFileName);
+          setTimeout(() => {
+            cb(null, newFileName);
+            console.log(value);
+            return value;
+          }, 2000);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    : PaymentRequestModel.updateOne(
         { paymentProofDocs: oldFileName },
         { $set: { "paymentProofDocs.$": newFileName } }
-      );
-
-  console.log(newFileName)
-  setTimeout(() => {
-    cb(null, newFileName);
-    return updatedRequest;
-  }, 2000);
+      )
+        .then((value) => {
+          console.log(newFileName);
+          setTimeout(() => {
+            cb(null, newFileName);
+            console.log(value);
+            return value;
+          }, 2000);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 }
