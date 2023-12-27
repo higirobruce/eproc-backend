@@ -230,11 +230,11 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
     },
-    filename: function (req, file, cb) {
+    filename: async function (req, file, cb) {
       //update the request with the new file name
 
       if (req.query.paymentProof === "false") {
-        updateRequestFileName(
+        await updateRequestFileName(
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             // "_" +
@@ -245,7 +245,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
         );
       } else {
         
-        updateRequestFileName(
+        await updateRequestFileName(
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             // "_" +
