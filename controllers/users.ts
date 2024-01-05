@@ -423,6 +423,16 @@ export async function getB1SeriesFromNames(entityName: String) {
 
 export async function saveUser(user: User) {
   try {
+    let tin = user.tin;
+
+    let userWithSameTin = await UserModel.findOne({ tin });
+
+    if (userWithSameTin) {
+      return {
+        error: true,
+        errorMessage: `Error : A vendor with the same TIN already exists!`,
+      };
+    }
     let createdUser = await UserModel.create(user);
     return createdUser._id;
   } catch (err) {
