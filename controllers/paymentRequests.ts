@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import moment from "moment";
 import { PaymentRequestModel } from "../models/paymentRequests";
 import { UserModel } from "../models/users";
+import { logger } from "../utils/logger";
 
 export async function getAllPaymentRequests() {
   try {
@@ -42,10 +43,19 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     let createdPaymentRequest = await PaymentRequestModel.create(
       paymentRequest
     );
+    logger.log({
+      level: "info",
+      message: `${createdPaymentRequest} successfully created`,
+    });
     return createdPaymentRequest.populate(
       "purchaseOrder createdBy approver reviewedBy budgetLine"
     );
   } catch (err) {
+    logger.log({
+      level: "error",
+      message: `${paymentRequest} failed to be created created`,
+      issue: `${err}`
+    });
     throw err;
   }
 }

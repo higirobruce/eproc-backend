@@ -4,6 +4,7 @@ import fs from "fs";
 import { randomUUID } from "crypto";
 import path from "path";
 import { updateRequestFileName } from "../controllers/paymentRequests";
+import { logger } from "../utils/logger";
 
 export let uploadRouter = Router();
 
@@ -30,6 +31,12 @@ uploadRouter.post("/termsOfReference/", (req, res) => {
       console.log(err);
       return res.status(500);
     }
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.files
+      )} successfully created`,
+    });
     return res.status(200).send(req.files);
   });
 });
@@ -53,8 +60,12 @@ uploadRouter.post("/rdbCerts/", (req, res) => {
       console.log(err);
       return res.status(500);
     }
-
-    console.log(req.file);
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.file
+      )} successfully created`,
+    });
     return res.status(200).send(req.file);
   });
 });
@@ -78,6 +89,13 @@ uploadRouter.post("/vatCerts/", (req, res) => {
       console.log(err);
       return res.status(500);
     }
+
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.file
+      )} successfully created`,
+    });
 
     return res.status(200).send(req.file);
   });
@@ -103,6 +121,12 @@ uploadRouter.post("/tenderDocs/", (req, res) => {
       console.log(err);
       return res.status(500);
     }
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.file
+      )} successfully created`,
+    });
     return res.status(200).send(req.file);
   });
 });
@@ -127,6 +151,12 @@ uploadRouter.post("/bidDocs/", (req, res) => {
       return res.status(500);
     }
 
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.file
+      )} successfully created`,
+    });
     return res.status(200).send(req.file);
   });
 });
@@ -150,6 +180,12 @@ uploadRouter.post("/evaluationReports/", (req, res) => {
       console.log(err);
       return res.status(500);
     }
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.file
+      )} successfully created`,
+    });
 
     return res.status(200).send(req.file);
   });
@@ -175,6 +211,12 @@ uploadRouter.post("/reqAttachments/", (req, res) => {
       return res.status(500);
     }
 
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.file
+      )} successfully created`,
+    });
     return res.status(200).send(req.file);
   });
 });
@@ -189,14 +231,12 @@ uploadRouter.get("/:path", (req, res) => {
 });
 
 uploadRouter.post("/paymentRequests/", (req, res) => {
-
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
     },
 
     filename: function (req, file, cb) {
-     
       let fileName = randomUUID();
       cb(
         null,
@@ -208,7 +248,6 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
     },
   });
 
-  
   var upload = multer({ storage: storage }).array("files[]");
   // var upload = multer({ storage: storage }).array('file',100)
   upload(req, res, function (err) {
@@ -220,12 +259,18 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
       return res.status(500);
     }
 
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.files
+      )} successfully created`,
+    });
     return res.status(200).send(req.files);
   });
 });
 
 uploadRouter.post("/updatePaymentRequests/", (req, res) => {
-  console.log(req.query.id)
+  console.log(req.query.id);
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
@@ -234,7 +279,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
       //update the request with the new file name
 
       if (req.query.paymentProof === "false") {
-        await updateRequestFileName(
+        return await updateRequestFileName(
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             // "_" +
@@ -244,8 +289,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
           cb
         );
       } else {
-        
-        await updateRequestFileName(
+        return await updateRequestFileName(
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             // "_" +
@@ -253,7 +297,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
             path.extname(file.originalname),
           true,
           cb
-        )
+        );
       }
     },
   });
@@ -267,6 +311,12 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
       console.log(err);
       return res.status(500);
     }
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.file
+      )} successfully created`,
+    });
     return res.status(200).send(req.file);
   });
 });

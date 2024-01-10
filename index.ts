@@ -74,6 +74,11 @@ let auth = (req: Request, res: Response, next: NextFunction) => {
     .toString()
     .split(":");
   if (login && password && login === auth.login && password === auth.password) {
+    logger.log({
+      level: "info",
+      message: `${login} Successfully logged in.`,
+      payload: req.baseUrl,
+    });
     return next();
   }
   logger.log({
