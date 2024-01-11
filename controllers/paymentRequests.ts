@@ -54,7 +54,7 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     logger.log({
       level: "error",
       message: `${paymentRequest} failed to be created created`,
-      issue: `${err}`
+      issue: `${err}`,
     });
     throw err;
   }
@@ -92,6 +92,7 @@ export async function getPaymentRequestById(id: String) {
 
 export async function getAllRequestsByCreator(createdBy: any) {
   let query = {};
+  console.log(createdBy)
   if (createdBy && createdBy !== "null")
     query = {
       createdBy,
@@ -104,7 +105,7 @@ export async function getAllRequestsByCreator(createdBy: any) {
       status: { $ne: "withdrawn" },
     };
   let pipeline =
-    createdBy == "null"
+    createdBy == "null" || !createdBy
       ? [
           {
             $match: {
@@ -218,7 +219,7 @@ export async function getAllRequestsByCreator(createdBy: any) {
             $unwind: {
               path: "$purchaseOrder",
               includeArrayIndex: "string",
-              preserveNullAndEmptyArrays: false,
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -296,7 +297,8 @@ export async function getAllRequestsByCreator(createdBy: any) {
         ];
   let res1 = await PaymentRequestModel.aggregate(pipeline);
 
-  console.log(res1, createdBy);
+  console.log(res1.length)
+
   let reqs = await PaymentRequestModel.find(query).populate(
     "createdBy purchaseOrder approver reviewedBy budgetLine"
   );
@@ -304,7 +306,7 @@ export async function getAllRequestsByCreator(createdBy: any) {
   return res1;
 }
 
-export async function getAllRequestsByStatus(status: String, id: String) {
+export async function getAllRequestsByStatus(status: String, id: any) {
   let query: any =
     status === "pending-review"
       ? {
@@ -319,10 +321,113 @@ export async function getAllRequestsByStatus(status: String, id: String) {
           },
         }
       : { status };
-  if (id && id !== "null") query = { ...query, createdBy: id };
+
+  let query2 = {};
+
+  if (id && id !== "null")
+    query2 = {
+      $or: [
+        {
+          "purchaseOrder.vendor": new Types.ObjectId(id),
+        },
+        {
+          createdBy: new Types.ObjectId(id),
+        },
+      ],
+    };
+
+  let pipeline = [
+    {
+      $match: query,
+    },
+    {
+      $lookup: {
+        from: "purchaseorders",
+        localField: "purchaseOrder",
+        foreignField: "_id",
+        as: "purchaseOrder",
+      },
+    },
+    {
+      $unwind: {
+        path: "$purchaseOrder",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $match: query2,
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "createdBy",
+      },
+    },
+    {
+      $unwind: {
+        path: "$createdBy",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "approver",
+        foreignField: "_id",
+        as: "approver",
+      },
+    },
+    {
+      $unwind: {
+        path: "$approver",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "reviewedBy",
+        foreignField: "_id",
+        as: "reviewedBy",
+      },
+    },
+    {
+      $unwind: {
+        path: "$reviewedBy",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "budgetlines",
+        localField: "budgetLine",
+        foreignField: "_id",
+        as: "budgetLine",
+      },
+    },
+    {
+      $unwind: {
+        path: "$budgetLine",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ];
+
   let reqs = await PaymentRequestModel.find(query).populate(
     "createdBy purchaseOrder approver reviewedBy budgetLine"
   );
+
+  console.log(reqs.length);
+  let reqs2 = await PaymentRequestModel.aggregate(pipeline);
+
+  console.log(reqs2.length);
   return reqs;
 }
 
