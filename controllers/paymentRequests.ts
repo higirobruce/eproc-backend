@@ -142,9 +142,16 @@ export async function getAllRequestsByCreator(createdBy: any) {
           {
             $lookup: {
               from: "users",
-              localField: "creaetedBy",
+              localField: "createdBy",
               foreignField: "_id",
               as: "createdBy",
+            },
+          },
+          {
+            $unwind: {
+              path: "$createdBy",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -156,6 +163,13 @@ export async function getAllRequestsByCreator(createdBy: any) {
             },
           },
           {
+            $unwind: {
+              path: "$approver",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
             $lookup: {
               from: "users",
               localField: "reviewedBy",
@@ -164,11 +178,25 @@ export async function getAllRequestsByCreator(createdBy: any) {
             },
           },
           {
+            $unwind: {
+              path: "$reviewedBy",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
             $lookup: {
               from: "budgetlines",
               localField: "budgetLine",
               foreignField: "_id",
               as: "budgetLine",
+            },
+          },
+          {
+            $unwind: {
+              path: "$budgetLine",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
             },
           },
         ]
@@ -208,9 +236,16 @@ export async function getAllRequestsByCreator(createdBy: any) {
           {
             $lookup: {
               from: "users",
-              localField: "creaetedBy",
+              localField: "createdBy",
               foreignField: "_id",
               as: "createdBy",
+            },
+          },
+          {
+            $unwind: {
+              path: "$createdBy",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -222,6 +257,13 @@ export async function getAllRequestsByCreator(createdBy: any) {
             },
           },
           {
+            $unwind: {
+              path: "$approver",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
             $lookup: {
               from: "users",
               localField: "reviewedBy",
@@ -230,11 +272,25 @@ export async function getAllRequestsByCreator(createdBy: any) {
             },
           },
           {
+            $unwind: {
+              path: "$reviewedBy",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
             $lookup: {
               from: "budgetlines",
               localField: "budgetLine",
               foreignField: "_id",
               as: "budgetLine",
+            },
+          },
+          {
+            $unwind: {
+              path: "$budgetLine",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
             },
           },
         ];
