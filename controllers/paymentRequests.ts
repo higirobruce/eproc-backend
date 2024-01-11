@@ -92,7 +92,7 @@ export async function getPaymentRequestById(id: String) {
 
 export async function getAllRequestsByCreator(createdBy: any) {
   let query = {};
-  console.log(createdBy)
+  console.log(createdBy);
   if (createdBy && createdBy !== "null")
     query = {
       createdBy,
@@ -297,7 +297,7 @@ export async function getAllRequestsByCreator(createdBy: any) {
         ];
   let res1 = await PaymentRequestModel.aggregate(pipeline);
 
-  console.log(res1.length)
+  console.log(res1.length);
 
   let reqs = await PaymentRequestModel.find(query).populate(
     "createdBy purchaseOrder approver reviewedBy budgetLine"
@@ -590,38 +590,17 @@ export async function getReqCountsByStatus() {
 export async function updateRequestFileName(
   oldFileName: any,
   newFileName: string,
-  paymentProof: boolean,
-  cb: any
+  paymentProof: boolean
+  // cb: any
 ) {
   let updatedRequest = !paymentProof
-    ? PaymentRequestModel.updateOne(
+    ? await PaymentRequestModel.updateOne(
         { docIds: oldFileName },
         { $set: { "docIds.$": newFileName } }
       )
-        .then((value) => {
-          console.log(newFileName);
-          setTimeout(() => {
-            cb(null, newFileName);
-            console.log(value);
-            return value;
-          }, 2000);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-    : PaymentRequestModel.updateOne(
+    : await PaymentRequestModel.updateOne(
         { paymentProofDocs: oldFileName },
         { $set: { "paymentProofDocs.$": newFileName } }
-      )
-        .then((value) => {
-          console.log(newFileName);
-          setTimeout(() => {
-            cb(null, newFileName);
-            console.log(value);
-            return value;
-          }, 2000);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      );
+  return updateRequest;
 }

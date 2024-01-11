@@ -269,41 +269,32 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
   });
 });
 
-uploadRouter.post("/updatePaymentRequests/", (req, res) => {
-  console.log(req.query.id);
+uploadRouter.post("/updatePaymentRequests/", async (req, res) => {
+  let _file = "";
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
     },
-    filename: async function (req, file, cb) {
-      //update the request with the new file name
 
-      if (req.query.paymentProof === "false") {
-        return await updateRequestFileName(
-          req.query.id,
-          file.originalname.split(path.extname(file.originalname))[0] +
-            // "_" +
-            // Date.now() +
-            path.extname(file.originalname),
-          false,
-          cb
-        );
-      } else {
-        return await updateRequestFileName(
-          req.query.id,
-          file.originalname.split(path.extname(file.originalname))[0] +
-            // "_" +
-            // Date.now() +
-            path.extname(file.originalname),
-          true,
-          cb
-        );
-      }
+    filename: function (req, file, cb) {
+      _file =
+        file.originalname.split(path.extname(file.originalname))[0] +
+        path.extname(file.originalname);
+      let fileName = randomUUID();
+      cb(
+        null,
+        file.originalname.split(path.extname(file.originalname))[0] +
+          // "_" +
+          // Date.now() +
+          path.extname(file.originalname)
+      );
     },
   });
 
+  
   var upload = multer({ storage: storage }).single("file");
-  upload(req, res, function (err) {
+  // var upload = multer({ storage: storage }).array('file',100)
+  upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
       return res.status(500);
@@ -311,15 +302,76 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
       console.log(err);
       return res.status(500);
     }
+
     logger.log({
       level: "info",
       message: `Payment request File(s) ${JSON.stringify(
         req.file
       )} successfully created`,
     });
+
+    console.log(req.query.id,
+      _file,)
+    await updateRequestFileName(
+      req.query.id,
+      _file,
+      req.query.paymentProof === "true"
+    );
     return res.status(200).send(req.file);
   });
 });
+
+// uploadRouter.post("/updatePaymentRequestsOld/", (req, res) => {
+//   console.log(req.query.id);
+//   var storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//       cb(null, "dist/public/paymentRequests");
+//     },
+//     filename: async function (req, file, cb) {
+//       //update the request with the new file name
+
+//       if (req.query.paymentProof === "false") {
+//         return await updateRequestFileName(
+//           req.query.id,
+//           file.originalname.split(path.extname(file.originalname))[0] +
+//             // "_" +
+//             // Date.now() +
+//             path.extname(file.originalname),
+//           false,
+//           cb
+//         );
+//       } else {
+//         return await updateRequestFileName(
+//           req.query.id,
+//           file.originalname.split(path.extname(file.originalname))[0] +
+//             // "_" +
+//             // Date.now() +
+//             path.extname(file.originalname),
+//           true,
+//           cb
+//         );
+//       }
+//     },
+//   });
+
+//   var upload = multer({ storage: storage }).single("file");
+//   upload(req, res, function (err) {
+//     if (err instanceof multer.MulterError) {
+//       console.log(err);
+//       return res.status(500);
+//     } else if (err) {
+//       console.log(err);
+//       return res.status(500);
+//     }
+//     logger.log({
+//       level: "info",
+//       message: `Payment request File(s) ${JSON.stringify(
+//         req.file
+//       )} successfully created`,
+//     });
+//     return res.status(200).send(req.file);
+//   });
+// });
 
 uploadRouter.get("/check/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
