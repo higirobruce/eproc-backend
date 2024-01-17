@@ -243,7 +243,7 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
         null,
         file.originalname.split(path.extname(file.originalname))[0] +
           "_" +
-          moment().format('DDMMMYY') +
+          moment().format('DDMMMYY-hms') +
           path.extname(file.originalname)
       );
     },
@@ -285,8 +285,7 @@ uploadRouter.post("/updatePaymentRequests/", async (req, res) => {
       cb(
         null,
         file.originalname.split(path.extname(file.originalname))[0] +
-          "_" +
-          moment().format('DDMMMYY') +
+        moment().format('DDMMMYY-hms') +
           path.extname(file.originalname)
       );
     },
