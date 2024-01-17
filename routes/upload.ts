@@ -4,6 +4,7 @@ import fs from "fs";
 import { randomUUID } from "crypto";
 import path from "path";
 import { updateRequestFileName } from "../controllers/paymentRequests";
+import moment from "moment";
 
 export let uploadRouter = Router();
 
@@ -189,26 +190,23 @@ uploadRouter.get("/:path", (req, res) => {
 });
 
 uploadRouter.post("/paymentRequests/", (req, res) => {
-
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
     },
 
     filename: function (req, file, cb) {
-     
       let fileName = randomUUID();
       cb(
         null,
         file.originalname.split(path.extname(file.originalname))[0] +
-          // "_" +
-          // Date.now() +
+          "_" +
+          moment().format("DDMMMYY-hms") +
           path.extname(file.originalname)
       );
     },
   });
 
-  
   var upload = multer({ storage: storage }).array("files[]");
   // var upload = multer({ storage: storage }).array('file',100)
   upload(req, res, function (err) {
@@ -225,7 +223,7 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
 });
 
 uploadRouter.post("/updatePaymentRequests/", (req, res) => {
-  console.log(req.query.id)
+  console.log(req.query.id);
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/paymentRequests");
@@ -237,23 +235,22 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
         updateRequestFileName(
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
-            // "_" +
-            // Date.now() +
+            "_" +
+            moment().format("DDMMMYY") +
             path.extname(file.originalname),
           false,
           cb
         );
       } else {
-        
         updateRequestFileName(
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
-            // "_" +
-            // Date.now() +
+            "_" +
+            moment().format("DDMMMYY") +
             path.extname(file.originalname),
           true,
           cb
-        )
+        );
       }
     },
   });
