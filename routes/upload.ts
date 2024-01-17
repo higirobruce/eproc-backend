@@ -5,6 +5,7 @@ import { randomUUID } from "crypto";
 import path from "path";
 import { updateRequestFileName } from "../controllers/paymentRequests";
 import { logger } from "../utils/logger";
+import moment from "moment";
 
 export let uploadRouter = Router();
 
@@ -241,8 +242,8 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
       cb(
         null,
         file.originalname.split(path.extname(file.originalname))[0] +
-          // "_" +
-          // Date.now() +
+          "_" +
+          moment().format('DDMMMYY') +
           path.extname(file.originalname)
       );
     },
@@ -284,8 +285,8 @@ uploadRouter.post("/updatePaymentRequests/", async (req, res) => {
       cb(
         null,
         file.originalname.split(path.extname(file.originalname))[0] +
-          // "_" +
-          // Date.now() +
+          "_" +
+          moment().format('DDMMMYY') +
           path.extname(file.originalname)
       );
     },
