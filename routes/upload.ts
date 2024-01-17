@@ -236,7 +236,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
-            moment().format("DDMMMYY") +
+            moment().format("DDMMMYY-hms") +
             path.extname(file.originalname),
           false,
           cb
@@ -246,7 +246,7 @@ uploadRouter.post("/updatePaymentRequests/", (req, res) => {
           req.query.id,
           file.originalname.split(path.extname(file.originalname))[0] +
             "_" +
-            moment().format("DDMMMYY") +
+            moment().format("DDMMMYY-hms") +
             path.extname(file.originalname),
           true,
           cb
