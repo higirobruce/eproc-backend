@@ -22,7 +22,8 @@ export interface iPaymentRequest {
   category: PaymentRequestCategory
   currency: String;
   journalEntry: number
-  journalEntryLines: []
+  journalEntryLines: [],
+  paymentDetails: Object
 }
 
 export interface iPaymentRequestDocument

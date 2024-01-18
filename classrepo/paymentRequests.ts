@@ -20,6 +20,7 @@ export class PaymentRequest implements iPaymentRequest {
   currency: string;
   journalEntry: number;
   journalEntryLines: [];
+  paymentDetails: Object;
 
   constructor(
     number: number,
@@ -37,7 +38,8 @@ export class PaymentRequest implements iPaymentRequest {
     category: PaymentRequestCategory,
     currency: string,
     journalEntry: number,
-    journalEntryLines: []
+    journalEntryLines: [],
+    paymentDetails: Object
   ) {
     this.number = number;
     this.description = description;
@@ -55,5 +57,6 @@ export class PaymentRequest implements iPaymentRequest {
     this.currency = currency;
     this.journalEntry = journalEntry;
     this.journalEntryLines = journalEntryLines;
+    this.paymentDetails = paymentDetails;
   }
 }
