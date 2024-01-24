@@ -65,3 +65,10 @@ export type DocumentLines = {
   DocDate: Date;
   VatGroup: String;
 };
+
+export type JournalEntryLine = {
+  AccountCode: String;
+  Debit: number;
+  FCCurrency: String;
+  LineMemo: String;
+};
