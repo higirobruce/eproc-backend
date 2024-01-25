@@ -1,4 +1,3 @@
-
 import { randomUUID } from "crypto";
 import { Router } from "express";
 import { PurchaseOrder } from "../classrepo/purchaseOrders";
@@ -23,7 +22,6 @@ import { getBusinessPartnerByName } from "../services/b1";
 import { generatePONumber } from "../services/purchaseOrders";
 import { hashPassword } from "../services/users";
 import { send } from "../utils/sendEmailNode";
-
 
 export const poRouter = Router();
 
@@ -94,7 +92,7 @@ poRouter.post("/", async (req, response) => {
   )
     .then(async (res) => {
       let bp = res.value;
-      
+
       if (bp?.length >= 1) {
         CardCode = bp[0].CardCode;
 
@@ -120,7 +118,7 @@ poRouter.post("/", async (req, response) => {
           response.status(500).send(b1Response_assets || b1Response_nonAssets);
         } else {
           let number = await generatePONumber();
-          let refs = [];
+          let refs: any[] = [];
           b1Response_assets && refs.push(b1Response_assets.DocNum!);
           b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum!);
 
