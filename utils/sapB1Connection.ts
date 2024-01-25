@@ -1,4 +1,5 @@
 import { LocalStorage } from "node-localstorage";
+import fetch from 'cross-fetch';
 
 let localstorage = new LocalStorage("./dist");
 

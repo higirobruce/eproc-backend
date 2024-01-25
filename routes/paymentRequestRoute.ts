@@ -10,6 +10,7 @@ import {
 import { UserModel } from "../models/users";
 import { generatePaymentRequestNumber } from "../services/paymentRequests";
 import { send } from "../utils/sendEmailNode";
+import { saveJournalEntry } from "../services/b1";
 export const paymentRequestRouter = Router();
 
 paymentRequestRouter.get("/", async (req, res) => {
@@ -29,7 +30,7 @@ paymentRequestRouter.post("/", async (req, res) => {
     let newPaymentRequest = await savePaymentRequest(req.body);
     res.status(201).send(newPaymentRequest);
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).send({ error: `${err}` });
   }
 });
@@ -49,13 +50,63 @@ paymentRequestRouter.get("/:id", async (req, res) => {
 paymentRequestRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { updates } = req.body;
-  let updatedRequest = await updateRequest(id, updates)
-  if(updates.notifyApprover && updates.approver){
-    //send notification
-    let approver = await UserModel.findById(updates.approver);
+  if (updates?.journalEntry) {
+    let { Memo, ReferenceDate, JournalEntryLines } = updates?.journalEntry;
+    saveJournalEntry(Memo, ReferenceDate, JournalEntryLines)
+    .then(async (response) => {
+      updates.journalEntry = response?.JdtNum;
+      updates.journalEntryLines = JournalEntryLines;
+      
+      console.log(updates)
+        if (response.error) {
+          console.log(response);
+          res.send({
+            error: true,
+            message: response?.error?.message.value,
+          });
+        } else {
+          let updatedRequest = response?.JdtNum
+            ? await updateRequest(id, updates)
+            : updates;
+          if (updates.notifyApprover && updates.approver) {
+            //send notification
+            let approver = await UserModel.findById(updates.approver);
 
-    send('from',approver?.email,"Your Approval is needed",JSON.stringify(updatedRequest),'html','payment-request-approval')
+            send(
+              "from",
+              approver?.email,
+              "Your Approval is needed",
+              JSON.stringify(updatedRequest),
+              "html",
+              "payment-request-approval"
+            );
+          }
+
+          res.send(updates);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).send({
+          error: true,
+          message: `Error: ${err}`,
+        });
+      });
+  } else {
+    let updatedRequest = await updateRequest(id, updates);
+    if (updates.notifyApprover && updates.approver) {
+      //send notification
+      let approver = await UserModel.findById(updates.approver);
+
+      send(
+        "from",
+        approver?.email,
+        "Your Approval is needed",
+        JSON.stringify(updatedRequest),
+        "html",
+        "payment-request-approval"
+      );
+    }
+    res.send(updates);
   }
-  res.send(updatedRequest);
 });
-

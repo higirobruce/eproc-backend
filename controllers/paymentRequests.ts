@@ -1,6 +1,8 @@
+import { Types } from "mongoose";
 import moment from "moment";
 import { PaymentRequestModel } from "../models/paymentRequests";
 import { UserModel } from "../models/users";
+import { logger } from "../utils/logger";
 
 export async function getAllPaymentRequests() {
   try {
@@ -41,10 +43,19 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     let createdPaymentRequest = await PaymentRequestModel.create(
       paymentRequest
     );
+    logger.log({
+      level: "info",
+      message: `${createdPaymentRequest} successfully created`,
+    });
     return createdPaymentRequest.populate(
       "purchaseOrder createdBy approver reviewedBy budgetLine"
     );
   } catch (err) {
+    logger.log({
+      level: "error",
+      message: `${paymentRequest} failed to be created created`,
+      issue: `${err}`,
+    });
     throw err;
   }
 }
@@ -79,18 +90,223 @@ export async function getPaymentRequestById(id: String) {
   return reqs;
 }
 
-export async function getAllRequestsByCreator(createdBy: String) {
+export async function getAllRequestsByCreator(createdBy: any) {
   let query = {};
+  console.log(createdBy);
   if (createdBy && createdBy !== "null")
-    query = { createdBy, status: { $ne: "withdrawn" } };
+    query = {
+      createdBy,
+      $or: [
+        {
+          createdBy,
+        },
+      ],
+
+      status: { $ne: "withdrawn" },
+    };
+  let pipeline =
+    createdBy == "null" || !createdBy
+      ? [
+          {
+            $match: {
+              status: { $ne: "withdrawn" },
+            },
+          },
+          {
+            $lookup: {
+              from: "purchaseorders",
+              localField: "purchaseOrder",
+              foreignField: "_id",
+              as: "purchaseOrder",
+            },
+          },
+          {
+            $unwind: {
+              path: "$purchaseOrder",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          // {
+          //   $match: {
+          //     $or: [
+          //       {
+          //         "purchaseOrder.vendor": createdBy
+          //         ,
+          //       },
+          //       {
+          //         createdBy: createdBy,
+          //       },
+          //     ],
+          //   },
+          // },
+          {
+            $lookup: {
+              from: "users",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "createdBy",
+            },
+          },
+          {
+            $unwind: {
+              path: "$createdBy",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "approver",
+              foreignField: "_id",
+              as: "approver",
+            },
+          },
+          {
+            $unwind: {
+              path: "$approver",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "reviewedBy",
+              foreignField: "_id",
+              as: "reviewedBy",
+            },
+          },
+          {
+            $unwind: {
+              path: "$reviewedBy",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "budgetlines",
+              localField: "budgetLine",
+              foreignField: "_id",
+              as: "budgetLine",
+            },
+          },
+          {
+            $unwind: {
+              path: "$budgetLine",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ]
+      : [
+          {
+            $match: {
+              status: { $ne: "withdrawn" },
+            },
+          },
+          {
+            $lookup: {
+              from: "purchaseorders",
+              localField: "purchaseOrder",
+              foreignField: "_id",
+              as: "purchaseOrder",
+            },
+          },
+          {
+            $unwind: {
+              path: "$purchaseOrder",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $match: {
+              $or: [
+                {
+                  "purchaseOrder.vendor": new Types.ObjectId(createdBy),
+                },
+                {
+                  createdBy: new Types.ObjectId(createdBy),
+                },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "createdBy",
+            },
+          },
+          {
+            $unwind: {
+              path: "$createdBy",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "approver",
+              foreignField: "_id",
+              as: "approver",
+            },
+          },
+          {
+            $unwind: {
+              path: "$approver",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "reviewedBy",
+              foreignField: "_id",
+              as: "reviewedBy",
+            },
+          },
+          {
+            $unwind: {
+              path: "$reviewedBy",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "budgetlines",
+              localField: "budgetLine",
+              foreignField: "_id",
+              as: "budgetLine",
+            },
+          },
+          {
+            $unwind: {
+              path: "$budgetLine",
+              includeArrayIndex: "string",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ];
+  let res1 = await PaymentRequestModel.aggregate(pipeline);
+
+  console.log(res1.length);
+
   let reqs = await PaymentRequestModel.find(query).populate(
     "createdBy purchaseOrder approver reviewedBy budgetLine"
   );
 
-  return reqs;
+  return res1;
 }
 
-export async function getAllRequestsByStatus(status: String, id: String) {
+export async function getAllRequestsByStatus(status: String, id: any) {
   let query: any =
     status === "pending-review"
       ? {
@@ -105,10 +321,113 @@ export async function getAllRequestsByStatus(status: String, id: String) {
           },
         }
       : { status };
-  if (id && id !== "null") query = { ...query, createdBy: id };
+
+  let query2 = {};
+
+  if (id && id !== "null")
+    query2 = {
+      $or: [
+        {
+          "purchaseOrder.vendor": new Types.ObjectId(id),
+        },
+        {
+          createdBy: new Types.ObjectId(id),
+        },
+      ],
+    };
+
+  let pipeline = [
+    {
+      $match: query,
+    },
+    {
+      $lookup: {
+        from: "purchaseorders",
+        localField: "purchaseOrder",
+        foreignField: "_id",
+        as: "purchaseOrder",
+      },
+    },
+    {
+      $unwind: {
+        path: "$purchaseOrder",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $match: query2,
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "createdBy",
+      },
+    },
+    {
+      $unwind: {
+        path: "$createdBy",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "approver",
+        foreignField: "_id",
+        as: "approver",
+      },
+    },
+    {
+      $unwind: {
+        path: "$approver",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "reviewedBy",
+        foreignField: "_id",
+        as: "reviewedBy",
+      },
+    },
+    {
+      $unwind: {
+        path: "$reviewedBy",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "budgetlines",
+        localField: "budgetLine",
+        foreignField: "_id",
+        as: "budgetLine",
+      },
+    },
+    {
+      $unwind: {
+        path: "$budgetLine",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ];
+
   let reqs = await PaymentRequestModel.find(query).populate(
     "createdBy purchaseOrder approver reviewedBy budgetLine"
   );
+
+  console.log(reqs.length);
+  let reqs2 = await PaymentRequestModel.aggregate(pipeline);
+
+  console.log(reqs2.length);
   return reqs;
 }
 
@@ -271,8 +590,8 @@ export async function getReqCountsByStatus() {
 export async function updateRequestFileName(
   oldFileName: any,
   newFileName: string,
-  paymentProof: boolean,
-  cb: any
+  paymentProof: boolean
+  // cb: any
 ) {
   let updatedRequest = !paymentProof
     ? await PaymentRequestModel.updateOne(
@@ -283,7 +602,5 @@ export async function updateRequestFileName(
         { paymentProofDocs: oldFileName },
         { $set: { "paymentProofDocs.$": newFileName } }
       );
-
-  cb(null, newFileName);
-  return updatedRequest;
+  return updateRequest;
 }

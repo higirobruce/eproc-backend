@@ -8,6 +8,7 @@ import {
 } from "./routes/usersRoute";
 import { requetsRouter } from "./routes/requestsRoute";
 import { serviceCategoryRouter } from "./routes/serviceCategories";
+import { rdbServiceCategoryRouter } from "./routes/rdbServiceCategories";
 import { dptRouter } from "./routes/dptRoute";
 import { tenderRouter } from "./routes/tenders";
 import { submissionsRouter } from "./routes/bidSubmissionsRoute";
@@ -74,6 +75,11 @@ let auth = (req: Request, res: Response, next: NextFunction) => {
     .toString()
     .split(":");
   if (login && password && login === auth.login && password === auth.password) {
+    logger.log({
+      level: "info",
+      message: `${login} Successfully logged in.`,
+      payload: req.baseUrl,
+    });
     return next();
   }
   logger.log({
@@ -123,6 +129,7 @@ app.use("/users", auth, userRouter);
 app.use("/requests", ensureUserAuthorized, requetsRouter);
 app.use("/dpts", dptRouter);
 app.use("/serviceCategories", serviceCategoryRouter);
+app.use("/rdbServiceCategories", rdbServiceCategoryRouter);
 app.use("/tenders",ensureUserAuthorized, tenderRouter);
 app.use("/submissions",ensureUserAuthorized, submissionsRouter);
 app.use("/purchaseOrders",ensureUserAuthorized, poRouter);

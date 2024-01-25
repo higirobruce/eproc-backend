@@ -4,8 +4,9 @@ import { DocumentLines } from "../types/types";
 import { updateRequestStatus } from "./requests";
 import { LocalStorage } from "node-localstorage";
 import { sapLogin } from "../utils/sapB1Connection";
-import mongoose from "mongoose";
-
+import mongoose, { mongo } from "mongoose";
+import { PaymentRequestModel } from "../models/paymentRequests";
+import { fetch } from 'cross-fetch';
 let localstorage = new LocalStorage("./scratch");
 
 /**
@@ -250,6 +251,7 @@ export async function savePOInB1(
   DocumentLines: DocumentLines[],
   DocCurrency: String
 ) {
+  console.log('heeere')
   return sapLogin().then(async (res) => {
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
@@ -331,5 +333,215 @@ export async function getVendorRate(id: string) {
       error: true,
       errorMessage: `Error :${err}`,
     };
+  }
+}
+
+export async function getPOPaymentRequests(id: string) {
+  let pipeline = [
+    {
+      $match: {
+        purchaseOrder: new mongoose.Types.ObjectId(id),
+        status: {$nin:['withdrawn','declined']}
+      },
+    },
+    {
+      $lookup: {
+        from: "purchaseorders",
+        localField: "purchaseOrder",
+        foreignField: "_id",
+        as: "purchaseOrderInfo",
+      },
+    },
+    {
+      $unwind: "$purchaseOrderInfo",
+    },
+    {
+      $unwind: {
+        path: "$purchaseOrderInfo.items",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          po: "$purchaseOrder",
+          poVal: {
+            $multiply: [
+              {
+                $toInt: "$purchaseOrderInfo.items.quantity",
+              },
+              {
+                $toInt: "$purchaseOrderInfo.items.estimatedUnitCost",
+              },
+            ],
+          },
+        },
+        totalPaymentVal: {
+          $sum: "$amount",
+        },
+      },
+    },
+    {
+      $addFields: {
+        poId: "$_id.po",
+        poVal: "$_id.poVal",
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+      },
+    },
+    {
+      $group:
+        /**
+         * _id: The id of the group.
+         * fieldN: The first field name.
+         */
+        {
+          _id: {
+            poId: "$poId",
+            totalPaymentVal: "$totalPaymentVal",
+          },
+          poVal: {
+            $sum: "$poVal",
+          },
+        },
+    },
+    {
+      $addFields:
+        /**
+         * newField: The new field name.
+         * expression: The new field expression.
+         */
+        {
+          totalPaymentVal: "$_id.totalPaymentVal",
+          poId: "$_id.poId",
+        },
+    },
+    {
+      $project:
+        /**
+         * specifications: The fields to
+         *   include or exclude.
+         */
+        {
+          _id: 0,
+        },
+    },
+  ];
+  try {
+    let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
+    console.log(pipelineResult);
+
+    return pipelineResult[0] || { totalPaymentVal: 0, poVal: -1 };
+  } catch (err: any) {
+    console.log(err);
+    return { totalPaymentVal: 0, poVal: -1 };
+  }
+}
+
+export async function getPOPaidRequests(id: string) {
+  let pipeline = [
+    {
+      $match: {
+        purchaseOrder: new mongoose.Types.ObjectId(id),
+        status: {$in:['paid']}
+      },
+    },
+    {
+      $lookup: {
+        from: "purchaseorders",
+        localField: "purchaseOrder",
+        foreignField: "_id",
+        as: "purchaseOrderInfo",
+      },
+    },
+    {
+      $unwind: "$purchaseOrderInfo",
+    },
+    {
+      $unwind: {
+        path: "$purchaseOrderInfo.items",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          po: "$purchaseOrder",
+          poVal: {
+            $multiply: [
+              {
+                $toInt: "$purchaseOrderInfo.items.quantity",
+              },
+              {
+                $toInt: "$purchaseOrderInfo.items.estimatedUnitCost",
+              },
+            ],
+          },
+        },
+        totalPaymentVal: {
+          $sum: "$amount",
+        },
+      },
+    },
+    {
+      $addFields: {
+        poId: "$_id.po",
+        poVal: "$_id.poVal",
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+      },
+    },
+    {
+      $group:
+        /**
+         * _id: The id of the group.
+         * fieldN: The first field name.
+         */
+        {
+          _id: {
+            poId: "$poId",
+            totalPaymentVal: "$totalPaymentVal",
+          },
+          poVal: {
+            $sum: "$poVal",
+          },
+        },
+    },
+    {
+      $addFields:
+        /**
+         * newField: The new field name.
+         * expression: The new field expression.
+         */
+        {
+          totalPaymentVal: "$_id.totalPaymentVal",
+          poId: "$_id.poId",
+        },
+    },
+    {
+      $project:
+        /**
+         * specifications: The fields to
+         *   include or exclude.
+         */
+        {
+          _id: 0,
+        },
+    },
+  ];
+  try {
+    let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
+    console.log(pipelineResult);
+
+    return pipelineResult[0] || { totalPaymentVal: 0, poVal: -1 };
+  } catch (err: any) {
+    console.log(err);
+    return { totalPaymentVal: 0, poVal: -1 };
   }
 }

@@ -423,9 +423,20 @@ export async function getB1SeriesFromNames(entityName: String) {
 
 export async function saveUser(user: User) {
   try {
+    let tin = user.tin;
+
+    let userWithSameTin = await UserModel.findOne({ tin });
+
+    if (userWithSameTin && typeof tin == "number") {
+      return {
+        error: true,
+        errorMessage: `Error : A vendor with the same TIN already exists!`,
+      };
+    }
     let createdUser = await UserModel.create(user);
     return createdUser._id;
   } catch (err) {
+    console.log(err);
     return {
       error: true,
       errorMessage: `Error :${err}`,
@@ -636,7 +647,7 @@ export async function updateMyPassword(
 }
 
 export async function resetPassword(email: String) {
-  let user;
+  let user = null;
   try {
     let newPassword = generatePassword(8);
     user = await UserModel.findOneAndUpdate(
@@ -650,7 +661,7 @@ export async function resetPassword(email: String) {
         "",
         email,
         "Password reset",
-        JSON.stringify({ email: user?.email, password: newPassword }),
+        JSON.stringify({ email: user.email, password: newPassword }),
         "",
         "passwordReset"
       );

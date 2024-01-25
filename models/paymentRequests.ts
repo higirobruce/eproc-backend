@@ -63,6 +63,15 @@ export const PaymentRequestSchema = new Schema<iPaymentRequestDocument>(
     currency: {
       type: String,
       default: "RWF"
+    },
+    journalEntry:{
+      type: Number
+    },
+    journalEntryLines:{
+      type: []
+    },
+    paymentDetails:{
+      type: Object
     }
   },
   { timestamps: true }

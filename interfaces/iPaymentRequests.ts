@@ -21,6 +21,9 @@ export interface iPaymentRequest {
   paymentProofDocs:[];
   category: PaymentRequestCategory
   currency: String;
+  journalEntry: number
+  journalEntryLines: [],
+  paymentDetails: Object
 }
 
 export interface iPaymentRequestDocument
