@@ -121,8 +121,8 @@ poRouter.post("/", async (req, response) => {
         } else {
           let number = await generatePONumber();
           let refs = [];
-          b1Response_assets && refs.push(b1Response_assets.DocNum);
-          b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
+          b1Response_assets && refs.push(b1Response_assets.DocNum!);
+          b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum!);
 
           let poToCreate = new PurchaseOrder(
             number,
