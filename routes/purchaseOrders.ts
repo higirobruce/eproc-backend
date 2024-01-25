@@ -1,3 +1,4 @@
+
 import { randomUUID } from "crypto";
 import { Router } from "express";
 import { PurchaseOrder } from "../classrepo/purchaseOrders";
@@ -22,6 +23,7 @@ import { getBusinessPartnerByName } from "../services/b1";
 import { generatePONumber } from "../services/purchaseOrders";
 import { hashPassword } from "../services/users";
 import { send } from "../utils/sendEmailNode";
+
 
 export const poRouter = Router();
 
@@ -92,6 +94,7 @@ poRouter.post("/", async (req, response) => {
   )
     .then(async (res) => {
       let bp = res.value;
+      
       if (bp?.length >= 1) {
         CardCode = bp[0].CardCode;
 

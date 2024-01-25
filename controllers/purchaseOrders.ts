@@ -6,7 +6,7 @@ import { LocalStorage } from "node-localstorage";
 import { sapLogin } from "../utils/sapB1Connection";
 import mongoose, { mongo } from "mongoose";
 import { PaymentRequestModel } from "../models/paymentRequests";
-
+import { fetch } from 'cross-fetch';
 let localstorage = new LocalStorage("./scratch");
 
 /**
@@ -251,6 +251,7 @@ export async function savePOInB1(
   DocumentLines: DocumentLines[],
   DocCurrency: String
 ) {
+  console.log('heeere')
   return sapLogin().then(async (res) => {
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
