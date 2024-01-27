@@ -38,6 +38,12 @@ b1Router.get("/businessPartner/:name", async (req, response) => {
   });
 });
 
+b1Router.put("/businessPartner/:id", async (req, response) => {
+  await getBusinessPartnerByName(req.params.id).then((res) => {
+    response.send(res.value);
+  });
+});
+
 export function getVatGroups() {
   return sapLogin()
     .then(async (res) => {
@@ -190,6 +196,85 @@ export function getBusinessPartnerByName(
     });
 }
 
+export function getBusinessPartnerById(CardCode: String | string | undefined) {
+  return sapLogin()
+    .then(async (res) => {
+      let resJson = await res.json();
+      let COOKIE = res.headers.get("set-cookie");
+      localstorage.setItem("cookie", `${COOKIE}`);
+      return fetch(
+        `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners?$select=CardName,CardCode&$filter=CardCode eq '${CardCode}'`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `${localstorage.getItem("cookie")}`,
+          },
+        }
+      )
+        .then((res) => {
+          console.log(res.status);
+          if (res.status !== 200) {
+            return {
+              error: true,
+              message: "Could not fetch! Please check the bp code",
+            };
+          } else {
+            return res.json();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
+}
+
+export function updateBusinessPartnerById(
+  CardCode: String | string | undefined,
+  update: any
+) {
+  return sapLogin()
+    .then(async (res) => {
+      let resJson = await res.json();
+      let COOKIE = res.headers.get("set-cookie");
+      localstorage.setItem("cookie", `${COOKIE}`);
+      return fetch(
+        `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners('${CardCode}')`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `${localstorage.getItem("cookie")}`,
+          },
+          body: JSON.stringify(update)
+        }
+      )
+        .then((res) => {
+          console.log(res);
+          if (res.status !== 204) {
+            return {
+              error: true,
+              message: "Could not fetch! Please check the bp code",
+            };
+          } else {
+            return res.json();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
+}
 export async function saveJournalEntry(
   Memo: String,
   ReferenceDate: Date,

@@ -10,7 +10,11 @@ import {
 } from "../services/users";
 import { send } from "../utils/sendEmailNode";
 import mongoose from "mongoose";
-import { getBusinessPartnerByName } from "../services/b1";
+import {
+  getBusinessPartnerByName,
+  updateBusinessPartnerById,
+} from "../services/b1";
+import { timingSafeEqual } from "crypto";
 
 let localstorage = new LocalStorage("./dist");
 
@@ -389,6 +393,7 @@ export async function updateSupplierinB1(CardCode: String, options: any) {
       }
     )
       .then((res) => {
+        console.log("eeee", res);
         if (res.status === 204) {
           return {
             error: false,
@@ -399,7 +404,6 @@ export async function updateSupplierinB1(CardCode: String, options: any) {
         }
       })
       .then(async (res) => {
-        console.log(res);
         if (res?.error) {
           console.log(res?.error);
           return false;
@@ -609,6 +613,17 @@ export async function updateUser(id: String, newUser: User) {
     let user = await UserModel.findByIdAndUpdate(id, newUser, {
       new: true,
     }).populate("department");
+
+    if (user?.userType === "VENDOR") {
+      console.log("Useeeee", user);
+      await updateBusinessPartnerById(user?.sapCode, {
+        CardName: user?.companyName,
+        FederalTaxID: user?.tin,
+        Phone1: user?.telephone,
+        Phone2: user?.telephone,
+        EmailAddress: user?.email,
+      });
+    }
     return user;
   } catch (err) {
     return {
