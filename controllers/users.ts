@@ -15,6 +15,8 @@ import {
   updateBusinessPartnerById,
 } from "../services/b1";
 import { timingSafeEqual } from "crypto";
+import fetch from "cross-fetch";
+import * as _ from 'lodash'
 
 let localstorage = new LocalStorage("./dist");
 
@@ -520,6 +522,7 @@ export async function approveUser(id: String) {
       return user;
     }
   } catch (err) {
+    console.log(err)
     return {
       status: "created",
       error: true,
@@ -608,14 +611,15 @@ export async function activateUser(id: String) {
   }
 }
 
-export async function updateUser(id: String, newUser: User) {
+export async function updateUser(id: String, newUser: User|any) {
   try {
+    
     let user = await UserModel.findByIdAndUpdate(id, newUser, {
       new: true,
     }).populate("department");
 
     if (user?.userType === "VENDOR") {
-      console.log("Useeeee", user);
+      console.log("Useeeee", user?.sapCode);
       await updateBusinessPartnerById(user?.sapCode, {
         CardName: user?.companyName,
         FederalTaxID: user?.tin,

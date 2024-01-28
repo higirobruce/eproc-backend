@@ -238,6 +238,8 @@ export function updateBusinessPartnerById(
   CardCode: String | string | undefined,
   update: any
 ) {
+
+  console.log(CardCode)
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();
@@ -255,7 +257,7 @@ export function updateBusinessPartnerById(
         }
       )
         .then((res) => {
-          console.log(res);
+          
           if (res.status !== 204) {
             return {
               error: true,
@@ -266,12 +268,12 @@ export function updateBusinessPartnerById(
           }
         })
         .catch((err) => {
-          console.log(err);
+          
           return err;
         });
     })
     .catch((err) => {
-      console.log(err);
+      
       return err;
     });
 }

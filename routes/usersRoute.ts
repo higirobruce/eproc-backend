@@ -32,6 +32,7 @@ import { send } from "../utils/sendEmailNode";
 import jwt from "jsonwebtoken";
 import { UserModel } from "../models/users";
 import { updateBusinessPartnerById } from "../services/b1";
+import * as _ from 'lodash'
 
 export let SALT =
   process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
@@ -249,7 +250,9 @@ userRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { newUser } = req.body;
 
-  let updates = await updateUser(id, newUser);
+  let nUser = _.omit(newUser,'sapCode')
+  console.log(nUser)
+  let updates = await updateUser(id, nUser);
 
   logger.log({
     level: "info",
