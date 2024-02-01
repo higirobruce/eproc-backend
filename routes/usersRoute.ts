@@ -158,9 +158,7 @@ userRouter.post("/", async (req, res) => {
 
   let createdUser = await saveUser(userToCreate);
 
-  console.log(createdUser);
-
-  if (createdUser) {
+  if (createdUser?._id) {
     logger.log({
       level: "info",
       message: `${createdUser?._id} was successfully created`,
