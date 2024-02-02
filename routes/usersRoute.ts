@@ -248,8 +248,8 @@ userRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { newUser } = req.body;
 
-  let nUser = _.omit(newUser,'sapCode')
-  console.log(nUser)
+  // let nUser = _.omit(newUser,'sapCode')
+  // console.log(nUser)
   let updates = await updateUser(id, newUser);
 
   logger.log({
