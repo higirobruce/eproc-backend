@@ -250,7 +250,7 @@ userRouter.put("/:id", async (req, res) => {
 
   let nUser = _.omit(newUser,'sapCode')
   console.log(nUser)
-  let updates = await updateUser(id, nUser);
+  let updates = await updateUser(id, newUser);
 
   logger.log({
     level: "info",
