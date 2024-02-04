@@ -441,11 +441,15 @@ export async function saveUser(user: User) {
     }
     let createdUser = await UserModel.create(user);
     return createdUser._id;
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    let message = "";
+    let erroParts = err.toString().split(":");
+    if (erroParts[1].includes("E11000") && erroParts[3].includes("email"))
+      message = "The provided Email address is already in use";
+    else message = "Unknown error occured!";
     return {
       error: true,
-      errorMessage: `Error :${err}`,
+      errorMessage: `Error :${message}`,
     };
   }
 }
@@ -625,7 +629,6 @@ export async function updateUser(id: String, newUser: User | any) {
       };
     }
 
-    
     let user = await UserModel.findById(id);
     // if (user?.userType === "VENDOR") {
     //   await updateBusinessPartnerById(user?.sapCode, {
