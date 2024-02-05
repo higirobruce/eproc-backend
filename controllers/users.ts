@@ -630,15 +630,15 @@ export async function updateUser(id: String, newUser: User | any) {
     }
 
     let user = await UserModel.findById(id);
-    // if (user?.userType === "VENDOR") {
-    //   await updateBusinessPartnerById(user?.sapCode, {
-    //     CardName: user?.companyName,
-    //     FederalTaxID: user?.tin,
-    //     Phone1: user?.telephone,
-    //     Phone2: user?.telephone,
-    //     EmailAddress: user?.email,
-    //   });
-    // }
+    if (user?.userType === "VENDOR") {
+      await updateBusinessPartnerById(user?.sapCode, {
+        CardName: user?.companyName,
+        FederalTaxID: user?.tin,
+        Phone1: user?.telephone,
+        Phone2: user?.telephone,
+        EmailAddress: user?.email,
+      });
+    }
 
     user = await UserModel.findByIdAndUpdate(id, newUser, {
       new: true,
