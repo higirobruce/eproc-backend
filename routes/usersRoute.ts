@@ -31,6 +31,8 @@ import { logger } from "../utils/logger";
 import { send } from "../utils/sendEmailNode";
 import jwt from "jsonwebtoken";
 import { UserModel } from "../models/users";
+import { updateBusinessPartnerById } from "../services/b1";
+import * as _ from 'lodash'
 
 export let SALT =
   process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
@@ -156,9 +158,7 @@ userRouter.post("/", async (req, res) => {
 
   let createdUser = await saveUser(userToCreate);
 
-  console.log(createdUser);
-
-  if (createdUser) {
+  if (createdUser?._id) {
     logger.log({
       level: "info",
       message: `${createdUser?._id} was successfully created`,
@@ -248,7 +248,9 @@ userRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { newUser } = req.body;
 
-  let updates = await updateUser(id, newUser);
+  let nUser = _.omit(newUser,'sapCode')
+
+  let updates = await updateUser(id, nUser);
 
   logger.log({
     level: "info",
@@ -256,6 +258,11 @@ userRouter.put("/:id", async (req, res) => {
   });
 
   res.send(updates);
+});
+
+userRouter.put("/update/:id", async (req, res) => {
+  let nu = await updateBusinessPartnerById(req.params.id, req.body);
+  res.send(nu);
 });
 
 userRouter.put("/updatePassword/:id", async (req, res) => {

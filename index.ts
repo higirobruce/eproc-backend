@@ -17,7 +17,7 @@ import { contractRouter } from "./routes/contracts";
 import { budgetLinesRouter } from "./routes/budgetLinesRoute";
 import { uploadRouter } from "./routes/upload";
 import { paymentRequestRouter } from "./routes/paymentRequestRoute";
-import b1Router from "./services/b1";
+import b1Router, { getBusinessPartnerById } from "./services/b1";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import MongoStore = require("connect-mongo");
@@ -121,11 +121,12 @@ app.use(
     resave: false,
   })
 );
+
 app.use(cookieParser());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/users", auth, userRouter);
+app.use("/users", userRouter);
 app.use("/requests", ensureUserAuthorized, requetsRouter);
 app.use("/dpts", dptRouter);
 app.use("/serviceCategories", serviceCategoryRouter);
@@ -171,13 +172,12 @@ app.get("/check/file/:folder/:name", function (req, res, next) {
 
 let server = app.listen(PORT, async () => {
   console.log(`App listening on port ${PORT}`);
-
-  // await sendNotificationToAllUsers();
   logger.log({
     level: "info",
     message: `App started on port ${PORT}`,
   });
 });
+
 
 process.on("SIGTERM", () => {
   logger.log({
