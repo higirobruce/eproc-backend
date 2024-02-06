@@ -629,7 +629,10 @@ export async function updateUser(id: String, newUser: User | any) {
       };
     }
 
-    let user = await UserModel.findById(id);
+    let user = await UserModel.findByIdAndUpdate(id, newUser, {
+      new: true,
+    }).populate("department");
+    console.log(user?.sapCode)
     if (user?.userType === "VENDOR") {
       await updateBusinessPartnerById(user?.sapCode, {
         CardName: user?.companyName,
@@ -640,9 +643,7 @@ export async function updateUser(id: String, newUser: User | any) {
       });
     }
 
-    user = await UserModel.findByIdAndUpdate(id, newUser, {
-      new: true,
-    }).populate("department");
+    
 
     return user;
   } catch (err) {
