@@ -590,7 +590,7 @@ export async function banUser(id: String) {
 
 export async function activateUser(id: String) {
   try {
-    let user = await UserModel.findByIdAndUpdate(
+    let user: any = await UserModel.findByIdAndUpdate(
       id,
       { $set: { status: "approved" } },
       { new: true }
@@ -632,7 +632,7 @@ export async function updateUser(id: String, newUser: User | any) {
     let user = await UserModel.findByIdAndUpdate(id, newUser, {
       new: true,
     }).populate("department");
-    console.log(user?.sapCode)
+    console.log(user?.sapCode);
     if (user?.userType === "VENDOR") {
       await updateBusinessPartnerById(user?.sapCode, {
         CardName: user?.companyName,
@@ -642,8 +642,6 @@ export async function updateUser(id: String, newUser: User | any) {
         EmailAddress: user?.email,
       });
     }
-
-    
 
     return user;
   } catch (err) {
