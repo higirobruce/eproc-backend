@@ -28,6 +28,18 @@ paymentRequestRouter.post("/", async (req, res) => {
   req.body.number = number;
   try {
     let newPaymentRequest = await savePaymentRequest(req.body);
+
+    let approver = await UserModel.findById(newPaymentRequest.approver);
+
+    send(
+      "from",
+      approver?.email,
+      "Your Approval is needed",
+      JSON.stringify(newPaymentRequest),
+      "html",
+      "payment-request-approval"
+    );
+
     res.status(201).send(newPaymentRequest);
   } catch (err) {
     console.log(err);
