@@ -619,20 +619,20 @@ export async function updateUser(id: String, newUser: User | any) {
   try {
     let userWithSameTin = await UserModel.findOne({
       tin: newUser?.tin,
-      _id: { $ne: id },
+      _id: { $ne: id }
     });
-    console.log(userWithSameTin);
-    if (userWithSameTin) {
+    console.log(newUser)
+    if (userWithSameTin && newUser?.userType=='VENDOR') {
       return {
         error: true,
         errorMessage: `Error : A vendor with the same TIN already exists!`,
       };
     }
-
+    
+        
     let user = await UserModel.findByIdAndUpdate(id, newUser, {
       new: true,
     }).populate("department");
-    console.log(user?.sapCode)
     if (user?.userType === "VENDOR") {
       await updateBusinessPartnerById(user?.sapCode, {
         CardName: user?.companyName,
@@ -642,8 +642,6 @@ export async function updateUser(id: String, newUser: User | any) {
         EmailAddress: user?.email,
       });
     }
-
-    
 
     return user;
   } catch (err) {
