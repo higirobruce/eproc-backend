@@ -621,7 +621,6 @@ export async function updateUser(id: String, newUser: User | any) {
       tin: newUser?.tin,
       _id: { $ne: id }
     });
-    console.log(newUser)
     if (userWithSameTin && newUser?.userType=='VENDOR') {
       return {
         error: true,
