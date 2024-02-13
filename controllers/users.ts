@@ -680,7 +680,7 @@ export async function updateMyPassword(
 }
 
 export async function resetPassword(email: String) {
-  let user = null;
+  let user;
   try {
     let newPassword = generatePassword(8);
     user = await UserModel.findOneAndUpdate(

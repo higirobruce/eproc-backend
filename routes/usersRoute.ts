@@ -286,7 +286,7 @@ userRouter.put("/updatePassword/:id", async (req, res) => {
 
 userRouter.put("/reset/:email", async (req, res) => {
   let { email } = req.params;
-  let updatedUser = await resetPassword(email);
+  let updatedUser:any = await resetPassword(email);
 
   if (updatedUser) {
     logger.log({
