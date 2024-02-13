@@ -590,7 +590,7 @@ export async function banUser(id: String) {
 
 export async function activateUser(id: String) {
   try {
-    let user: any = await UserModel.findByIdAndUpdate(
+    let user = await UserModel.findByIdAndUpdate(
       id,
       { $set: { status: "approved" } },
       { new: true }
@@ -619,20 +619,19 @@ export async function updateUser(id: String, newUser: User | any) {
   try {
     let userWithSameTin = await UserModel.findOne({
       tin: newUser?.tin,
-      _id: { $ne: id },
+      _id: { $ne: id }
     });
-    console.log(userWithSameTin);
-    if (userWithSameTin) {
+    if (userWithSameTin && newUser?.userType=='VENDOR') {
       return {
         error: true,
         errorMessage: `Error : A vendor with the same TIN already exists!`,
       };
     }
-
+    
+        
     let user = await UserModel.findByIdAndUpdate(id, newUser, {
       new: true,
     }).populate("department");
-    console.log(user?.sapCode);
     if (user?.userType === "VENDOR") {
       await updateBusinessPartnerById(user?.sapCode, {
         CardName: user?.companyName,
@@ -681,7 +680,7 @@ export async function updateMyPassword(
 }
 
 export async function resetPassword(email: String) {
-  let user: any;
+  let user = null;
   try {
     let newPassword = generatePassword(8);
     user = await UserModel.findOneAndUpdate(
