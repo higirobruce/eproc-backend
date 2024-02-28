@@ -241,9 +241,12 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
       let fileName = randomUUID();
       cb(
         null,
-        file.originalname.split(path.extname(file.originalname))[0] +
+        (file.originalname
+          .split(path.extname(file.originalname))[0]
+          ?.split("_")[0] ||
+          file.originalname.split(path.extname(file.originalname))[0]) +
           "_" +
-          moment().format('DDMMMYY-hms') +
+          moment().format("DDMMMYY-hms") +
           path.extname(file.originalname)
       );
     },
@@ -285,13 +288,12 @@ uploadRouter.post("/updatePaymentRequests/", async (req, res) => {
       cb(
         null,
         file.originalname.split(path.extname(file.originalname))[0] +
-        moment().format('DDMMMYY-hms') +
+          moment().format("DDMMMYY-hms") +
           path.extname(file.originalname)
       );
     },
   });
 
-  
   var upload = multer({ storage: storage }).single("file");
   // var upload = multer({ storage: storage }).array('file',100)
   upload(req, res, async function (err) {
@@ -310,8 +312,7 @@ uploadRouter.post("/updatePaymentRequests/", async (req, res) => {
       )} successfully created`,
     });
 
-    console.log(req.query.id,
-      _file,)
+    console.log(req.query.id, _file);
     await updateRequestFileName(
       req.query.id,
       _file,
