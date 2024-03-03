@@ -24,7 +24,8 @@ export async function getAllUsers() {
   try {
     let users = await UserModel.find()
       .populate("department")
-      .sort({ email: "asc" });
+      .sort({ email: "asc" })
+      .select({ password: 0 });
 
     return users;
   } catch (err) {
@@ -457,7 +458,7 @@ export async function saveUser(user: User) {
 export async function getUserByEmail(userEmail: String) {
   let user = await UserModel.findOne({
     $or: [{ email: userEmail }, { tempEmail: userEmail }],
-  }).populate("department");
+  }).populate("department")
   return user;
 }
 
@@ -619,16 +620,15 @@ export async function updateUser(id: String, newUser: User | any) {
   try {
     let userWithSameTin = await UserModel.findOne({
       tin: newUser?.tin,
-      _id: { $ne: id }
+      _id: { $ne: id },
     });
-    if (userWithSameTin && newUser?.userType=='VENDOR') {
+    if (userWithSameTin && newUser?.userType == "VENDOR") {
       return {
         error: true,
         errorMessage: `Error : A vendor with the same TIN already exists!`,
       };
     }
-    
-        
+
     let user = await UserModel.findByIdAndUpdate(id, newUser, {
       new: true,
     }).populate("department");
