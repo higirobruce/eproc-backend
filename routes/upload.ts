@@ -252,6 +252,7 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
     },
   });
 
+  
   var upload = multer({ storage: storage }).array("files[]");
   // var upload = multer({ storage: storage }).array('file',100)
   upload(req, res, function (err) {

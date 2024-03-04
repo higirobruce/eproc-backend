@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, NextFunction, Request, Response } from "express";
 import { User } from "../classrepo/users";
 import { getVendorRate } from "../controllers/purchaseOrders";
 import {
@@ -32,17 +32,36 @@ import { send } from "../utils/sendEmailNode";
 import jwt from "jsonwebtoken";
 import { UserModel } from "../models/users";
 import { updateBusinessPartnerById } from "../services/b1";
-import * as _ from 'lodash'
+import * as _ from "lodash";
 
 export let SALT =
   process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
 export const userRouter = Router();
 
-userRouter.get("/", async (req, res) => {
+let ensureUserAuthorized = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let token = req.headers.token;
+    if (!token) {
+      res.status(401).send("Unauthorized");
+    } else {
+      let user = jwt.verify(token as string, SALT);
+      req.session.user = user;
+
+      next();
+    }
+  } catch (err) {
+    res.status(401).send("Please send a valid access token in the header");
+  }
+};
+userRouter.get("/", ensureUserAuthorized, async (req, res) => {
   res.send(await getAllUsers());
 });
 
-userRouter.get("/vendors", async (req, res) => {
+userRouter.get("/vendors", ensureUserAuthorized, async (req, res) => {
   res.send(await getAllVendors());
 });
 
@@ -64,11 +83,11 @@ userRouter.get("/vendors/byStatus/:status", async (req, res) => {
   else res.send(await getAllVendorsByStatus(status));
 });
 
-userRouter.get("/level1Approvers", async (req, res) => {
+userRouter.get("/level1Approvers", ensureUserAuthorized, async (req, res) => {
   res.send(await getAllLevel1Approvers());
 });
 
-userRouter.get("/internal", async (req, res) => {
+userRouter.get("/internal", ensureUserAuthorized, async (req, res) => {
   res.send(await getAllInternalUsers());
 });
 
@@ -182,20 +201,32 @@ userRouter.post("/login", async (req, res) => {
     let user = await getUserByEmail(email);
 
     //genereate JWT
-    let accessToken = jwt.sign({ email: email, user: user?._id }, SALT, {
-      expiresIn: "8h", // expires in 24 hours
-    });
 
     if (user) {
       logger.log({
         level: "info",
         message: `${user?.email} successfully logged in`,
       });
+
+      let accessToken = jwt.sign(
+        {
+          email: email,
+          user: user?._id,
+          userObj: user,
+          allowed:
+            validPassword(password, user!.password) ||
+            validPassword(password, user!.tempPassword),
+        },
+        SALT,
+        {
+          expiresIn: "8h", // expires in 24 hours
+        }
+      );
       res.send({
-        allowed:
-          validPassword(password, user!.password) ||
-          validPassword(password, user!.tempPassword),
-        user: user,
+        // allowed:
+        //   validPassword(password, user!.password) ||
+        //   validPassword(password, user!.tempPassword),
+        // user: user,
         token: accessToken,
       });
     } else {
@@ -248,7 +279,7 @@ userRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { newUser } = req.body;
 
-  let nUser = _.omit(newUser,'sapCode')
+  let nUser = _.omit(newUser, "sapCode");
 
   let updates = await updateUser(id, nUser);
 
@@ -286,7 +317,9 @@ userRouter.put("/updatePassword/:id", async (req, res) => {
 
 userRouter.put("/reset/:email", async (req, res) => {
   let { email } = req.params;
-  let updatedUser:any = await resetPassword(email);
+
+  let updatedUser: any = await resetPassword(email);
+
 
   if (updatedUser) {
     logger.log({

@@ -18,15 +18,7 @@ import {
   updateRequestSourcingMethod,
   updateRequestStatus,
 } from "../controllers/requests";
-import {
-  approveUser,
-  declineUser,
-  getAllInternalUsers,
-  getAllUsers,
-  getAllVendors,
-  getUserByEmail,
-  saveUser,
-} from "../controllers/users";
+
 import { UserModel } from "../models/users";
 import { generateReqNumber } from "../services/requests";
 import {

@@ -120,7 +120,7 @@ poRouter.post("/", async (req, response) => {
           response.status(500).send(b1Response_assets || b1Response_nonAssets);
         } else {
           let number = await generatePONumber();
-          let refs = [];
+          let refs:any[] = [];
           b1Response_assets && refs.push(b1Response_assets.DocNum);
           b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
 
