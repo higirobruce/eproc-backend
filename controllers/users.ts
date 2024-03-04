@@ -620,7 +620,7 @@ export async function updateUser(id: String, newUser: User | any) {
   try {
     let userWithSameTin = await UserModel.findOne({
       tin: newUser?.tin,
-      _id: { $ne: id },
+      _id: { $ne: id }
     });
     if (userWithSameTin && newUser?.userType == "VENDOR") {
       return {
@@ -628,7 +628,8 @@ export async function updateUser(id: String, newUser: User | any) {
         errorMessage: `Error : A vendor with the same TIN already exists!`,
       };
     }
-
+    
+        
     let user = await UserModel.findByIdAndUpdate(id, newUser, {
       new: true,
     }).populate("department");
