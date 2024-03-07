@@ -317,7 +317,7 @@ export async function getAllRequestsByStatus(status: String, id: any) {
       : status === "pending-approval"
       ? {
           status: {
-            $in: ["approved (hod)", "reviewed"],
+            $in: ["approved (hod)", "reviewed","pending-approval"],
           },
         }
       : { status };
