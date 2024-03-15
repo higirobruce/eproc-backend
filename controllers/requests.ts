@@ -93,7 +93,7 @@ export async function getAllRequestsByCreator(
       ],
     };
 
-  let reqs = await RequestModel.find(query)
+  let reqs = await RequestModel.find(query, {_id: 0})
     .populate("createdBy")
     .populate("level1Approver")
     .populate({
@@ -103,7 +103,8 @@ export async function getAllRequestsByCreator(
         model: "Department",
       },
     })
-    .populate("budgetLine");
+    .populate("budgetLine")
+    .sort({"number": -1})
 
   return reqs;
   // return permissions?.canApproveAsPM
@@ -174,6 +175,7 @@ export async function getAllRequestsByStatus(
     };
 
   let reqs = await RequestModel.find(query)
+    .sort({"number": -1})
     .populate("createdBy")
     .populate("level1Approver")
     .populate({

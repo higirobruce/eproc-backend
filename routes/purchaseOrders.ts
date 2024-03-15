@@ -28,7 +28,7 @@ import { send } from "../utils/sendEmailNode";
 export const poRouter = Router();
 
 poRouter.get("/", async (req, res) => {
-  res.send(await getAllPOs());
+  res.send(await getAllPOs(req));
 });
 
 poRouter.get("/byTenderId/:tenderId", async (req, res) => {

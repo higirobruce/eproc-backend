@@ -19,7 +19,8 @@ export async function getAllContracts() {
         path: "purchaseRequest",
         model: "Request",
       },
-    });
+    })
+    .sort({"number": -1});
   return contracts;
 }
 
@@ -90,7 +91,8 @@ export async function getContractByStatus(status: String) {
         path: "purchaseRequest",
         model: "Request",
       },
-    });
+    })
+    .sort({"number": -1});
   return pos;
 }
 
