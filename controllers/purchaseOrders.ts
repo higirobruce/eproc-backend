@@ -15,8 +15,14 @@ let localstorage = new LocalStorage("./scratch");
  *
  * @return { Promise } A promise that resolves with an array
  */
-export async function getAllPOs() {
-  let pos = await PurchaseOrderModel.find()
+export async function getAllPOs(req?: any) {
+
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  let pos: any;
+  let totalPages: any
+
+  const purchaseOrderQuery = PurchaseOrderModel.find()
     .populate("tender")
     .populate("vendor")
     .populate("request")
@@ -38,8 +44,18 @@ export async function getAllPOs() {
           model: "BudgetLine",
         },
       },
-    });
-  return pos;
+    })
+    .sort({"number": -1});
+
+    totalPages = await purchaseOrderQuery;
+    
+    if (pageSize && currentPage) {
+      purchaseOrderQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+    }
+    
+    pos = await purchaseOrderQuery.clone();
+
+  return {data: pos, totalPages: totalPages?.length};
 }
 
 /**
@@ -110,7 +126,7 @@ export async function getAllPOsByStatus(status: string) {
       ? { $or: [{ status }, { status: "started" }] }
       : { status: { $in: status } };
 
-  let pos = await PurchaseOrderModel.find(query);
+  let pos = await PurchaseOrderModel.find(query).sort({"number": -1});
 
   return pos;
 }

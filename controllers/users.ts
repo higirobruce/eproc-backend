@@ -104,7 +104,7 @@ export async function getAllVendors() {
       .sort({ createdOn: "desc" });
 
     let usersAggregate = await UserModel.aggregate(pipeline).sort({
-      createdOn: "desc",
+      "number": -1,
     });
     return usersAggregate;
   } catch (err) {
@@ -234,7 +234,7 @@ export async function getAllVendorsByStatus(status: String) {
       .sort({ createdOn: "desc" });
 
     let usersAggregate = await UserModel.aggregate(pipeline).sort({
-      createdOn: "desc",
+      "number": -1,
     });
     return usersAggregate;
   } catch (err) {

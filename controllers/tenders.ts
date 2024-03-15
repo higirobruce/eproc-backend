@@ -16,7 +16,8 @@ export async function getAllTenders() {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({"number": -1});
   return reqs;
 }
 
