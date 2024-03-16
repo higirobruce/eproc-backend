@@ -320,7 +320,6 @@ userRouter.put("/reset/:email", async (req, res) => {
 
   let updatedUser: any = await resetPassword(email);
 
-
   if (updatedUser) {
     logger.log({
       level: "warn",

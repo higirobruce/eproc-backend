@@ -135,6 +135,21 @@ contractRouter.put("/:id", async (req, res) => {
     send(
       "from",
       newContract?.signatories[0]?.email,
+      "Your review is needed",
+      JSON.stringify({
+        docId: newContract?._id,
+        docType: "contracts",
+        docNumber: newContract?.number,
+      }),
+      "",
+      "contractReview"
+    );
+  }
+
+  if (previousStatus == "legal-review") {
+    send(
+      "from",
+      newContract?.signatories[0]?.email,
       "Your Signature is needed",
       JSON.stringify({ docId: newContract?._id, docType: "contracts" }),
       "",

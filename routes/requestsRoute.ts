@@ -31,21 +31,17 @@ import { send } from "../utils/sendEmailNode";
 export const requetsRouter = Router();
 
 requetsRouter.get("/", async (req, res) => {
-
   res.send(await getAllRequests());
 });
 
-
 requetsRouter.get("/countsByDep", async (req, res) => {
-  console.log(req.session)
+  console.log(req.session);
   res.send(await getReqCountsByDepartment());
-
 });
 
 requetsRouter.get("/countsByStatus", async (req, res) => {
   res.send(await getReqCountsByStatus());
 });
-
 
 requetsRouter.get("/countsByCat", async (req, res) => {
   res.send(await getReqCountsByCategory());
@@ -57,14 +53,13 @@ requetsRouter.get("/countsByBudgetStatus", async (req, res) => {
 
 requetsRouter.get("/byStatus/:status/:id", async (req, res) => {
   // console.log('Requester',req.session.user)
-  let user = await UserModel.findById(req?.session?.user?.user)
+  let user = await UserModel.findById(req?.session?.user?.user);
   let permissions = user?.permissions;
-  
-  
-  let { status,id } = req.params;
+
+  let { status, id } = req.params;
   status === "all"
     ? res.send(await getAllRequestsByCreator(id, user, permissions))
-    : res.send(await getAllRequestsByStatus(status,id, user, permissions));
+    : res.send(await getAllRequestsByStatus(status, id, user, permissions));
 });
 
 requetsRouter.get("/byCreator/:createdBy", async (req, res) => {
@@ -72,9 +67,9 @@ requetsRouter.get("/byCreator/:createdBy", async (req, res) => {
   res.send(await getAllRequestsByCreator(createdBy));
 });
 
-
 requetsRouter.get("/:id", async (req, res) => {
-  let {id} = req.params;
+  let { id } = req.params;
+  console.log(id);
   res.send(await getRequestById(id));
 });
 
@@ -97,7 +92,7 @@ requetsRouter.post("/", async (req, res) => {
     pm_approvalDate,
     rejectionDate,
     level1Approver,
-    sourcingMethod
+    sourcingMethod,
   } = req.body;
 
   let number = await generateReqNumber();
@@ -151,14 +146,12 @@ requetsRouter.put("/status/:id", async (req, res) => {
   res.send(await updateRequestStatus(id, status));
 });
 
-
 requetsRouter.put("/sourcingMethod/:id", async (req, res) => {
   let { id } = req.params;
   let { sourcingMethod } = req.body;
 
   res.send(await updateRequestSourcingMethod(id, sourcingMethod));
 });
-
 
 requetsRouter.put("/:id", async (req, res) => {
   let { id } = req.params;

@@ -554,7 +554,7 @@ const contractReview = (emailObj: any) => {
     <!-- Image Header -->
     <mj-section>
       <mj-column width="600px">
-        <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your signature is needed</mj-text>
+        <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your Review is needed</mj-text>
       </mj-column>
     </mj-section>
   
@@ -571,7 +571,7 @@ const contractReview = (emailObj: any) => {
   
         </mj-text>
   
-        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/${emailObj.docType}/${emailObj.docId}>Go to application</mj-button>
+        <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/${emailObj.docType}?number=${emailObj.docNumber}>Go to application</mj-button>
       </mj-column>
     </mj-section>
   
@@ -671,7 +671,7 @@ export async function send(
         text,
         html: mjml(prApproval(JSON.parse(text))).html,
       });
-      else if (type === "payment-request-approval")
+    else if (type === "payment-request-approval")
       return await transporter.sendMail({
         from: process.env.IRMB_SENDER_EMAIL,
         to,
@@ -711,11 +711,10 @@ export async function send(
         text,
         html: mjml(passwordRecovery(JSON.parse(text))).html,
       });
-
-      else if (type === "preGoLive")
+    else if (type === "preGoLive")
       return await transporter.sendMail({
         from: process.env.IRMB_SENDER_EMAIL,
-        bcc:to,
+        bcc: to,
         subject,
         text,
         html: mjml(preGoLive(JSON.parse(text))).html,
@@ -736,7 +735,7 @@ export async function send(
         text,
         html: mjml(internalSignature(JSON.parse(text))).html,
       });
-      else if (type === "contractReview")
+    else if (type === "contractReview")
       return await transporter.sendMail({
         from: process.env.IRMB_SENDER_EMAIL,
         to,
@@ -745,14 +744,14 @@ export async function send(
         html: mjml(contractReview(JSON.parse(text))).html,
       });
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 }
 
 //test email
 export async function trySend() {
   const transporter = nodemailer.createTransport({
-    host: 'imparage.aos.rw',
+    host: "imparage.aos.rw",
     port: 465,
     secure: true,
     auth: {
