@@ -93,7 +93,7 @@ export async function getAllRequestsByCreator(
       ],
     };
 
-  let reqs = await RequestModel.find(query, {_id: 0})
+  let reqs = await RequestModel.find(query)
     .populate("createdBy")
     .populate("level1Approver")
     .populate({
