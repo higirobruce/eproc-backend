@@ -53,7 +53,7 @@ contractRouter.get("/byVendorId/:vendorId/:status", async (req, res) => {
 
 contractRouter.get("/byStatus/:status", async (req, res) => {
   let { status } = req.params;
-  res.send(await getContractByStatus(status));
+  res.send(await getContractByStatus(req, status));
 });
 
 contractRouter.get("/:id", async (req, res) => {
