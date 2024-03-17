@@ -76,11 +76,17 @@ export async function getContractByRequestId(requestId: String) {
   return pos;
 }
 
-export async function getContractByStatus(status: String) {
+export async function getContractByStatus(req: any, status: String) {
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  let pos: any;
+  let totalPages: any
   let query = {};
+
   if (status === "all") query = {};
   else query = { status };
-  let pos = await ContractModel.find(query)
+
+  const contractQuery = ContractModel.find(query)
     .populate("tender")
     .populate("request")
     .populate("vendor")
@@ -93,7 +99,16 @@ export async function getContractByStatus(status: String) {
       },
     })
     .sort({"number": -1});
-  return pos;
+
+    totalPages = await contractQuery;
+
+    if (pageSize && currentPage) {
+      contractQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+    }
+
+    pos = await contractQuery.clone();
+
+  return {data: pos, totalPages: totalPages?.length};
 }
 
 export async function getContractById(id: String) {
