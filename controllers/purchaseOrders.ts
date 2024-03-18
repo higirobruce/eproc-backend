@@ -89,7 +89,8 @@ export async function getPOByTenderId(tenderId: String) {
           model: "BudgetLine",
         },
       },
-    });
+    })
+    .sort({"number": -1});
   return pos;
 }
 
@@ -116,7 +117,8 @@ export async function getPOById(id: String) {
           model: "BudgetLine",
         },
       },
-    });
+    })
+    .sort({"number": -1});
   return pos;
 }
 
@@ -154,7 +156,8 @@ export async function getPOByRequestId(requestId: String) {
           model: "BudgetLine",
         },
       },
-    });
+    })
+    .sort({"number": -1});
   return pos;
 }
 
@@ -192,7 +195,8 @@ export async function getPOByVendorId(vendorId: String) {
           model: "BudgetLine",
         },
       },
-    });
+    })
+    .sort({"number": -1});
 
   return pos;
 }
