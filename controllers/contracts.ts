@@ -72,7 +72,8 @@ export async function getContractByRequestId(requestId: String) {
         path: "purchaseRequest",
         model: "Request",
       },
-    });
+    })
+    .sort({"number": -1});
   return pos;
 }
 
@@ -123,7 +124,8 @@ export async function getContractById(id: String) {
         path: "purchaseRequest",
         model: "Request",
       },
-    });
+    })
+    .sort({"number": -1});
   return pos;
 }
 
@@ -150,7 +152,8 @@ export async function getContractByVendorId(vendorId: String, status: String) {
         path: "purchaseRequest",
         model: "Request",
       },
-    });
+    })
+    .sort({"number": -1});
   return pos;
 }
 
