@@ -24,7 +24,7 @@ export async function getAllUsers() {
   try {
     let users = await UserModel.find()
       .populate("department")
-      .sort({ email: "asc" })
+      .sort({"number": -1})
       .select({ password: 0 });
 
     return users;
@@ -101,10 +101,10 @@ export async function getAllVendors() {
     ];
     let users = await UserModel.find({ userType: "VENDOR" })
       .populate("department")
-      .sort({ createdOn: "desc" });
+      .sort({"vendor.number": -1});
 
     let usersAggregate = await UserModel.aggregate(pipeline).sort({
-      "number": -1,
+      "vendor.number": -1,
     });
     return usersAggregate;
   } catch (err) {
@@ -168,11 +168,9 @@ export async function getVendorById(id: string) {
     ];
     let users = await UserModel.find({ userType: "VENDOR" })
       .populate("department")
-      .sort({ createdOn: "desc" });
+      .sort({"number": -1});
 
-    let usersAggregate = await UserModel.aggregate(pipeline).sort({
-      createdOn: "desc",
-    });
+    let usersAggregate = await UserModel.aggregate(pipeline).sort({"vendor.number": -1});
 
     return usersAggregate;
   } catch (err) {
@@ -231,10 +229,10 @@ export async function getAllVendorsByStatus(status: String) {
     ];
     let users = await UserModel.find({ userType: "VENDOR", status })
       .populate("department")
-      .sort({ createdOn: "desc" });
+      .sort({"vendor.number": -1});
 
     let usersAggregate = await UserModel.aggregate(pipeline).sort({
-      "number": -1,
+      "vendor.number": -1,
     });
     return usersAggregate;
   } catch (err) {
@@ -255,7 +253,8 @@ export async function getAllLevel1Approvers() {
         firstName: 1,
         lastName: 1,
       }
-    ).populate("department");
+    ).populate("department")
+    .sort({"number": -1});
     return users;
   } catch (err) {
     return {
@@ -270,7 +269,8 @@ export async function getVendorById2(id: string) {
     let users = await UserModel.findOne({
       userType: "VENDOR",
       _id: id,
-    }).populate("department");
+    }).populate("department")
+    .sort({"vendor.number": -1});
     return users;
   } catch (err) {
     return {
@@ -284,7 +284,9 @@ export async function getInternalUserById(id: string) {
   try {
     let users = await UserModel.findOne({
       _id: id,
-    }).populate("department");
+    }).populate("department")
+    .sort({"number": -1});
+
     return users;
   } catch (err) {
     return {
@@ -298,7 +300,7 @@ export async function getAllInternalUsers() {
   try {
     let users = await UserModel.find({ userType: { $ne: "VENDOR" } })
       .populate("department")
-      .sort({ email: "asc" });
+      .sort({"number": -1});
     return users;
   } catch (err) {
     return {
@@ -312,7 +314,7 @@ export async function getAllInternalUsersByStatus(status: string) {
   try {
     let users = await UserModel.find({ userType: { $ne: "VENDOR" }, status })
       .populate("department")
-      .sort({ email: "asc" });
+      .sort({"number": -1});
     return users;
   } catch (err) {
     return {
