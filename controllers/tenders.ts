@@ -80,6 +80,15 @@ export async function getTendersByServiceCategoryList(serviceCategories: []) {
         as: "purchaseRequest",
       },
     },
+    // {
+    //   $sort:
+    //     /**
+    //      * Provide any number of field/order pairs.
+    //      */
+    //     {
+    //       number: -1,
+    //     },
+    // },
     {
       $unwind: {
         path: "$purchaseRequest",
@@ -122,8 +131,8 @@ export async function getTendersByServiceCategoryList(serviceCategories: []) {
   //     }
   // }).populate('purchaseRequest')
 
-  let reqs = await TenderModel.aggregate(pipeline);
-  console.log(reqs);
+  let reqs = await TenderModel.aggregate(pipeline).sort({ number: -1 });
+
   return reqs;
 }
 
