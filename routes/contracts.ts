@@ -92,14 +92,19 @@ contractRouter.post("/", async (req, res) => {
     signatories,
     reqAttachmentDocId
   );
+  
 
   let createdContract = await saveContract(contractToCreate);
-  if (createdContract?.status == "legal-review") {
+  if (status == "legal-review") {
     send(
       "from",
       (await getLegalOfficers()) as string | string[],
       "Your Review is needed",
-      JSON.stringify({ docId: createdContract?._id, docType: "contracts", docNumber:  createdContract?.number}),
+      JSON.stringify({
+        docId: createdContract?._id,
+        docType: "contracts",
+        docNumber: createdContract?.number,
+      }),
       "",
       "contractReview"
     );

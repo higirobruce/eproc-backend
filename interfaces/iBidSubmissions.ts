@@ -16,6 +16,8 @@ export interface IBidSubmission {
   bankName: String;
   bankAccountNumber: String;
   bankAccountName: String;
+  deliveryTimeFrameDuration: String;
+  deliveryTimeFrame: Number;
 }
 
 export interface IBidSubmissionDocument extends IBidSubmission, Document {
