@@ -48,7 +48,7 @@ contractRouter.get("/byRequestId/:requestId", async (req, res) => {
 
 contractRouter.get("/byVendorId/:vendorId/:status", async (req, res) => {
   let { vendorId, status } = req.params;
-  res.send(await getContractByVendorId(vendorId, status));
+  res.send(await getContractByVendorId(vendorId, status, req));
 });
 
 contractRouter.get("/byStatus/:status", async (req, res) => {
@@ -94,12 +94,16 @@ contractRouter.post("/", async (req, res) => {
   );
 
   let createdContract = await saveContract(contractToCreate);
-  if (createdContract?.status == "legal-review") {
+  if (status == "legal-review") {
     send(
       "from",
       (await getLegalOfficers()) as string | string[],
       "Your Review is needed",
-      JSON.stringify({ docId: createdContract?._id, docType: "contracts", docNumber:  createdContract?.number}),
+      JSON.stringify({
+        docId: createdContract?._id,
+        docType: "contracts",
+        docNumber: createdContract?.number,
+      }),
       "",
       "contractReview"
     );
