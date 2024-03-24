@@ -19,7 +19,8 @@ export async function getAllContracts() {
         path: "purchaseRequest",
         model: "Request",
       },
-    });
+    })
+    .sort({ number: -1 });
   return contracts;
 }
 
@@ -71,26 +72,8 @@ export async function getContractByRequestId(requestId: String) {
         path: "purchaseRequest",
         model: "Request",
       },
-    });
-  return pos;
-}
-
-export async function getContractByStatus(status: String) {
-  let query = {};
-  if (status === "all") query = {};
-  else query = { status };
-  let pos = await ContractModel.find(query)
-    .populate("tender")
-    .populate("request")
-    .populate("vendor")
-    .populate("createdBy")
-    .populate({
-      path: "tender",
-      populate: {
-        path: "purchaseRequest",
-        model: "Request",
-      },
-    });
+    })
+    .sort({ number: -1 });
   return pos;
 }
 
@@ -106,23 +89,22 @@ export async function getContractById(id: String) {
         path: "purchaseRequest",
         model: "Request",
       },
-    });
+    })
+    .sort({ number: -1 });
   return pos;
 }
 
-/**
- * Get a contract by vendor id. This is used to create a list of contract in order to display the list
- *
- * @param vendorId - Vendor id of the contract
- * @param String
- *
- * @return { Promise } The contract with the id specified in the vendorId as the first parameter. If no contract is found an empty Promise is
- */
-export async function getContractByVendorId(vendorId: String, status: String) {
+export async function getContractByStatus(req: any, status: String) {
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  let pos: any;
+  let totalPages: any;
   let query = {};
-  if (status === "all") query = { vendor: vendorId };
-  else query = { vendor: vendorId, status: status };
-  let pos = await ContractModel.find(query)
+
+  if (status === "all") query = {};
+  else query = { status };
+
+  const contractQuery = ContractModel.find(query)
     .populate("tender")
     .populate("request")
     .populate("vendor")
@@ -133,8 +115,55 @@ export async function getContractByVendorId(vendorId: String, status: String) {
         path: "purchaseRequest",
         model: "Request",
       },
-    });
-  return pos;
+    })
+    .sort({ number: -1 });
+
+  totalPages = await contractQuery;
+
+  if (pageSize && currentPage) {
+    contractQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  }
+
+  pos = await contractQuery.clone();
+
+  return { data: pos, totalPages: totalPages?.length };
+}
+
+export async function getContractByVendorId(
+  vendorId: String,
+  status: String,
+  req: any
+) {
+  let query = {};
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  let totalPages: any;
+  let pos: any;
+  if (status === "all") query = { vendor: vendorId };
+  else query = { vendor: vendorId, status: status };
+  let contractQuery = ContractModel.find(query)
+    .populate("tender")
+    .populate("request")
+    .populate("vendor")
+    .populate("createdBy")
+    .populate({
+      path: "tender",
+      populate: {
+        path: "purchaseRequest",
+        model: "Request",
+      },
+    })
+    .sort({ number: -1 });
+
+  totalPages = await contractQuery;
+
+  if (pageSize && currentPage) {
+    contractQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  }
+
+  pos = await contractQuery.clone();
+
+  return { data: pos, totalPages: totalPages?.length };
 }
 
 export async function updateContract(id: String, contract: Contract) {

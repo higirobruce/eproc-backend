@@ -26,7 +26,6 @@ submissionsRouter.get("/", async (req, res) => {
   res.send(await getAllBidSubmissions());
 });
 
-
 submissionsRouter.get("/byTender/:tenderId", async (req, res) => {
   let { tenderId } = req.params;
   res.send(await getAllBidSubmissionsByTender(tenderId));
@@ -38,7 +37,6 @@ submissionsRouter.get("/byVendor/:vendorId", async (req, res) => {
 });
 
 submissionsRouter.get("/avgBidsPerTender", async (req, res) => {
-  
   res.send(await getAverageBidsPerTender());
 });
 
@@ -66,6 +64,8 @@ submissionsRouter.post("/", async (req, res) => {
     bankAccountName,
     proposalDocId,
     otherDocId,
+    deliveryTimeFrameDuration,
+    deliveryTimeFrame,
   } = req.body;
   let number = await generateBidSubmissionNumber();
 
@@ -86,15 +86,15 @@ submissionsRouter.post("/", async (req, res) => {
     otherDocId,
     bankName,
     bankAccountNumber,
-    bankAccountName
+    bankAccountName,
+    deliveryTimeFrameDuration,
+    deliveryTimeFrame
   );
 
   // await saveBankDetails(createdBy, bankName, bankAccountNumber);
 
   let createdSubmission = await saveBidSubmission(submission);
-  if(createdSubmission){
-    
-    
+  if (createdSubmission) {
   }
   res.status(201).send(createdSubmission);
 });
@@ -120,7 +120,6 @@ submissionsRouter.post("/select/:id", async (req, res) => {
       return i?.approver;
     });
     if (invitees) {
-      
       send(
         "",
         inviteesEmails,

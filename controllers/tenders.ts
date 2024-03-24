@@ -16,7 +16,8 @@ export async function getAllTenders() {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({ number: -1 });
   return reqs;
 }
 
@@ -34,7 +35,8 @@ export async function getAllTendersByStatus(status: String) {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({ number: -1 });
   return reqs;
 }
 
@@ -48,7 +50,8 @@ export async function getTendersById(id: String) {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({ number: -1 });
   return req;
 }
 
@@ -62,48 +65,63 @@ export async function getTendersByRequest(requestId: String) {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({ number: -1 });
   return reqs;
 }
 
 export async function getTendersByServiceCategoryList(serviceCategories: []) {
   let pipeline = [
     {
-      '$lookup': {
-        'from': 'requests', 
-        'localField': 'purchaseRequest', 
-        'foreignField': '_id', 
-        'as': 'purchaseRequest'
-      }
-    }, {
-      '$unwind': {
-        'path': '$purchaseRequest', 
-        'preserveNullAndEmptyArrays': true
-      }
-    }, {
-      '$lookup': {
-        'from': 'users', 
-        'localField': 'createdBy', 
-        'foreignField': '_id', 
-        'as': 'createdBy'
-      }
-    }, {
-      '$unwind': {
-        'path': '$createdBy', 
-        'preserveNullAndEmptyArrays': false
-      }
-    }, {
-      '$unwind': {
-        'path': '$createdBy.department', 
-        'preserveNullAndEmptyArrays': false
-      }
-    }, {
-      '$match': {
-        'purchaseRequest.serviceCategory': {
-          '$in': serviceCategories
-        }
-      }
-    }
+      $lookup: {
+        from: "requests",
+        localField: "purchaseRequest",
+        foreignField: "_id",
+        as: "purchaseRequest",
+      },
+    },
+    // {
+    //   $sort:
+    //     /**
+    //      * Provide any number of field/order pairs.
+    //      */
+    //     {
+    //       number: -1,
+    //     },
+    // },
+    {
+      $unwind: {
+        path: "$purchaseRequest",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "createdBy",
+      },
+    },
+    {
+      $unwind: {
+        path: "$createdBy",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $unwind: {
+        path: "$createdBy.department",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $match: {
+        "purchaseRequest.serviceCategory": {
+          $in: serviceCategories,
+        },
+      },
+    },
   ];
   // let reqs = await TenderModel.find({ purchaseRequest: requestId }).populate('createdBy').populate({
   //     path: "createdBy",
@@ -113,12 +131,10 @@ export async function getTendersByServiceCategoryList(serviceCategories: []) {
   //     }
   // }).populate('purchaseRequest')
 
-  
-  let reqs = await TenderModel.aggregate(pipeline);
-  console.log(reqs)
+  let reqs = await TenderModel.aggregate(pipeline).sort({ number: -1 });
+
   return reqs;
 }
-
 
 export async function getOpenTenders() {
   let reqs = await TenderModel.find({ status: "open" })
@@ -130,7 +146,8 @@ export async function getOpenTenders() {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({ number: -1 });
   return reqs;
 }
 
@@ -145,7 +162,8 @@ export async function getClosedTenders() {
         path: "department",
         model: "Department",
       },
-    });
+    })
+    .sort({ number: -1 });
   return reqs;
 }
 
@@ -154,12 +172,12 @@ export async function saveTender(tender: Tender) {
   let request = tender.purchaseRequest;
   let category = (await RequestModel.findById(request))?.serviceCategory;
 
-  console.log('Category ', category)
+  console.log("Category ", category);
 
   // //Send notifications to vendors in the tender's caterogry
   let vendors;
-  
-  if(category == 'Others') {
+
+  if (category == "Others") {
     vendors = await UserModel.find({
       status: { $eq: "approved" },
     });
@@ -169,7 +187,7 @@ export async function saveTender(tender: Tender) {
       status: { $eq: "approved" },
     });
   }
-  
+
   let vendorEmails = vendors?.map((v) => {
     return v?.email;
   });

@@ -7,6 +7,7 @@ import { logger } from "../utils/logger";
 export async function getAllPaymentRequests() {
   try {
     let paymentRequests = await PaymentRequestModel.find()
+      .sort({ number: -1 })
       .populate("createdBy purchaseOrder")
       .populate({
         path: "purchaseOrder",
@@ -295,13 +296,13 @@ export async function getAllRequestsByCreator(createdBy: any) {
             },
           },
         ];
-  let res1 = await PaymentRequestModel.aggregate(pipeline);
+  let res1 = await PaymentRequestModel.aggregate(pipeline).sort({ number: -1 });
 
   console.log(res1.length);
 
-  let reqs = await PaymentRequestModel.find(query).populate(
-    "createdBy purchaseOrder approver reviewedBy budgetLine"
-  );
+  let reqs = await PaymentRequestModel.find(query)
+    .populate("createdBy purchaseOrder approver reviewedBy budgetLine")
+    .sort({ number: -1 });
 
   return res1;
 }
@@ -317,15 +318,20 @@ export async function getAllRequestsByStatus(status: String, id: any) {
       : status === "pending-approval"
       ? {
           status: {
-            $in: ["approved (hod)", "reviewed"],
+
+            $in: ["approved (hod)", "reviewed", "pending-approval"],
+
           },
         }
       : { status };
 
   let query2 = {};
 
+  console.log(id);
+
   if (id && id !== "null")
-    query2 = {
+    query = {
+      ...query,
       $or: [
         {
           "purchaseOrder.vendor": new Types.ObjectId(id),
@@ -420,14 +426,14 @@ export async function getAllRequestsByStatus(status: String, id: any) {
     },
   ];
 
-  let reqs = await PaymentRequestModel.find(query).populate(
-    "createdBy purchaseOrder approver reviewedBy budgetLine"
-  );
+  let reqs = await PaymentRequestModel.find(query)
+    .populate("createdBy purchaseOrder approver reviewedBy budgetLine")
+    .sort({ number: -1 });
 
   console.log(reqs.length);
-  let reqs2 = await PaymentRequestModel.aggregate(pipeline);
+  // let reqs2 = await PaymentRequestModel.aggregate(pipeline).sort({"number": -1});
 
-  console.log(reqs2.length);
+  // console.log(reqs2.length);
   return reqs;
 }
 
