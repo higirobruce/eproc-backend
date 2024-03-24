@@ -298,7 +298,7 @@ export async function getTendCountsByDepartment() {
     },
   ];
 
-  let result = await TenderModel.aggregate(lookup);
+  let result = await TenderModel.aggregate(lookup).sort({"number": -1});
 
   return result;
 }
@@ -360,7 +360,7 @@ export async function getTendCountsByCategory() {
     },
   ];
 
-  let result = await TenderModel.aggregate(lookup);
+  let result = await TenderModel.aggregate(lookup).sort({"number": -1});
 
   return result;
 }
