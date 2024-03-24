@@ -35,7 +35,8 @@ export async function getAllTendersByStatus(status: String) {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({"number": -1});
   return reqs;
 }
 
@@ -49,7 +50,8 @@ export async function getTendersById(id: String) {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({"number": -1});
   return req;
 }
 
@@ -63,7 +65,8 @@ export async function getTendersByRequest(requestId: String) {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({"number": -1});
   return reqs;
 }
 
@@ -115,7 +118,7 @@ export async function getTendersByServiceCategoryList(serviceCategories: []) {
   // }).populate('purchaseRequest')
 
   
-  let reqs = await TenderModel.aggregate(pipeline);
+  let reqs = await TenderModel.aggregate(pipeline).sort({"number": -1});
   console.log(reqs)
   return reqs;
 }
@@ -131,7 +134,8 @@ export async function getOpenTenders() {
         model: "Department",
       },
     })
-    .populate("purchaseRequest");
+    .populate("purchaseRequest")
+    .sort({"number": -1});
   return reqs;
 }
 
@@ -146,7 +150,8 @@ export async function getClosedTenders() {
         path: "department",
         model: "Department",
       },
-    });
+    })
+    .sort({"number": -1});
   return reqs;
 }
 
@@ -281,7 +286,7 @@ export async function getTendCountsByDepartment() {
     },
   ];
 
-  let result = await TenderModel.aggregate(lookup);
+  let result = await TenderModel.aggregate(lookup).sort({"number": -1});
 
   return result;
 }
@@ -343,7 +348,7 @@ export async function getTendCountsByCategory() {
     },
   ];
 
-  let result = await TenderModel.aggregate(lookup);
+  let result = await TenderModel.aggregate(lookup).sort({"number": -1});
 
   return result;
 }
