@@ -43,8 +43,9 @@ poRouter.get("/byRequestId/:requestId", async (req, res) => {
 
 poRouter.get("/byVendorId/:vendorId", async (req, res) => {
   let { vendorId } = req.params;
+  let {status} = req.query
   console.log(vendorId);
-  res.send(await getPOByVendorId(vendorId));
+  res.send(await getPOByVendorId(vendorId, status as String));
 });
 
 poRouter.get("/byStatus/:status", async (req, res) => {

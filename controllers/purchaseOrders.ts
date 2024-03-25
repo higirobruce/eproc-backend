@@ -6,7 +6,7 @@ import { LocalStorage } from "node-localstorage";
 import { sapLogin } from "../utils/sapB1Connection";
 import mongoose, { mongo } from "mongoose";
 import { PaymentRequestModel } from "../models/paymentRequests";
-import { fetch } from 'cross-fetch';
+import { fetch } from "cross-fetch";
 let localstorage = new LocalStorage("./scratch");
 
 /**
@@ -16,13 +16,27 @@ let localstorage = new LocalStorage("./scratch");
  * @return { Promise } A promise that resolves with an array
  */
 export async function getAllPOs(req?: any) {
-
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
-  let pos: any;
-  let totalPages: any
+  const status = req.query.status;
 
-  const purchaseOrderQuery = PurchaseOrderModel.find()
+  let pos: any;
+  let totalPages: any;
+  let query =
+    status && status !== "null" && status == "all"
+      ? {}
+      : status == "signed"
+      ? { status: { $in: ["signed", "started"] } }
+      : status == "pending-signature"
+      ? {
+          $or: [
+            { status: { $in: ["pending-signature"] } },
+            { status: { $exists: false } },
+          ],
+        }
+      : { status };
+
+  const purchaseOrderQuery = PurchaseOrderModel.find(query)
     .populate("tender")
     .populate("vendor")
     .populate("request")
@@ -45,17 +59,17 @@ export async function getAllPOs(req?: any) {
         },
       },
     })
-    .sort({"number": -1});
+    .sort({ number: -1 });
 
-    totalPages = await purchaseOrderQuery;
-    
-    if (pageSize && currentPage) {
-      purchaseOrderQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
-    }
-    
-    pos = await purchaseOrderQuery.clone();
+  totalPages = await purchaseOrderQuery;
 
-  return {data: pos, totalPages: totalPages?.length};
+  if (pageSize && currentPage) {
+    purchaseOrderQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  }
+
+  pos = await purchaseOrderQuery.clone();
+
+  return { data: pos, totalPages: totalPages?.length };
 }
 
 /**
@@ -90,7 +104,7 @@ export async function getPOByTenderId(tenderId: String) {
         },
       },
     })
-    .sort({"number": -1});
+    .sort({ number: -1 });
   return pos;
 }
 
@@ -118,7 +132,7 @@ export async function getPOById(id: String) {
         },
       },
     })
-    .sort({"number": -1});
+    .sort({ number: -1 });
   return pos;
 }
 
@@ -128,7 +142,7 @@ export async function getAllPOsByStatus(status: string) {
       ? { $or: [{ status }, { status: "started" }] }
       : { status: { $in: status } };
 
-  let pos = await PurchaseOrderModel.find(query).sort({"number": -1});
+  let pos = await PurchaseOrderModel.find(query).sort({ number: -1 });
 
   return pos;
 }
@@ -157,7 +171,7 @@ export async function getPOByRequestId(requestId: String) {
         },
       },
     })
-    .sort({"number": -1});
+    .sort({ number: -1 });
   return pos;
 }
 
@@ -169,11 +183,24 @@ export async function getPOByRequestId(requestId: String) {
  *
  * @return { Promise } The promise is resolved with an object with the following properties : tender : The user's tender createdBy : The user's created by
  */
-export async function getPOByVendorId(vendorId: String) {
-  let pos = await PurchaseOrderModel.find({
-    vendor: vendorId,
-    status: { $in: ["partially-signed", "signed", "started"] },
-  })
+export async function getPOByVendorId(vendorId: String, status: String) {
+  let query =
+    status && status !== "null" && status == "all"
+      ? { vendor: vendorId }
+      : status == "signed"
+      ? { vendor: vendorId, status: { $in: ["signed", "started"] } }
+      : status == "pending-signature"
+      ? {
+          vendor: vendorId,
+          $or: [
+            { status: { $in: ["pending-signature"] } },
+            { status: { $exists: false } },
+          ],
+        }
+      : { vendor: vendorId, status };
+
+      
+  let pos = await PurchaseOrderModel.find(query)
     .populate("tender")
     .populate("vendor")
     .populate("request")
@@ -196,7 +223,7 @@ export async function getPOByVendorId(vendorId: String) {
         },
       },
     })
-    .sort({"number": -1});
+    .sort({ number: -1 });
 
   return pos;
 }
@@ -271,7 +298,7 @@ export async function savePOInB1(
   DocumentLines: DocumentLines[],
   DocCurrency: String
 ) {
-  console.log('heeere')
+  console.log("heeere");
   return sapLogin().then(async (res) => {
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
@@ -361,7 +388,7 @@ export async function getPOPaymentRequests(id: string) {
     {
       $match: {
         purchaseOrder: new mongoose.Types.ObjectId(id),
-        status: {$nin:['withdrawn','declined']}
+        status: { $nin: ["withdrawn", "declined"] },
       },
     },
     {
@@ -466,7 +493,7 @@ export async function getPOPaidRequests(id: string) {
     {
       $match: {
         purchaseOrder: new mongoose.Types.ObjectId(id),
-        status: {$in:['paid']}
+        status: { $in: ["paid"] },
       },
     },
     {
