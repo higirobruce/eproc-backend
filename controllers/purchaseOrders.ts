@@ -298,7 +298,6 @@ export async function savePOInB1(
   DocumentLines: DocumentLines[],
   DocCurrency: String
 ) {
-  console.log("heeere");
   return sapLogin().then(async (res) => {
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
@@ -316,7 +315,6 @@ export async function savePOInB1(
     )
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         return res;
       })
       .catch((err) => {
@@ -479,7 +477,6 @@ export async function getPOPaymentRequests(id: string) {
   ];
   try {
     let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
-    console.log(pipelineResult);
 
     return pipelineResult[0] || { totalPaymentVal: 0, poVal: -1 };
   } catch (err: any) {
@@ -584,7 +581,6 @@ export async function getPOPaidRequests(id: string) {
   ];
   try {
     let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
-    console.log(pipelineResult);
 
     return pipelineResult[0] || { totalPaymentVal: 0, poVal: -1 };
   } catch (err: any) {

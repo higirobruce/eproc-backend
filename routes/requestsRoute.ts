@@ -35,7 +35,7 @@ requetsRouter.get("/", async (req, res) => {
 });
 
 requetsRouter.get("/countsByDep", async (req, res) => {
-  console.log(req.session);
+
   res.send(await getReqCountsByDepartment());
 });
 
@@ -69,7 +69,6 @@ requetsRouter.get("/byCreator/:createdBy", async (req, res) => {
 
 requetsRouter.get("/:id", async (req, res) => {
   let { id } = req.params;
-  console.log(id);
   res.send(await getRequestById(id));
 });
 

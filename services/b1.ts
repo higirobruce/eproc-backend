@@ -175,7 +175,6 @@ export function getBusinessPartnerByName(
         }
       )
         .then((res) => {
-          console.log(res.status);
           if (res.status !== 200) {
             return {
               error: true,
@@ -213,7 +212,6 @@ export function getBusinessPartnerById(CardCode: String | string | undefined) {
         }
       )
         .then((res) => {
-          console.log(res.status);
           if (res.status !== 200) {
             return {
               error: true,
@@ -238,8 +236,6 @@ export function updateBusinessPartnerById(
   CardCode: String | string | undefined,
   update: any
 ) {
-
-  console.log(CardCode)
   return sapLogin()
     .then(async (res) => {
       let resJson = await res.json();

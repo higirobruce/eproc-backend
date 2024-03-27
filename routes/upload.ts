@@ -313,7 +313,6 @@ uploadRouter.post("/updatePaymentRequests/", async (req, res) => {
       )} successfully created`,
     });
 
-    console.log(req.query.id, _file);
     await updateRequestFileName(
       req.query.id,
       _file,
@@ -378,7 +377,6 @@ uploadRouter.post("/updatePaymentRequests/", async (req, res) => {
 uploadRouter.get("/check/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
   let filePath = path.join(__dirname, "public/", folder);
-  console.log(filePath);
   if (fs.existsSync(filePath)) {
     res.send(true);
   } else {

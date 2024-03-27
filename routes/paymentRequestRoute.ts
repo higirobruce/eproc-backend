@@ -121,8 +121,8 @@ paymentRequestRouter.put("/:id", async (req, res) => {
   //   }
   //   res.send(updates);
   // }
-
   let updatedRequest = await updateRequest(id, updates);
+  console.log(updatedRequest)
   if (updates.notifyApprover && updates.approver) {
     //send notification
     let approver = await UserModel.findById(updates.approver);
