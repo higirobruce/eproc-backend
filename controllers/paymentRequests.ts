@@ -93,7 +93,6 @@ export async function getPaymentRequestById(id: String) {
 
 export async function getAllRequestsByCreator(createdBy: any) {
   let query = {};
-  console.log(createdBy);
   if (createdBy && createdBy !== "null")
     query = {
       createdBy,
@@ -298,8 +297,6 @@ export async function getAllRequestsByCreator(createdBy: any) {
         ];
   let res1 = await PaymentRequestModel.aggregate(pipeline).sort({ number: -1 });
 
-  console.log(res1.length);
-
   let reqs = await PaymentRequestModel.find(query)
     .populate("createdBy purchaseOrder approver reviewedBy budgetLine")
     .sort({ number: -1 });
@@ -318,16 +315,12 @@ export async function getAllRequestsByStatus(status: String, id: any) {
       : status === "pending-approval"
       ? {
           status: {
-
             $in: ["approved (hod)", "reviewed", "pending-approval"],
-
           },
         }
       : { status };
 
   let query2 = {};
-
-  console.log(id);
 
   if (id && id !== "null")
     query = {
@@ -430,7 +423,6 @@ export async function getAllRequestsByStatus(status: String, id: any) {
     .populate("createdBy purchaseOrder approver reviewedBy budgetLine")
     .sort({ number: -1 });
 
-  console.log(reqs.length);
   // let reqs2 = await PaymentRequestModel.aggregate(pipeline).sort({"number": -1});
 
   // console.log(reqs2.length);
@@ -567,6 +559,7 @@ export async function updateRequest(id: String, update: Request) {
     let newRequest = await PaymentRequestModel.findByIdAndUpdate(id, update, {
       new: true,
     });
+
     return newRequest;
   } catch (err) {
     return {

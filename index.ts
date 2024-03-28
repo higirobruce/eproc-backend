@@ -162,7 +162,6 @@ app.get("/check/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
   var fileName = req.params.name
   let filePath = path.join(__dirname, "public/", folder, `/${fileName}`);
-  console.log(filePath)
   if (fs.existsSync(filePath)) {
     res.send(true);
   } else {

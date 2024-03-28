@@ -68,6 +68,5 @@ serviceCategoryRouter.get("/", async (req, res) => {
 
   // let categs = await ServiceCategoryModel.find().sort({description:'asc'});
   let categs = await ServiceCategoryModel.aggregate(pipeline);
-  console.log(categs);
   res.status(200).send(categs);
 });

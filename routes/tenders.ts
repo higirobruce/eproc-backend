@@ -46,7 +46,6 @@ tenderRouter.get("/byRequest/:requestId", async (req, res) => {
 
 tenderRouter.post("/byServiceCategories/", async (req, res) => {
   let { serviceCategories } = req.body;
-  console.log(serviceCategories)
   res.send(await getTendersByServiceCategoryList(serviceCategories));
 });
 

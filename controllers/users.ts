@@ -364,7 +364,6 @@ export async function createSupplierinB1(
     )
       .then((res) => res.json())
       .then(async (res) => {
-        console.log(res);
         if (res?.error) {
           console.log("Tried many times, we cant login");
           return false;
@@ -380,9 +379,6 @@ export async function createSupplierinB1(
 }
 
 export async function updateSupplierinB1(CardCode: String, options: any) {
-  console.log(
-    `${process.env.IRMB_B1_SERVER}:${process.env.IRMB_B1_SERVICE_LAYER_PORT}/b1s/v1/BusinessPartners('${CardCode}')`
-  );
   return sapLogin().then(async (res) => {
     let COOKIE = res.headers.get("set-cookie");
     localstorage.setItem("cookie", `${COOKIE}`);
@@ -398,7 +394,6 @@ export async function updateSupplierinB1(CardCode: String, options: any) {
       }
     )
       .then((res) => {
-        console.log("eeee", res);
         if (res.status === 204) {
           return {
             error: false,
@@ -486,7 +481,7 @@ export async function approveUser(id: String) {
     }
 
     if (user?.userType === "VENDOR" && user?.status === "pending-approval") {
-      console.log(name);
+
       let series = await getB1SeriesFromNames(name!);
 
       let createdCode = await createSupplierinB1(
