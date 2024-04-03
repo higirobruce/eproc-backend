@@ -35,7 +35,6 @@ requetsRouter.get("/", async (req, res) => {
 });
 
 requetsRouter.get("/countsByDep", async (req, res) => {
-
   res.send(await getReqCountsByDepartment());
 });
 
@@ -92,6 +91,8 @@ requetsRouter.post("/", async (req, res) => {
     rejectionDate,
     level1Approver,
     sourcingMethod,
+    supportingDocs,
+    currency,
   } = req.body;
 
   let number = await generateReqNumber();
@@ -119,11 +120,11 @@ requetsRouter.post("/", async (req, res) => {
     pm_approvalDate,
     rejectionDate,
     level1Approver,
-    sourcingMethod
+    sourcingMethod,
+    supportingDocs,
+    currency
   );
-
   let createdRequest = await saveRequest(requestToCreate);
-
   res.status(201).send(createdRequest);
 });
 
