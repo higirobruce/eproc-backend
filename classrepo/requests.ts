@@ -22,7 +22,9 @@ export class Request implements IRequest {
   pm_approvalDate: Date;
   rejectionDate: Date;
   level1Approver: Types.ObjectId;
-  sourcingMethod: string
+  sourcingMethod: string;
+  supportingDocs: [];
+  currency: string;
 
   constructor(
     createdBy: string,
@@ -43,7 +45,9 @@ export class Request implements IRequest {
     pm_approvalDate: Date,
     rejectionDate: Date,
     level1Approver: string,
-    sourcingMethod: string
+    sourcingMethod: string,
+    supportingDocs: [],
+    currency: string
   ) {
     this.createdBy = createdBy
       ? new Types.ObjectId(createdBy)
@@ -58,7 +62,9 @@ export class Request implements IRequest {
     this.reasonForRejection = reasonForRejection;
     this.declinedBy = declinedBy;
     this.budgeted = budgeted;
-    this.budgetLine = budgetLine ? new Types.ObjectId(budgetLine): new Types.ObjectId();
+    this.budgetLine = budgetLine
+      ? new Types.ObjectId(budgetLine)
+      : new Types.ObjectId();
     this.title = title;
     this.hod_approvalDate = hod_approvalDate;
     this.hof_approvalDate = hof_approvalDate;
@@ -67,6 +73,8 @@ export class Request implements IRequest {
     this.level1Approver = level1Approver
       ? new Types.ObjectId(level1Approver)
       : new Types.ObjectId();
-    this.sourcingMethod = sourcingMethod
+    this.sourcingMethod = sourcingMethod;
+    this.supportingDocs = supportingDocs;
+    this.currency = currency;
   }
 }
