@@ -1,3 +1,4 @@
+import { RequestModel } from "./../models/requests";
 import { PurchaseOrder } from "../classrepo/purchaseOrders";
 import { PurchaseOrderModel } from "../models/purchaseOrders";
 import { DocumentLines } from "../types/types";
@@ -199,7 +200,6 @@ export async function getPOByVendorId(vendorId: String, status: String) {
         }
       : { vendor: vendorId, status };
 
-      
   let pos = await PurchaseOrderModel.find(query)
     .populate("tender")
     .populate("vendor")
@@ -239,9 +239,18 @@ export async function getPOByVendorId(vendorId: String, status: String) {
  */
 export async function updatePOStatus(id: String, newStatus: String) {
   try {
-    await PurchaseOrderModel.findByIdAndUpdate(id, {
+    let updatedPO = await PurchaseOrderModel.findByIdAndUpdate(id, {
       $set: { status: newStatus },
     });
+
+    //reOpen the purchase request when po is archived
+    if (newStatus == "archived") {
+      let reqId = updatedPO?.request;
+      await RequestModel.findByIdAndUpdate(reqId, {
+        $set: { status: "approved (pm)" },
+      });
+    }
+    
     return { message: "done" };
   } catch (err) {
     return {
