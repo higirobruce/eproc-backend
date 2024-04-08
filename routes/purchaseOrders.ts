@@ -23,6 +23,7 @@ import { generatePONumber } from "../services/purchaseOrders";
 import { hashPassword } from "../services/users";
 import { send } from "../utils/sendEmailNode";
 import { logger } from "../utils/logger";
+import { RequestModel } from "../models/requests";
 
 export const poRouter = Router();
 
