@@ -438,6 +438,8 @@ export async function saveUser(user: User) {
       };
     }
     let createdUser = await UserModel.create(user);
+
+    
     return createdUser._id;
   } catch (err: any) {
     let message = "";

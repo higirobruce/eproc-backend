@@ -42,6 +42,7 @@ export const BidSubmissionSchema = new Schema<IBidSubmissionDocument>(
     },
     proposalDocId: String,
     otherDocId: String,
+    otherDocIds: Array,
     bankName: {
       type: String,
     },

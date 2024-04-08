@@ -108,7 +108,7 @@ userRouter.get("/:id", async (req, res) => {
   res.send(await getUser(id));
 });
 
-userRouter.post("/", async (req, res) => {
+userRouter.post("/", ensureUserAuthorized, async (req, res) => {
   let {
     userType,
     email,
@@ -181,6 +181,10 @@ userRouter.post("/", async (req, res) => {
     logger.log({
       level: "info",
       message: `${createdUser?._id} was successfully created`,
+      meta: {
+        doneBy: req.session?.user,
+        payload: req.body,
+      },
     });
     send(
       "",
@@ -245,37 +249,61 @@ userRouter.post("/login", async (req, res) => {
   }
 });
 
-userRouter.post("/approve/:id", async (req, res) => {
+userRouter.post("/approve/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   let { approvedBy, avgRate } = req.body;
   let result = await approveUser(id);
   logger.log({
     level: "info",
     message: `Approval of User ${id} successfully done`,
+    meta: {
+      doneBy: req.session?.user,
+      payload: req.body,
+    },
   });
   res.send(result).status(201);
 });
 
-userRouter.post("/decline/:id", async (req, res) => {
+userRouter.post("/decline/:id",ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   logger.log({
     level: "info",
     message: `Declining of User ${id} successfully done`,
+    meta: {
+      doneBy: req.session?.user,
+      payload: req.body,
+    },
   });
   res.send(await declineUser(id));
 });
 
-userRouter.post("/ban/:id", async (req, res) => {
+userRouter.post("/ban/:id",ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
+  logger.log({
+    level: "info",
+    message: `Banning of User ${id} successfully done`,
+    meta: {
+      doneBy: req.session?.user,
+      payload: req.body,
+    },
+  });
   res.send(await banUser(id));
 });
 
-userRouter.post("/activate/:id", async (req, res) => {
+userRouter.post("/activate/:id",ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
+  logger.log({
+    level: "info",
+    message: `Activation of User ${id} successfully done`,
+    meta: {
+      doneBy: req.session?.user,
+      payload: req.body,
+    },
+  });
   res.send(await activateUser(id));
 });
 
-userRouter.put("/:id", async (req, res) => {
+userRouter.put("/:id",ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   let { newUser } = req.body;
 
@@ -285,14 +313,27 @@ userRouter.put("/:id", async (req, res) => {
 
   logger.log({
     level: "info",
-    message: `Update of User ${newUser} successfully done`,
+    message: `Update of User ${id} successfully done`,
+    meta: {
+      doneBy: req.session?.user,
+      payload: req.body,
+    },
   });
 
   res.send(updates);
 });
 
-userRouter.put("/update/:id", async (req, res) => {
+userRouter.put("/update/:id", ensureUserAuthorized, async (req, res) => {
   let nu = await updateBusinessPartnerById(req.params.id, req.body);
+  logger.log({
+    level: "info",
+    message: `Update of User ${req.params.id} successfully done`,
+    meta: {
+      doneBy: req.session?.user,
+      payload: req.body,
+    },
+  });
+
   res.send(nu);
 });
 
@@ -310,6 +351,7 @@ userRouter.put("/updatePassword/:id", async (req, res) => {
     logger.log({
       level: "warn",
       message: `Password for ${id} was successfully reset`,
+      
     });
   }
   res.send(updatedUser);
