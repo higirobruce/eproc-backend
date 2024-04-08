@@ -51,6 +51,7 @@
     "nodemailer": "^6.9.1",
     "store": "^2.0.12",
     "uuid": "^9.0.0",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "winston-mongodb": "^5.1.1"
   }
 }

@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { Router } from "express";
+import { Router, NextFunction, Request, Response } from "express";
 import { Contract } from "../classrepo/contracts";
 import { PurchaseOrder } from "../classrepo/purchaseOrders";
 import {
@@ -29,8 +29,31 @@ import { generateContractNumber } from "../services/contracts";
 import { hashPassword } from "../services/users";
 import { logger } from "../utils/logger";
 import { send } from "../utils/sendEmailNode";
+import jwt from "jsonwebtoken";
 
+export let SALT =
+  process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
 export const contractRouter = Router();
+
+let ensureUserAuthorized = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let token = req.headers.token;
+    if (!token) {
+      res.status(401).send("Unauthorized");
+    } else {
+      let user = jwt.verify(token as string, SALT);
+      req.session.user = user;
+
+      next();
+    }
+  } catch (err) {
+    res.status(401).send("Please send a valid access token in the header");
+  }
+};
 
 contractRouter.get("/", async (req, res) => {
   res.send(await getAllContracts());
@@ -61,7 +84,7 @@ contractRouter.get("/:id", async (req, res) => {
   res.send(await getContractById(id));
 });
 
-contractRouter.post("/", async (req, res) => {
+contractRouter.post("/",ensureUserAuthorized, async (req, res) => {
   let {
     vendor,
     tender,
@@ -112,10 +135,19 @@ contractRouter.post("/", async (req, res) => {
       message: `Contract ${createdContract?._id} successfully created`,
     });
   }
+
+  logger.log({
+    level: "info",
+    message: `Contract ${createdContract?._id} successfully created`,
+    meta: {
+      doneBy: req.session?.user,
+      payload: req.body,
+    },
+  });
   res.status(201).send(createdContract);
 });
 
-contractRouter.put("/:id", async (req, res) => {
+contractRouter.put("/:id",ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   let {
     newContract,
@@ -218,7 +250,14 @@ contractRouter.put("/:id", async (req, res) => {
   let updated = await updateContract(id, newContract);
 
   if (updated) {
-    logger.log(logOptions);
+    logger.log({
+      level: "info",
+      message: `Contract ${id} successfully updated`,
+      meta: {
+        doneBy: req.session?.user,
+        payload: req.body,
+      },
+    });
   }
 
   res.status(200).send(updated);

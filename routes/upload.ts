@@ -43,7 +43,6 @@ uploadRouter.post("/termsOfReferencesssss/", (req, res) => {
 });
 
 uploadRouter.post("/termsOfReference/", (req, res) => {
-
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "dist/public/termsOfReference");
@@ -63,7 +62,7 @@ uploadRouter.post("/termsOfReference/", (req, res) => {
       );
     },
   });
-  
+
   var upload = multer({ storage: storage }).array("files[]");
   // var upload = multer({ storage: storage }).array('file',100)
   upload(req, res, function (err) {
@@ -205,6 +204,48 @@ uploadRouter.post("/bidDocs/", (req, res) => {
   });
 });
 
+uploadRouter.post("/bidOtherDocs/", (req, res) => {
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "dist/public/bidDocs");
+    },
+
+    filename: function (req, file, cb) {
+      let fileName = randomUUID();
+      cb(
+        null,
+        (file.originalname
+          .split(path.extname(file.originalname))[0]
+          ?.split("_")[0] ||
+          file.originalname.split(path.extname(file.originalname))[0]) +
+          "_" +
+          moment().format("DDMMMYY-hms") +
+          path.extname(file.originalname)
+      );
+    },
+  });
+
+  var upload = multer({ storage: storage }).array("files[]");
+  // var upload = multer({ storage: storage }).array('file',100)
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      console.log(err);
+      return res.status(500);
+    } else if (err) {
+      console.log(err);
+      return res.status(500);
+    }
+
+    logger.log({
+      level: "info",
+      message: `Payment request File(s) ${JSON.stringify(
+        req.files
+      )} successfully created`,
+    });
+    return res.status(200).send(req.files);
+  });
+});
+
 uploadRouter.post("/evaluationReports/", (req, res) => {
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -295,7 +336,6 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
     },
   });
 
-  
   var upload = multer({ storage: storage }).array("files[]");
   // var upload = multer({ storage: storage }).array('file',100)
   upload(req, res, function (err) {

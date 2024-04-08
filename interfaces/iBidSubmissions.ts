@@ -13,6 +13,7 @@ export interface IBidSubmission {
   number: number;
   proposalDocId: String;
   otherDocId: String;
+  otherDocIds: String[];
   bankName: String;
   bankAccountNumber: String;
   bankAccountName: String;
