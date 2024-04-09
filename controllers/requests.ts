@@ -311,6 +311,10 @@ export async function updateRequestStatus(id: String, newStatus: String) {
       { new: true }
     );
 
+    let initiator = await UserModel.find({
+      _id: newRequest?.createdBy,
+    });
+
     //Sending email notifications
     if (newStatus === "approved (hod)") {
       let level2Approvers = await UserModel.find({
@@ -326,6 +330,15 @@ export async function updateRequestStatus(id: String, newStatus: String) {
         JSON.stringify(newRequest),
         "",
         "approval"
+      );
+
+      send(
+        "",
+        initiator[0]?.email,
+        "Update on Your Purchase Request Approval",
+        JSON.stringify(newRequest),
+        "",
+        "pr-update1"
       );
     }
 
@@ -344,13 +357,31 @@ export async function updateRequestStatus(id: String, newStatus: String) {
         "",
         "approval"
       );
+
+      send(
+        "",
+        initiator[0]?.email,
+        "Update on Your Purchase Request Approval",
+        JSON.stringify(newRequest),
+        "",
+        "pr-update2"
+      );
+    }
+
+    if (newStatus === "approved (pm)") {
+      
+
+      send(
+        "",
+        initiator[0]?.email,
+        "Update on Your Purchase Request Approval",
+        JSON.stringify(newRequest),
+        "",
+        "pr-update3"
+      );
     }
 
     if (newStatus === "archived") {
-      let initiator = await UserModel.find({
-        _id: newRequest?.createdBy,
-      });
-
       send(
         "",
         initiator[0]?.email,
