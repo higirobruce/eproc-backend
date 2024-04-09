@@ -86,6 +86,8 @@ export async function getAllRequestsByCreator(
               "approved (pm)",
               "approved",
               "approved (fd)",
+              "withdrawn",
+              "archived",
             ],
           },
         },
@@ -104,7 +106,7 @@ export async function getAllRequestsByCreator(
       },
     })
     .populate("budgetLine")
-    .sort({"number": -1})
+    .sort({ number: -1 });
 
   return reqs;
   // return permissions?.canApproveAsPM
@@ -141,6 +143,8 @@ export async function getAllRequestsByStatus(
               "approved (hod)",
               "approved (fd)",
               "approved (pm)",
+              "withdrawn",
+              "archived",
             ],
           },
         }
@@ -166,8 +170,10 @@ export async function getAllRequestsByStatus(
               "approved (pm)",
               "approved",
               "approved (fd)",
+              "withdrawn",
+              "archived",
             ],
-            $nin: ["withdrawn"],
+            // $nin: ["withdrawn"],
           },
         },
         { status: { $in: ["pending"] }, level1Approver: id },
@@ -175,7 +181,7 @@ export async function getAllRequestsByStatus(
     };
 
   let reqs = await RequestModel.find(query)
-    .sort({"number": -1})
+    .sort({ number: -1 })
     .populate("createdBy")
     .populate("level1Approver")
     .populate({
@@ -337,6 +343,21 @@ export async function updateRequestStatus(id: String, newStatus: String) {
         JSON.stringify(newRequest),
         "",
         "approval"
+      );
+    }
+
+    if (newStatus === "archived") {
+      let initiator = await UserModel.find({
+        _id: newRequest?.createdBy,
+      });
+
+      send(
+        "",
+        initiator[0]?.email,
+        "Purchase request Archived",
+        JSON.stringify(newRequest),
+        "",
+        "pr-archived"
       );
     }
 
