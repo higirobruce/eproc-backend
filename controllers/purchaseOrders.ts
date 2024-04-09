@@ -8,6 +8,8 @@ import { sapLogin } from "../utils/sapB1Connection";
 import mongoose, { mongo } from "mongoose";
 import { PaymentRequestModel } from "../models/paymentRequests";
 import { fetch } from "cross-fetch";
+import { UserModel } from "../models/users";
+import { send } from "../utils/sendEmailNode";
 let localstorage = new LocalStorage("./scratch");
 
 /**
@@ -244,13 +246,34 @@ export async function updatePOStatus(id: String, newStatus: String) {
     });
 
     //reOpen the purchase request when po is archived
-    if (newStatus == "archived") {
+    if (newStatus == "withdrawn") {
       let reqId = updatedPO?.request;
       await RequestModel.findByIdAndUpdate(reqId, {
         $set: { status: "approved (pm)" },
       });
+
+      let signedSignatories: any[] =
+        updatedPO?.signatories?.filter((s: any) => s?.signed == true) || [];
+
+      if (signedSignatories?.length >= 1) {
+        console.log(signedSignatories)
+        signedSignatories?.map((s) => {
+          send(
+            "from",
+            s?.email,
+            "Purchase Order Withdrawn",
+            JSON.stringify({
+              docId: updatedPO?._id,
+              docNumber: updatedPO?.number,
+              docType: "purchase-orders",
+            }),
+            "",
+            "po-withdrawal"
+          );
+        });
+      }
     }
-    
+
     return { message: "done" };
   } catch (err) {
     return {
