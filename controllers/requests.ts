@@ -767,6 +767,18 @@ export async function getPurReqServiceCat(year: any) {
   }
   let pipeline = [
     {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
       $project: {
         month: {
           $month: "$createdAt",
