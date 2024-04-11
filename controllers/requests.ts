@@ -649,6 +649,9 @@ export async function getPurReqTotalAnalytics(year: any) {
             },
           },
         },
+        total: {
+          $sum: 1,
+        },
       },
     },
     // {
@@ -764,18 +767,6 @@ export async function getPurReqServiceCat(year: any) {
   }
   let pipeline = [
     {
-      $addFields: {
-        year: {
-          $year: "$createdAt",
-        },
-      },
-    },
-    {
-      $match: {
-        year: parseInt(year),
-      },
-    },
-    {
       $project: {
         month: {
           $month: "$createdAt",
@@ -826,8 +817,61 @@ export async function getPurReqServiceCat(year: any) {
         },
       },
     },
+    {
+      $group: {
+        _id: {
+          monthName: "$month",
+          monthNum: "$_id.month",
+        },
+        categories: {
+          $addToSet: {
+            category: "$_id.serviceCategory",
+            count: "$count",
+          },
+        },
+        count: {
+          $sum: "$count",
+        },
+      },
+    },
+    {
+      $project: {
+        name: "$_id",
+        categories: 1,
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        name: "$name.monthName",
+        month: "$name.monthNum",
+        categories: {
+          $arrayToObject: {
+            $map: {
+              input: "$categories",
+              as: "category",
+              in: {
+                k: "$$category.category",
+                v: "$$category.count",
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        "categories.name": "$name",
+        "categories.month": "$month",
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$categories",
+      },
+    },
   ];
 
-  let req = await RequestModel.aggregate(pipeline).sort({ _id: 1 });
+  let req = await RequestModel.aggregate(pipeline).sort({ month: 1 });
   return req;
 }
