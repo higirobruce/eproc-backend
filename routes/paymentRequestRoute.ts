@@ -4,6 +4,8 @@ import {
   getAllRequestsByCreator,
   getAllRequestsByStatus,
   getPaymentRequestById,
+  getPayReqStatusAnalytics,
+  getPayReqTotalAnalytics,
   savePaymentRequest,
   updateRequest,
 } from "../controllers/paymentRequests";
@@ -56,6 +58,18 @@ paymentRequestRouter.get("/byStatus/:status/:id", async (req, res) => {
   status === "all"
     ? res.send(await getAllRequestsByCreator(id))
     : res.send(await getAllRequestsByStatus(status, id));
+});
+
+paymentRequestRouter.get("/totalOverview", async (req, res) => {
+  let { year } = req.query;
+  let resTotals = await getPayReqTotalAnalytics(year);
+  let resStatusData = await getPayReqStatusAnalytics(year);
+
+  res.send({
+    data: resTotals,
+    statusData: resStatusData,
+     
+  });
 });
 
 paymentRequestRouter.get("/:id", async (req, res) => {
