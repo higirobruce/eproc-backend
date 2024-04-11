@@ -13,10 +13,14 @@ import {
   getReqCountsByDepartment,
   getReqCountsByStatus,
   getRequestById,
+  getPurReqTotalAnalytics,
   saveRequest,
   updateRequest,
   updateRequestSourcingMethod,
   updateRequestStatus,
+  getPurReqStatusAnalytics,
+  getPurReqSourcingAnalytics,
+  getPurReqServiceCat,
 } from "../controllers/requests";
 
 import { UserModel } from "../models/users";
@@ -64,6 +68,21 @@ requetsRouter.get("/byStatus/:status/:id", async (req, res) => {
 requetsRouter.get("/byCreator/:createdBy", async (req, res) => {
   let { createdBy } = req.params;
   res.send(await getAllRequestsByCreator(createdBy));
+});
+
+requetsRouter.get("/totalOverview", async (req, res) => {
+  let { year } = req.query;
+  let resTotals = await getPurReqTotalAnalytics(year);
+  let resStatuses = await getPurReqStatusAnalytics(year);
+  let resSourcing = await getPurReqSourcingAnalytics(year);
+  let resServiceCat = await getPurReqServiceCat(year);
+
+  res.send({
+    data: resTotals,
+    statusData: resStatuses,
+    sourcingData: resSourcing,
+    serviceCatData: resServiceCat,
+  });
 });
 
 requetsRouter.get("/:id", async (req, res) => {

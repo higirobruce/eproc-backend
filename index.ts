@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from "fs";
 import express, { Express, NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import {
@@ -101,16 +101,15 @@ export let ensureUserAuthorized = (
   try {
     let token = req.headers.token;
     if (!token) {
-
-      res.status(401).send('Unauthorized')
+      res.status(401).send("Unauthorized");
     } else {
       let user = jwt.verify(token as string, SALT);
-      req.session.user = user
-      
+      req.session.user = user;
+
       next();
     }
   } catch (err) {
-    res.status(401).send('Please send a valid access token in the header')
+    res.status(401).send("Please send a valid access token in the header");
   }
 };
 app.use(
@@ -131,14 +130,14 @@ app.use("/requests", ensureUserAuthorized, requetsRouter);
 app.use("/dpts", dptRouter);
 app.use("/serviceCategories", serviceCategoryRouter);
 app.use("/rdbServiceCategories", rdbServiceCategoryRouter);
-app.use("/tenders",ensureUserAuthorized, tenderRouter);
-app.use("/submissions",ensureUserAuthorized, submissionsRouter);
-app.use("/purchaseOrders",ensureUserAuthorized, poRouter);
-app.use("/contracts",ensureUserAuthorized, contractRouter);
-app.use("/budgetLines",ensureUserAuthorized, budgetLinesRouter);
-app.use("/paymentRequests",ensureUserAuthorized, paymentRequestRouter);
+app.use("/tenders", ensureUserAuthorized, tenderRouter);
+app.use("/submissions", ensureUserAuthorized, submissionsRouter);
+app.use("/purchaseOrders", ensureUserAuthorized, poRouter);
+app.use("/contracts", ensureUserAuthorized, contractRouter);
+app.use("/budgetLines", ensureUserAuthorized, budgetLinesRouter);
+app.use("/paymentRequests", ensureUserAuthorized, paymentRequestRouter);
 app.use("/uploads", uploadRouter);
-app.use("/b1", ensureUserAuthorized,b1Router);
+app.use("/b1", ensureUserAuthorized, b1Router);
 app.get("/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
   var options = {
@@ -160,7 +159,7 @@ app.get("/file/:folder/:name", function (req, res, next) {
 
 app.get("/check/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
-  var fileName = req.params.name
+  var fileName = req.params.name;
   let filePath = path.join(__dirname, "public/", folder, `/${fileName}`);
   if (fs.existsSync(filePath)) {
     res.send(true);
@@ -176,7 +175,6 @@ let server = app.listen(PORT, async () => {
     message: `App started on port ${PORT}`,
   });
 });
-
 
 process.on("SIGTERM", () => {
   logger.log({
