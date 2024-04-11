@@ -11,6 +11,7 @@ import { UserModel } from "../models/users";
 import { generatePaymentRequestNumber } from "../services/paymentRequests";
 import { send } from "../utils/sendEmailNode";
 import { saveJournalEntry } from "../services/b1";
+import { getAllPaymentReviewers } from "../controllers/users";
 export const paymentRequestRouter = Router();
 
 paymentRequestRouter.get("/", async (req, res) => {
@@ -29,16 +30,19 @@ paymentRequestRouter.post("/", async (req, res) => {
   try {
     let newPaymentRequest = await savePaymentRequest(req.body);
 
-    // let approver = await UserModel.findById(newPaymentRequest.approver);
-
-    // send(
-    //   "from",
-    //   approver?.email,
-    //   "Your Approval is needed",
-    //   JSON.stringify(newPaymentRequest),
-    //   "html",
-    //   "payment-request-approval"
-    // );
+    if (newPaymentRequest?.category == "external") {
+      let reviewers = await getAllPaymentReviewers();
+      reviewers?.map((r) => {
+        send(
+          "from",
+          r?.email,
+          "New payment request has been submitted.",
+          JSON.stringify(newPaymentRequest),
+          "html",
+          "payment-request-submitted"
+        );
+      });
+    }
 
     res.status(201).send(newPaymentRequest);
   } catch (err) {
@@ -122,7 +126,7 @@ paymentRequestRouter.put("/:id", async (req, res) => {
   //   res.send(updates);
   // }
   let updatedRequest = await updateRequest(id, updates);
-  console.log(updatedRequest)
+
   if (updates.notifyApprover && updates.approver) {
     //send notification
     let approver = await UserModel.findById(updates.approver);
@@ -138,4 +142,3 @@ paymentRequestRouter.put("/:id", async (req, res) => {
   }
   res.send(updates);
 });
-

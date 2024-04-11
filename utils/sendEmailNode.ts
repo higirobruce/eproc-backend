@@ -222,6 +222,7 @@ const prArchived = (pr: any) => `<mjml>
 
 </mj-body>
 </mjml>`;
+
 const prUpdate1 = (pr: any) => `<mjml>
 <mj-body>
   <!-- Company Header -->
@@ -373,6 +374,46 @@ const paymentRequestApproval = (pr: any) => `<mjml>
         I hope that you are well. <br/><br/>
         I am reaching out to inform you that a new payment request (Req Number ${pr?.number}) has been submitted for your approval.<br/><br/>
         To review the request, please proceed to the e-procurement application by clicking the button below.<br>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/payment-requests/${pr?._id}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+
+const paymentRequestSubmitted = (pr: any) => `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">New payment request has been submitted.</mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+      Hi there,<br/>
+      I hope that you are well.
+      I am reaching out to inform you that a new external payment  request has been submitted for your review.<br/>
+      To review the request, please proceed to the e-Procurement application by clicking the button below.<br/>
       </mj-text>
 
       <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/payment-requests/${pr?._id}>Go to application</mj-button>
@@ -916,6 +957,14 @@ export async function send(
         subject,
         text,
         html: mjml(paymentRequestApproval(JSON.parse(text))).html,
+      });
+    else if (type === "payment-request-submitted")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(paymentRequestSubmitted(JSON.parse(text))).html,
       });
     else if (type === "rejection")
       return await transporter.sendMail({
