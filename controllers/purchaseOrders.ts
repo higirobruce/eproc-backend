@@ -189,18 +189,21 @@ export async function getPOByRequestId(requestId: String) {
 export async function getPOByVendorId(vendorId: String, status: String) {
   let query =
     status && status !== "null" && status == "all"
-      ? { vendor: vendorId }
+      ? { vendor: vendorId, status: { $nin: "withdrawn" } }
       : status == "signed"
-      ? { vendor: vendorId, status: { $in: ["signed", "started"] } }
+      ? {
+          vendor: vendorId,
+          status: { $in: ["signed", "started"], $nin: "withdrawn" },
+        }
       : status == "pending-signature"
       ? {
           vendor: vendorId,
           $or: [
-            { status: { $in: ["pending-signature"] } },
+            { status: { $in: ["pending-signature"], $nin: "withdrawn" } },
             { status: { $exists: false } },
           ],
         }
-      : { vendor: vendorId, status };
+      : { vendor: vendorId, status: { $eq: status, $nin: "withdrawn" } };
 
   let pos = await PurchaseOrderModel.find(query)
     .populate("tender")
@@ -256,7 +259,7 @@ export async function updatePOStatus(id: String, newStatus: String) {
         updatedPO?.signatories?.filter((s: any) => s?.signed == true) || [];
 
       if (signedSignatories?.length >= 1) {
-        console.log(signedSignatories)
+        console.log(signedSignatories);
         signedSignatories?.map((s) => {
           send(
             "from",
@@ -619,4 +622,151 @@ export async function getPOPaidRequests(id: string) {
     console.log(err);
     return { totalPaymentVal: 0, poVal: -1 };
   }
+}
+
+export async function getPoTotalAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+
+    {
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        // budgeted: {
+        //   $sum: {
+        //     $cond: {
+        //       if: {
+        //         $eq: ["$budgeted", true],
+        //       },
+        //       then: 1,
+        //       else: 0,
+        //     },
+        //   },
+        // },
+        // nonbudgeted: {
+        //   $sum: {
+        //     $cond: {
+        //       if: {
+        //         $eq: ["$budgeted", false],
+        //       },
+        //       then: 1,
+        //       else: 0,
+        //     },
+        //   },
+        // },
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
+  return req;
+}
+
+export async function getPoStatusAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $addFields: {
+        status: {
+          $cond: {
+            if: {
+              $or: [
+                {
+                  $eq: ["$status", "pending-review"],
+                },
+                {
+                  $eq: ["$status", "reviewed"],
+                },
+                {
+                  $eq: ["$status", "approved (hod)"],
+                },
+                {
+                  $eq: ["$status", "approved (hof)"],
+                },
+                {
+                  $eq: ["$status", "pending"],
+                },
+              ],
+            },
+            then: "pending approval",
+            else: "$status",
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "$status",
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
 }

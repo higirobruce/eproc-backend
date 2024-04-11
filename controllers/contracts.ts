@@ -184,3 +184,90 @@ export async function updateContract(id: String, contract: Contract) {
   // }
   return newContract;
 }
+
+export async function getContractsTotalAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+
+    {
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        // budgeted: {
+        //   $sum: {
+        //     $cond: {
+        //       if: {
+        //         $eq: ["$budgeted", true],
+        //       },
+        //       then: 1,
+        //       else: 0,
+        //     },
+        //   },
+        // },
+        // nonbudgeted: {
+        //   $sum: {
+        //     $cond: {
+        //       if: {
+        //         $eq: ["$budgeted", false],
+        //       },
+        //       then: 1,
+        //       else: 0,
+        //     },
+        //   },
+        // },
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+
+  let req = await ContractModel.aggregate(pipeline).sort({ _id: 1 });
+  return req;
+}

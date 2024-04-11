@@ -16,6 +16,7 @@ import {
   getAllPOsByStatus,
   getPOPaymentRequests,
   getPOPaidRequests,
+  getPoTotalAnalytics,
 } from "../controllers/purchaseOrders";
 import { getVendorByCompanyName, setTempFields } from "../controllers/users";
 import { getBusinessPartnerByName } from "../services/b1";
@@ -62,6 +63,15 @@ poRouter.get("/paymentProgress/:id", async (req, res) => {
 poRouter.get("/paymentsDone/:id", async (req, res) => {
   let { id } = req.params;
   res.send(await getPOPaidRequests(id));
+});
+
+poRouter.get("/totalOverview", async (req, res) => {
+  let { year } = req.query;
+  let totals = await getPoTotalAnalytics(year);
+
+  res.send({
+    data: totals,
+  });
 });
 
 poRouter.get("/:id", async (req, res) => {
