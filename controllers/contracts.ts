@@ -271,3 +271,77 @@ export async function getContractsTotalAnalytics(year: any) {
   let req = await ContractModel.aggregate(pipeline).sort({ _id: 1 });
   return req;
 }
+
+export async function getContractStatusAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $addFields: {
+        status: {
+          $cond: {
+            if: {
+              $or: [
+                {
+                  $eq: ["$status", "pending"],
+                },
+                // {
+                //   $eq: ["$status", "partially-signed"],
+                // }
+              ],
+            },
+            then: "pending signature",
+            else: "$status",
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "$status",
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+
+  let req = await ContractModel.aggregate(pipeline);
+  return req;
+}
+
+export async function getTotalNumberOfContracts(year: any) {
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    { $count: "total_records" },
+  ];
+
+  let count = await ContractModel.aggregate(pipeline);
+  if (count?.length >= 1) return count[0]?.total_records;
+  else return 0;
+  // return count;
+}

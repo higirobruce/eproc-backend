@@ -735,23 +735,14 @@ export async function getPoStatusAnalytics(year: any) {
             if: {
               $or: [
                 {
-                  $eq: ["$status", "pending-review"],
-                },
-                {
-                  $eq: ["$status", "reviewed"],
-                },
-                {
-                  $eq: ["$status", "approved (hod)"],
-                },
-                {
-                  $eq: ["$status", "approved (hof)"],
-                },
-                {
                   $eq: ["$status", "pending"],
                 },
+                // {
+                //   $eq: ["$status", "partially-signed"],
+                // }
               ],
             },
-            then: "pending approval",
+            then: "pending signature",
             else: "$status",
           },
         },
@@ -767,6 +758,29 @@ export async function getPoStatusAnalytics(year: any) {
     },
   ];
 
-  let req = await PaymentRequestModel.aggregate(pipeline);
+  let req = await PurchaseOrderModel.aggregate(pipeline);
   return req;
+}
+
+export async function getTotalNumberOfPOs(year: any) {
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    { $count: "total_records" },
+  ];
+
+  let count = await PurchaseOrderModel.aggregate(pipeline);
+  if (count?.length >= 1) return count[0]?.total_records;
+  else return 0;
+  // return count;
 }

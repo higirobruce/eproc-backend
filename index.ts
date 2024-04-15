@@ -1,11 +1,7 @@
 import fs from "fs";
 import express, { Express, NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
-import {
-  SALT,
-  sendNotificationToAllUsers,
-  userRouter,
-} from "./routes/usersRoute";
+import { SALT, userRouter } from "./routes/usersRoute";
 import { requetsRouter } from "./routes/requestsRoute";
 import { serviceCategoryRouter } from "./routes/serviceCategories";
 import { rdbServiceCategoryRouter } from "./routes/rdbServiceCategories";
@@ -17,7 +13,7 @@ import { contractRouter } from "./routes/contracts";
 import { budgetLinesRouter } from "./routes/budgetLinesRoute";
 import { uploadRouter } from "./routes/upload";
 import { paymentRequestRouter } from "./routes/paymentRequestRoute";
-import b1Router, { getBusinessPartnerById } from "./services/b1";
+import b1Router from "./services/b1";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import MongoStore = require("connect-mongo");
@@ -28,6 +24,10 @@ import cors from "cors-ts";
 import { LocalStorage } from "node-localstorage";
 import path from "path";
 import { logger } from "./utils/logger";
+import { dashboardRoute } from "./routes/dashboardRoute";
+import { getPoStatusAnalytics } from "./controllers/purchaseOrders";
+import { getContractStatusAnalytics } from "./controllers/contracts";
+import { getTenderStatusAnalytics } from "./controllers/tenders";
 
 let localstorage = new LocalStorage("./scratch");
 const oneDay = 1000 * 60 * 60 * 24;
@@ -137,6 +137,7 @@ app.use("/contracts", ensureUserAuthorized, contractRouter);
 app.use("/budgetLines", ensureUserAuthorized, budgetLinesRouter);
 app.use("/paymentRequests", ensureUserAuthorized, paymentRequestRouter);
 app.use("/uploads", uploadRouter);
+app.use("/dashboards", dashboardRoute);
 app.use("/b1", ensureUserAuthorized, b1Router);
 app.get("/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
@@ -169,6 +170,7 @@ app.get("/check/file/:folder/:name", function (req, res, next) {
 });
 
 let server = app.listen(PORT, async () => {
+  console.log(await getTenderStatusAnalytics("2024"))
   console.log(`App listening on port ${PORT}`);
   logger.log({
     level: "info",
