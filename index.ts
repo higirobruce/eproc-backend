@@ -25,11 +25,6 @@ import { LocalStorage } from "node-localstorage";
 import path from "path";
 import { logger } from "./utils/logger";
 import { dashboardRoute } from "./routes/dashboardRoute";
-import { getPoStatusAnalytics } from "./controllers/purchaseOrders";
-import { getContractStatusAnalytics } from "./controllers/contracts";
-import { getTenderStatusAnalytics } from "./controllers/tenders";
-
-let localstorage = new LocalStorage("./scratch");
 const oneDay = 1000 * 60 * 60 * 24;
 
 declare module "express-session" {
@@ -170,7 +165,6 @@ app.get("/check/file/:folder/:name", function (req, res, next) {
 });
 
 let server = app.listen(PORT, async () => {
-  console.log(await getTenderStatusAnalytics("2024"))
   console.log(`App listening on port ${PORT}`);
   logger.log({
     level: "info",

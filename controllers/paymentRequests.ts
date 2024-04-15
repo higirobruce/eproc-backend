@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import moment from "moment";
 import { PaymentRequestModel } from "../models/paymentRequests";
 import { UserModel } from "../models/users";
@@ -759,4 +759,56 @@ export async function getPayReqStatusAnalytics(year: any) {
 
   let req = await PaymentRequestModel.aggregate(pipeline);
   return req;
+}
+
+export async function getVendorEmail(reqId: any) {
+  let pipeline = [
+    {
+      $match: {
+        category: "external",
+        _id: new mongoose.Types.ObjectId(reqId),
+      },
+    },
+    {
+      $lookup: {
+        from: "purchaseorders",
+        localField: "purchaseOrder",
+        foreignField: "_id",
+        as: "purchaseOrder",
+      },
+    },
+    {
+      $unwind: {
+        path: "$purchaseOrder",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "purchaseOrder.vendor",
+        foreignField: "_id",
+        as: "vendor",
+      },
+    },
+    {
+      $unwind: {
+        path: "$vendor",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $addFields: {
+        vendorEmail: "$vendor.email",
+      },
+    },
+    {
+      $project: {
+        vendorEmail: 1,
+      },
+    },
+  ];
+
+  let emailObjs = await PaymentRequestModel.aggregate(pipeline);
+  return emailObjs;
 }

@@ -546,6 +546,46 @@ const paymentRequestUpdate3 = (pr: any) => `<mjml>
 </mj-body>
 </mjml>`;
 
+const paymentRequestUpdate4 = (pr: any) => `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Update on Your Payment Request Review</mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+      Greetings, <br/><br/>
+      I hope this message finds you well. <br/>
+      I'm pleased to inform you that your payment request has completed the initial review process successfully. All necessary information has been provided, and it is now progressing for further review by the Finance department.<br/>
+      To track the progress of your request, please proceed to the e-procurement application by clicking the button below. <br/>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/payment-requests/${pr?._id}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+
 const paymentRequestSubmitted = (pr: any) => `<mjml>
 <mj-body>
   <!-- Company Header -->
@@ -1149,6 +1189,14 @@ export async function send(
         subject,
         text,
         html: mjml(paymentRequestUpdate3(JSON.parse(text))).html,
+      });
+    else if (type === "payment-request-update4")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(paymentRequestUpdate4(JSON.parse(text))).html,
       });
     else if (type === "payment-request-submitted")
       return await transporter.sendMail({

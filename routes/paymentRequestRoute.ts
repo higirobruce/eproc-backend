@@ -6,6 +6,7 @@ import {
   getPaymentRequestById,
   getPayReqStatusAnalytics,
   getPayReqTotalAnalytics,
+  getVendorEmail,
   savePaymentRequest,
   updateRequest,
 } from "../controllers/paymentRequests";
@@ -171,9 +172,35 @@ paymentRequestRouter.put("/:id", async (req, res) => {
     );
   }
 
+  if (updatedRequest?.status == "reviewed") {
+    // let vendor = await UserModel.findById(updatedRequest?.createdBy);
+    let vendors = await getVendorEmail(updatedRequest?._id);
+    vendors?.map((vendor) => {
+      send(
+        "from",
+        vendor?.vendorEmail,
+        "Update on Your Payment Request Review",
+        JSON.stringify(updatedRequest),
+        "html",
+        "payment-request-update4"
+      );
+    });
+  }
+
   if (updatedRequest?.status == "approved (hod)") {
     let initiator = await UserModel.findById(updatedRequest?.createdBy);
 
+    let vendors = await getVendorEmail(updatedRequest?._id);
+    vendors?.map((vendor) => {
+      send(
+        "from",
+        vendor?.vendorEmail,
+        "Update on Your Payment Request Approval",
+        JSON.stringify(updatedRequest),
+        "html",
+        "payment-request-update1"
+      );
+    });
     send(
       "from",
       initiator?.email,
@@ -198,7 +225,6 @@ paymentRequestRouter.put("/:id", async (req, res) => {
 
   if (updatedRequest?.status == "approved") {
     let initiator = await UserModel.findById(updatedRequest?.createdBy);
-
     send(
       "from",
       initiator?.email,
@@ -207,6 +233,17 @@ paymentRequestRouter.put("/:id", async (req, res) => {
       "html",
       "payment-request-update2"
     );
+    let vendors = await getVendorEmail(updatedRequest?._id);
+    vendors?.map((vendor) => {
+      send(
+        "from",
+        vendor?.vendorEmail,
+        "Update on Your Payment Request Approval",
+        JSON.stringify(updatedRequest),
+        "html",
+        "payment-request-update2"
+      );
+    });
   }
 
   if (updatedRequest?.status == "paid") {
@@ -220,6 +257,17 @@ paymentRequestRouter.put("/:id", async (req, res) => {
       "html",
       "payment-request-update3"
     );
+    let vendors = await getVendorEmail(updatedRequest?._id);
+    vendors?.map((vendor) => {
+      send(
+        "from",
+        vendor?.vendorEmail,
+        "Update on Your Payment Request Approval",
+        JSON.stringify(updatedRequest),
+        "html",
+        "payment-request-update3"
+      );
+    });
   }
   res.send(updates);
 });
