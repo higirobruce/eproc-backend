@@ -570,9 +570,9 @@ const paymentRequestUpdate4 = (pr: any) => `<mjml>
 
       <mj-text color="#525252">
       Greetings, <br/><br/>
-      I hope this message finds you well. <br/>
-      I'm pleased to inform you that your payment request has completed the initial review process successfully. All necessary information has been provided, and it is now progressing for further review by the Finance department.<br/>
-      To track the progress of your request, please proceed to the e-procurement application by clicking the button below. <br/>
+      I hope this message finds you well. <br /><br/>
+      I'm pleased to inform you that your payment request has completed the initial review process successfully. All necessary information has been provided, and it is now progressing for further review by the Finance department.<br /><br/>
+      To track the progress of your request, please proceed to the e-procurement application by clicking the button below. <br /><br/>
       </mj-text>
 
       <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/payment-requests/${pr?._id}>Go to application</mj-button>
