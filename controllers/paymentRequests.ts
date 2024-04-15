@@ -555,18 +555,11 @@ export async function updateRequestSourcingMethod(
 }
 
 export async function updateRequest(id: String, update: Request) {
-  try {
-    let newRequest = await PaymentRequestModel.findByIdAndUpdate(id, update, {
-      new: true,
-    });
+  let newRequest = await PaymentRequestModel.findByIdAndUpdate(id, update, {
+    new: true,
+  });
 
-    return newRequest;
-  } catch (err) {
-    return {
-      error: true,
-      errorMessage: `Error :${err}`,
-    };
-  }
+  return newRequest;
 }
 
 export async function getReqCountsByStatus() {

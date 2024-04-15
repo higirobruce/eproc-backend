@@ -346,7 +346,7 @@ const prUpdate3 = (pr: any) => `<mjml>
 </mj-body>
 </mjml>`;
 
-const paymentRequestApproval = (pr: any) => `<mjml>
+const paymentRequestReview = (pr: any) => `<mjml>
 <mj-body>
   <!-- Company Header -->
   <mj-section>
@@ -372,8 +372,168 @@ const paymentRequestApproval = (pr: any) => `<mjml>
       <mj-text color="#525252">
         Hi there, <br />
         I hope that you are well. <br/><br/>
-        I am reaching out to inform you that a new payment request (Req Number ${pr?.number}) has been submitted for your approval.<br/><br/>
-        To review the request, please proceed to the e-procurement application by clicking the button below.<br>
+        I am reaching out to inform you that a new external payment request has been submitted for your review.<br/>
+        To review the request, please proceed to the e-Procurement application by clicking the button below. <br/>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/payment-requests/${pr?._id}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+
+const paymentRequestApproval = (pr: any) => `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your Approval is needed on this payment request</mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+      Hi there,<br/>
+      I hope that you are well.<br/>
+      I am reaching out to inform you that a new payment request has been submitted for your approval.<br/>
+      To review the request, please proceed to the e-Procurement application by clicking the button below. <br/>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/payment-requests/${pr?._id}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+
+const paymentRequestUpdate1 = (pr: any) => `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Update on Your Payment Request Approval</mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+      Hi there, <br/>
+      I hope this message finds you well.<br/>
+      I would like to inform you that your request has successfully passed the first level of approval and is now moving forward for review by the Finance department.<br/>
+      For more information on this decision and track the progress of your request, please proceed to the e-procurement application by clicking the button below. <br/>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/payment-requests/${pr?._id}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+
+const paymentRequestUpdate2 = (pr: any) => `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Update on Your Payment Request Approval</mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+      Hi there, <br/>
+      I hope this message finds you well. <br/>
+      I would like to inform you that your request has been approved by the Finance team, and is now pending payment. We'll reach out to you again once the payment has been processed. <br/>
+      For more information on this decision and track the progress of your request, please proceed to the e-procurement application by clicking the button below. <br/>
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/payment-requests/${pr?._id}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+
+const paymentRequestUpdate3 = (pr: any) => `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your Payment request has been processed</mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+      Hi there, <br/>
+      I hope this message finds you well. <br/>
+      I'm pleased to inform you that your request has been processed by the Finance team, and that your payment request has been paid! <br/>
+      For more information on this decision and track the progress of your request, please proceed to the e-procurement application by clicking the button below. <br/>
       </mj-text>
 
       <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}/system/payment-requests/${pr?._id}>Go to application</mj-button>
@@ -950,6 +1110,14 @@ export async function send(
         text,
         html: mjml(prUpdate3(JSON.parse(text))).html,
       });
+    else if (type === "payment-request-review")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(paymentRequestReview(JSON.parse(text))).html,
+      });
     else if (type === "payment-request-approval")
       return await transporter.sendMail({
         from: process.env.IRMB_SENDER_EMAIL,
@@ -957,6 +1125,30 @@ export async function send(
         subject,
         text,
         html: mjml(paymentRequestApproval(JSON.parse(text))).html,
+      });
+    else if (type === "payment-request-update1")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(paymentRequestUpdate1(JSON.parse(text))).html,
+      });
+    else if (type === "payment-request-update2")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(paymentRequestUpdate2(JSON.parse(text))).html,
+      });
+    else if (type === "payment-request-update3")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(paymentRequestUpdate3(JSON.parse(text))).html,
       });
     else if (type === "payment-request-submitted")
       return await transporter.sendMail({

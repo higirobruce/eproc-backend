@@ -267,6 +267,23 @@ export async function getAllLevel1Approvers() {
   }
 }
 
+export async function getAllFinanceApprovers() {
+  let users = await UserModel.find(
+    {
+      "permissions.canApproveAsHof": true,
+      // department: new mongoose.Types.ObjectId(department),
+    },
+    {
+      firstName: 1,
+      lastName: 1,
+      email: 1,
+    }
+  )
+    .populate("department")
+    .sort({ number: -1 });
+  return users;
+}
+
 export async function getAllPaymentReviewers() {
   let users = await UserModel.find(
     {

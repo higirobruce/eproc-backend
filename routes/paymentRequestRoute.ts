@@ -13,7 +13,10 @@ import { UserModel } from "../models/users";
 import { generatePaymentRequestNumber } from "../services/paymentRequests";
 import { send } from "../utils/sendEmailNode";
 import { saveJournalEntry } from "../services/b1";
-import { getAllPaymentReviewers } from "../controllers/users";
+import {
+  getAllFinanceApprovers,
+  getAllPaymentReviewers,
+} from "../controllers/users";
 export const paymentRequestRouter = Router();
 
 paymentRequestRouter.get("/", async (req, res) => {
@@ -46,6 +49,20 @@ paymentRequestRouter.post("/", async (req, res) => {
       });
     }
 
+    if (newPaymentRequest.approver) {
+      //send notification
+      let approver = await UserModel.findById(newPaymentRequest.approver);
+
+      send(
+        "from",
+        approver?.email,
+        "New payment request has been submitted.",
+        JSON.stringify(newPaymentRequest),
+        "html",
+        "payment-request-review"
+      );
+    }
+
     res.status(201).send(newPaymentRequest);
   } catch (err) {
     console.log(err);
@@ -68,7 +85,6 @@ paymentRequestRouter.get("/totalOverview", async (req, res) => {
   res.send({
     data: resTotals,
     statusData: resStatusData,
-     
   });
 });
 
@@ -148,10 +164,61 @@ paymentRequestRouter.put("/:id", async (req, res) => {
     send(
       "from",
       approver?.email,
-      "Your Approval is needed",
+      "New payment request has been submitted.",
       JSON.stringify(updatedRequest),
       "html",
-      "payment-request-approval"
+      "payment-request-review"
+    );
+  }
+
+  if (updatedRequest?.status == "approved (hod)") {
+    let initiator = await UserModel.findById(updatedRequest?.createdBy);
+
+    send(
+      "from",
+      initiator?.email,
+      "Update on Your Payment Request Approval",
+      JSON.stringify(updatedRequest),
+      "html",
+      "payment-request-update1"
+    );
+    // let department = initiator?.department;
+    let fDs = await getAllFinanceApprovers();
+    fDs?.map((hod) => {
+      send(
+        "from",
+        hod?.email,
+        "Your Approval is needed on this payment request",
+        JSON.stringify(updatedRequest),
+        "html",
+        "payment-request-approval"
+      );
+    });
+  }
+
+  if (updatedRequest?.status == "approved") {
+    let initiator = await UserModel.findById(updatedRequest?.createdBy);
+
+    send(
+      "from",
+      initiator?.email,
+      "Update on Your Payment Request Approval",
+      JSON.stringify(updatedRequest),
+      "html",
+      "payment-request-update2"
+    );
+  }
+
+  if (updatedRequest?.status == "paid") {
+    let initiator = await UserModel.findById(updatedRequest?.createdBy);
+
+    send(
+      "from",
+      initiator?.email,
+      "Your Payment request has been processed",
+      JSON.stringify(updatedRequest),
+      "html",
+      "payment-request-update3"
     );
   }
   res.send(updates);
