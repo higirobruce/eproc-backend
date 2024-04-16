@@ -261,7 +261,7 @@ export async function getContractsTotalAnalytics(year: any) {
         //     },
         //   },
         // },
-        total: {
+        contracts: {
           $sum: 1,
         },
       },

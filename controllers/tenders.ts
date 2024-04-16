@@ -441,7 +441,8 @@ export async function getTendersTotalAnalytics(year: any) {
         //     },
         //   },
         // },
-        total: {
+        // type:"tenders",
+        tenders: {
           $sum: 1,
         },
       },

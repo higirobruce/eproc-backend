@@ -700,7 +700,7 @@ export async function getPoTotalAnalytics(year: any) {
         //     },
         //   },
         // },
-        total: {
+        purchaseOrders: {
           $sum: 1,
         },
       },
