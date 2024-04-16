@@ -64,6 +64,7 @@ submissionsRouter.post("/", async (req, res) => {
     bankAccountName,
     proposalDocId,
     otherDocId,
+    otherDocIds,
     deliveryTimeFrameDuration,
     deliveryTimeFrame,
   } = req.body;
@@ -84,6 +85,7 @@ submissionsRouter.post("/", async (req, res) => {
     warrantyDuration,
     proposalDocId,
     otherDocId,
+    otherDocIds,
     bankName,
     bankAccountNumber,
     bankAccountName,

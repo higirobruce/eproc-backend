@@ -1,3 +1,4 @@
+import { RequestModel } from "./../models/requests";
 import { PurchaseOrder } from "../classrepo/purchaseOrders";
 import { PurchaseOrderModel } from "../models/purchaseOrders";
 import { DocumentLines } from "../types/types";
@@ -7,6 +8,8 @@ import { sapLogin } from "../utils/sapB1Connection";
 import mongoose, { mongo } from "mongoose";
 import { PaymentRequestModel } from "../models/paymentRequests";
 import { fetch } from "cross-fetch";
+import { UserModel } from "../models/users";
+import { send } from "../utils/sendEmailNode";
 let localstorage = new LocalStorage("./scratch");
 
 /**
@@ -186,20 +189,22 @@ export async function getPOByRequestId(requestId: String) {
 export async function getPOByVendorId(vendorId: String, status: String) {
   let query =
     status && status !== "null" && status == "all"
-      ? { vendor: vendorId }
+      ? { vendor: vendorId, status: { $nin: "withdrawn" } }
       : status == "signed"
-      ? { vendor: vendorId, status: { $in: ["signed", "started"] } }
+      ? {
+          vendor: vendorId,
+          status: { $in: ["signed", "started"], $nin: "withdrawn" },
+        }
       : status == "pending-signature"
       ? {
           vendor: vendorId,
           $or: [
-            { status: { $in: ["pending-signature"] } },
+            { status: { $in: ["pending-signature"], $nin: "withdrawn" } },
             { status: { $exists: false } },
           ],
         }
-      : { vendor: vendorId, status };
+      : { vendor: vendorId, status: { $eq: status, $nin: "withdrawn" } };
 
-      
   let pos = await PurchaseOrderModel.find(query)
     .populate("tender")
     .populate("vendor")
@@ -239,9 +244,39 @@ export async function getPOByVendorId(vendorId: String, status: String) {
  */
 export async function updatePOStatus(id: String, newStatus: String) {
   try {
-    await PurchaseOrderModel.findByIdAndUpdate(id, {
+    let updatedPO = await PurchaseOrderModel.findByIdAndUpdate(id, {
       $set: { status: newStatus },
     });
+
+    //reOpen the purchase request when po is archived
+    if (newStatus == "withdrawn") {
+      let reqId = updatedPO?.request;
+      await RequestModel.findByIdAndUpdate(reqId, {
+        $set: { status: "approved (pm)" },
+      });
+
+      let signedSignatories: any[] =
+        updatedPO?.signatories?.filter((s: any) => s?.signed == true) || [];
+
+      if (signedSignatories?.length >= 1) {
+        console.log(signedSignatories);
+        signedSignatories?.map((s) => {
+          send(
+            "from",
+            s?.email,
+            "Purchase Order Withdrawn",
+            JSON.stringify({
+              docId: updatedPO?._id,
+              docNumber: updatedPO?.number,
+              docType: "purchase-orders",
+            }),
+            "",
+            "po-withdrawal"
+          );
+        });
+      }
+    }
+
     return { message: "done" };
   } catch (err) {
     return {
@@ -587,4 +622,165 @@ export async function getPOPaidRequests(id: string) {
     console.log(err);
     return { totalPaymentVal: 0, poVal: -1 };
   }
+}
+
+export async function getPoTotalAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+
+    {
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        // budgeted: {
+        //   $sum: {
+        //     $cond: {
+        //       if: {
+        //         $eq: ["$budgeted", true],
+        //       },
+        //       then: 1,
+        //       else: 0,
+        //     },
+        //   },
+        // },
+        // nonbudgeted: {
+        //   $sum: {
+        //     $cond: {
+        //       if: {
+        //         $eq: ["$budgeted", false],
+        //       },
+        //       then: 1,
+        //       else: 0,
+        //     },
+        //   },
+        // },
+        purchaseOrders: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
+  return req;
+}
+
+export async function getPoStatusAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $addFields: {
+        status: {
+          $cond: {
+            if: {
+              $or: [
+                {
+                  $eq: ["$status", "pending"],
+                },
+                // {
+                //   $eq: ["$status", "partially-signed"],
+                // }
+              ],
+            },
+            then: "pending signature",
+            else: "$status",
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "$status",
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+
+  let req = await PurchaseOrderModel.aggregate(pipeline);
+  return req;
+}
+
+export async function getTotalNumberOfPOs(year: any) {
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    { $count: "total_records" },
+  ];
+
+  let count = await PurchaseOrderModel.aggregate(pipeline);
+  if (count?.length >= 1) return count[0]?.total_records;
+  else return 0;
+  // return count;
 }

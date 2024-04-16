@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import moment from "moment";
 import { PaymentRequestModel } from "../models/paymentRequests";
 import { UserModel } from "../models/users";
@@ -555,18 +555,11 @@ export async function updateRequestSourcingMethod(
 }
 
 export async function updateRequest(id: String, update: Request) {
-  try {
-    let newRequest = await PaymentRequestModel.findByIdAndUpdate(id, update, {
-      new: true,
-    });
+  let newRequest = await PaymentRequestModel.findByIdAndUpdate(id, update, {
+    new: true,
+  });
 
-    return newRequest;
-  } catch (err) {
-    return {
-      error: true,
-      errorMessage: `Error :${err}`,
-    };
-  }
+  return newRequest;
 }
 
 export async function getReqCountsByStatus() {
@@ -602,4 +595,220 @@ export async function updateRequestFileName(
         { $set: { "paymentProofDocs.$": newFileName } }
       );
   return updateRequest;
+}
+
+export async function getPayReqTotalAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $addFields:
+        /**
+         * newField: The new field name.
+         * expression: The new field expression.
+         */
+        {
+          budgeted: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", true],
+              },
+              then: true,
+              else: false,
+            },
+          },
+        },
+    },
+    {
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        budgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", true],
+              },
+              then: 1,
+              else: 0,
+            },
+          },
+        },
+        nonbudgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", false],
+              },
+              then: 1,
+              else: 0,
+            },
+          },
+        },
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
+  return req;
+}
+
+export async function getPayReqStatusAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $addFields: {
+        status: {
+          $cond: {
+            if: {
+              $or: [
+                {
+                  $eq: ["$status", "pending-review"],
+                },
+                {
+                  $eq: ["$status", "reviewed"],
+                },
+                {
+                  $eq: ["$status", "approved (hod)"],
+                },
+                {
+                  $eq: ["$status", "approved (hof)"],
+                },
+                {
+                  $eq: ["$status", "pending"],
+                },
+              ],
+            },
+            then: "pending approval",
+            else: "$status",
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "$status",
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
+}
+
+export async function getVendorEmail(reqId: any) {
+  let pipeline = [
+    {
+      $match: {
+        category: "external",
+        _id: new mongoose.Types.ObjectId(reqId),
+      },
+    },
+    {
+      $lookup: {
+        from: "purchaseorders",
+        localField: "purchaseOrder",
+        foreignField: "_id",
+        as: "purchaseOrder",
+      },
+    },
+    {
+      $unwind: {
+        path: "$purchaseOrder",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "purchaseOrder.vendor",
+        foreignField: "_id",
+        as: "vendor",
+      },
+    },
+    {
+      $unwind: {
+        path: "$vendor",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $addFields: {
+        vendorEmail: "$vendor.email",
+      },
+    },
+    {
+      $project: {
+        vendorEmail: 1,
+      },
+    },
+  ];
+
+  let emailObjs = await PaymentRequestModel.aggregate(pipeline);
+  return emailObjs;
 }

@@ -1,6 +1,5 @@
-
 import { randomUUID } from "crypto";
-import { Router } from "express";
+import { Router, NextFunction, Request, Response } from "express";
 import { PurchaseOrder } from "../classrepo/purchaseOrders";
 import {
   getAllPOs,
@@ -17,13 +16,15 @@ import {
   getAllPOsByStatus,
   getPOPaymentRequests,
   getPOPaidRequests,
+  getPoTotalAnalytics,
 } from "../controllers/purchaseOrders";
 import { getVendorByCompanyName, setTempFields } from "../controllers/users";
 import { getBusinessPartnerByName } from "../services/b1";
 import { generatePONumber } from "../services/purchaseOrders";
 import { hashPassword } from "../services/users";
 import { send } from "../utils/sendEmailNode";
-
+import { logger } from "../utils/logger";
+import { RequestModel } from "../models/requests";
 
 export const poRouter = Router();
 
@@ -43,7 +44,7 @@ poRouter.get("/byRequestId/:requestId", async (req, res) => {
 
 poRouter.get("/byVendorId/:vendorId", async (req, res) => {
   let { vendorId } = req.params;
-  let {status} = req.query
+  let { status } = req.query;
   res.send(await getPOByVendorId(vendorId, status as String));
 });
 
@@ -62,6 +63,15 @@ poRouter.get("/paymentProgress/:id", async (req, res) => {
 poRouter.get("/paymentsDone/:id", async (req, res) => {
   let { id } = req.params;
   res.send(await getPOPaidRequests(id));
+});
+
+poRouter.get("/totalOverview", async (req, res) => {
+  let { year } = req.query;
+  let totals = await getPoTotalAnalytics(year);
+
+  res.send({
+    data: totals,
+  });
 });
 
 poRouter.get("/:id", async (req, res) => {
@@ -94,7 +104,7 @@ poRouter.post("/", async (req, response) => {
   )
     .then(async (res) => {
       let bp = res.value;
-      
+
       if (bp?.length >= 1) {
         CardCode = bp[0].CardCode;
 
@@ -120,7 +130,7 @@ poRouter.post("/", async (req, response) => {
           response.status(500).send(b1Response_assets || b1Response_nonAssets);
         } else {
           let number = await generatePONumber();
-          let refs:any[] = [];
+          let refs: any[] = [];
           b1Response_assets && refs.push(b1Response_assets.DocNum);
           b1Response_nonAssets && refs.push(b1Response_nonAssets.DocNum);
 
@@ -156,6 +166,15 @@ poRouter.post("/", async (req, response) => {
               "internalSignature"
             );
 
+            logger.log({
+              level: "info",
+              message: `Purchase Order ${createdPO?._id} successfully created`,
+              meta: {
+                doneBy: req.session?.user,
+                payload: req.body,
+              },
+            });
+
             if (refs?.length >= 1) {
               refs.forEach(async (r) => {
                 await updateB1Po(r, {
@@ -174,6 +193,14 @@ poRouter.post("/", async (req, response) => {
       }
     })
     .catch((err) => {
+      logger.log({
+        level: "error",
+        message: `Creating a Purchase Order failed. Error: ${err}`,
+        meta: {
+          doneBy: req.session?.user,
+          payload: req.body,
+        },
+      });
       console.log(err);
     });
 });
@@ -181,7 +208,28 @@ poRouter.post("/", async (req, response) => {
 poRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
-  res.send(await updatePOStatus(id, status));
+  let updatedPO = await updatePOStatus(id, status);
+
+  if (!updatedPO.error) {
+    logger.log({
+      level: "info",
+      message: `Purchase Order ${id} successfully updated`,
+      meta: {
+        doneBy: req.session?.user,
+        payload: req.body,
+      },
+    });
+  } else {
+    logger.log({
+      level: "error",
+      message: `Updating Purchase Order ${id} failed. ${updatedPO?.errorMessage}`,
+      meta: {
+        doneBy: req.session?.user,
+        payload: req.body,
+      },
+    });
+  }
+  res.send(updatedPO);
 });
 
 poRouter.put("/progress/:id", async (req, res) => {
@@ -245,6 +293,26 @@ poRouter.put("/:id", async (req, res) => {
       "",
       "internalSignature"
     );
+  }
+
+  if (updated) {
+    logger.log({
+      level: "info",
+      message: `Purchase Order ${id} successfully updated`,
+      meta: {
+        doneBy: req.session?.user,
+        payload: req.body,
+      },
+    });
+  } else {
+    logger.log({
+      level: "error",
+      message: `Updating Purchase Order ${id} failed`,
+      meta: {
+        doneBy: req.session?.user,
+        payload: req.body,
+      },
+    });
   }
 
   res.status(200).send(updated);

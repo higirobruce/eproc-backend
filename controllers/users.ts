@@ -24,7 +24,7 @@ export async function getAllUsers() {
   try {
     let users = await UserModel.find()
       .populate("department")
-      .sort({"number": -1})
+      .sort({ number: -1 })
       .select({ password: 0 });
 
     return users;
@@ -101,7 +101,7 @@ export async function getAllVendors() {
     ];
     let users = await UserModel.find({ userType: "VENDOR" })
       .populate("department")
-      .sort({"vendor.number": -1});
+      .sort({ "vendor.number": -1 });
 
     let usersAggregate = await UserModel.aggregate(pipeline).sort({
       "vendor.number": -1,
@@ -168,9 +168,11 @@ export async function getVendorById(id: string) {
     ];
     let users = await UserModel.find({ userType: "VENDOR" })
       .populate("department")
-      .sort({"number": -1});
+      .sort({ number: -1 });
 
-    let usersAggregate = await UserModel.aggregate(pipeline).sort({"vendor.number": -1});
+    let usersAggregate = await UserModel.aggregate(pipeline).sort({
+      "vendor.number": -1,
+    });
 
     return usersAggregate;
   } catch (err) {
@@ -229,7 +231,7 @@ export async function getAllVendorsByStatus(status: String) {
     ];
     let users = await UserModel.find({ userType: "VENDOR", status })
       .populate("department")
-      .sort({"vendor.number": -1});
+      .sort({ "vendor.number": -1 });
 
     let usersAggregate = await UserModel.aggregate(pipeline).sort({
       "vendor.number": -1,
@@ -253,8 +255,9 @@ export async function getAllLevel1Approvers() {
         firstName: 1,
         lastName: 1,
       }
-    ).populate("department")
-    .sort({"number": -1});
+    )
+      .populate("department")
+      .sort({ number: -1 });
     return users;
   } catch (err) {
     return {
@@ -264,13 +267,45 @@ export async function getAllLevel1Approvers() {
   }
 }
 
+export async function getAllFinanceApprovers() {
+  let users = await UserModel.find(
+    {
+      "permissions.canApproveAsHof": true,
+      // department: new mongoose.Types.ObjectId(department),
+    },
+    {
+      firstName: 1,
+      lastName: 1,
+      email: 1,
+    }
+  )
+    .populate("department")
+    .sort({ number: -1 });
+  return users;
+}
+
+export async function getAllPaymentReviewers() {
+  let users = await UserModel.find(
+    {
+      "permissions.canEditPaymentRequests": true,
+    },
+    {
+      email: 1,
+    }
+  )
+    .populate("department")
+    .sort({ number: -1 });
+  return users;
+}
+
 export async function getVendorById2(id: string) {
   try {
     let users = await UserModel.findOne({
       userType: "VENDOR",
       _id: id,
-    }).populate("department")
-    .sort({"vendor.number": -1});
+    })
+      .populate("department")
+      .sort({ "vendor.number": -1 });
     return users;
   } catch (err) {
     return {
@@ -284,8 +319,9 @@ export async function getInternalUserById(id: string) {
   try {
     let users = await UserModel.findOne({
       _id: id,
-    }).populate("department")
-    .sort({"number": -1});
+    })
+      .populate("department")
+      .sort({ number: -1 });
 
     return users;
   } catch (err) {
@@ -300,7 +336,7 @@ export async function getAllInternalUsers() {
   try {
     let users = await UserModel.find({ userType: { $ne: "VENDOR" } })
       .populate("department")
-      .sort({"number": -1});
+      .sort({ number: -1 });
     return users;
   } catch (err) {
     return {
@@ -314,7 +350,7 @@ export async function getAllInternalUsersByStatus(status: string) {
   try {
     let users = await UserModel.find({ userType: { $ne: "VENDOR" }, status })
       .populate("department")
-      .sort({"number": -1});
+      .sort({ number: -1 });
     return users;
   } catch (err) {
     return {
@@ -438,6 +474,7 @@ export async function saveUser(user: User) {
       };
     }
     let createdUser = await UserModel.create(user);
+
     return createdUser._id;
   } catch (err: any) {
     let message = "";
@@ -455,7 +492,7 @@ export async function saveUser(user: User) {
 export async function getUserByEmail(userEmail: String) {
   let user = await UserModel.findOne({
     $or: [{ email: userEmail }, { tempEmail: userEmail }],
-  }).populate("department")
+  }).populate("department");
   return user;
 }
 
@@ -481,7 +518,6 @@ export async function approveUser(id: String) {
     }
 
     if (user?.userType === "VENDOR" && user?.status === "pending-approval") {
-
       let series = await getB1SeriesFromNames(name!);
 
       let createdCode = await createSupplierinB1(
@@ -617,7 +653,7 @@ export async function updateUser(id: String, newUser: User | any) {
   try {
     let userWithSameTin = await UserModel.findOne({
       tin: newUser?.tin,
-      _id: { $ne: id }
+      _id: { $ne: id },
     });
     if (userWithSameTin && newUser?.userType == "VENDOR") {
       return {
@@ -625,8 +661,7 @@ export async function updateUser(id: String, newUser: User | any) {
         errorMessage: `Error : A vendor with the same TIN already exists!`,
       };
     }
-    
-        
+
     let user = await UserModel.findByIdAndUpdate(id, newUser, {
       new: true,
     }).populate("department");

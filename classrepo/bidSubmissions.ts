@@ -16,6 +16,7 @@ export class BidSubmission implements IBidSubmission {
   warrantyDuration: String;
   proposalDocId: String;
   otherDocId: String;
+  otherDocIds: string[];
   bankName: String;
   bankAccountNumber: String;
   bankAccountName: String;
@@ -37,6 +38,7 @@ export class BidSubmission implements IBidSubmission {
     warrantyDuration: string,
     proposalDocId: String,
     otherDocId: String,
+    otherDocIds: string[],
     bankName: string,
     bankAccountNumber: string,
     bankAccountName: string,
@@ -64,5 +66,6 @@ export class BidSubmission implements IBidSubmission {
     this.bankAccountName = bankAccountName;
     this.deliveryTimeFrameDuration = deliveryTimeFrameDuration;
     this.deliveryTimeFrame = deliveryTimeFrame;
+    this.otherDocIds = otherDocIds;
   }
 }

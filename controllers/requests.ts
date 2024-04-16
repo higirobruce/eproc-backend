@@ -86,6 +86,8 @@ export async function getAllRequestsByCreator(
               "approved (pm)",
               "approved",
               "approved (fd)",
+              "withdrawn",
+              "archived",
             ],
           },
         },
@@ -104,7 +106,7 @@ export async function getAllRequestsByCreator(
       },
     })
     .populate("budgetLine")
-    .sort({"number": -1})
+    .sort({ number: -1 });
 
   return reqs;
   // return permissions?.canApproveAsPM
@@ -141,6 +143,8 @@ export async function getAllRequestsByStatus(
               "approved (hod)",
               "approved (fd)",
               "approved (pm)",
+              "withdrawn",
+              "archived",
             ],
           },
         }
@@ -166,8 +170,10 @@ export async function getAllRequestsByStatus(
               "approved (pm)",
               "approved",
               "approved (fd)",
+              "withdrawn",
+              "archived",
             ],
-            $nin: ["withdrawn"],
+            // $nin: ["withdrawn"],
           },
         },
         { status: { $in: ["pending"] }, level1Approver: id },
@@ -175,7 +181,7 @@ export async function getAllRequestsByStatus(
     };
 
   let reqs = await RequestModel.find(query)
-    .sort({"number": -1})
+    .sort({ number: -1 })
     .populate("createdBy")
     .populate("level1Approver")
     .populate({
@@ -305,6 +311,10 @@ export async function updateRequestStatus(id: String, newStatus: String) {
       { new: true }
     );
 
+    let initiator = await UserModel.find({
+      _id: newRequest?.createdBy,
+    });
+
     //Sending email notifications
     if (newStatus === "approved (hod)") {
       let level2Approvers = await UserModel.find({
@@ -320,6 +330,15 @@ export async function updateRequestStatus(id: String, newStatus: String) {
         JSON.stringify(newRequest),
         "",
         "approval"
+      );
+
+      send(
+        "",
+        initiator[0]?.email,
+        "Update on Your Purchase Request Approval",
+        JSON.stringify(newRequest),
+        "",
+        "pr-update1"
       );
     }
 
@@ -337,6 +356,37 @@ export async function updateRequestStatus(id: String, newStatus: String) {
         JSON.stringify(newRequest),
         "",
         "approval"
+      );
+
+      send(
+        "",
+        initiator[0]?.email,
+        "Update on Your Purchase Request Approval",
+        JSON.stringify(newRequest),
+        "",
+        "pr-update2"
+      );
+    }
+
+    if (newStatus === "approved (pm)") {
+      send(
+        "",
+        initiator[0]?.email,
+        "Update on Your Purchase Request Approval",
+        JSON.stringify(newRequest),
+        "",
+        "pr-update3"
+      );
+    }
+
+    if (newStatus === "archived") {
+      send(
+        "",
+        initiator[0]?.email,
+        "Purchase request Archived",
+        JSON.stringify(newRequest),
+        "",
+        "pr-archived"
       );
     }
 
@@ -521,4 +571,319 @@ export async function getReqCountsByCategory() {
   let result = await RequestModel.aggregate(lookup);
 
   return result.sort((a, b) => (a._id < b._id ? -1 : 1));
+}
+
+export async function getPurReqTotalAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        budgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", true],
+              },
+              then: 1,
+              else: 0,
+            },
+          },
+        },
+        nonbudgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", false],
+              },
+              then: 1,
+              else: 0,
+            },
+          },
+        },
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+    // {
+    //   $sort: {
+    //     _id: 1,
+    //   },
+    // },
+  ];
+
+  let req = await RequestModel.aggregate(pipeline).sort({ _id: 1 });
+  return req;
+}
+
+export async function getPurReqStatusAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $addFields: {
+        status: {
+          $cond: {
+            if: {
+              $or: [
+                {
+                  $eq: ["$status", "approved (pm)"],
+                },
+                {
+                  $eq: ["$status", "approved (hd)"],
+                },
+                {
+                  $eq: ["$status", "approved (hof)"],
+                },
+                {
+                  $eq: ["$status", "pending"],
+                },
+              ],
+            },
+            then: "pending approval",
+            else: "$status",
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "$status",
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+
+  let req = await RequestModel.aggregate(pipeline);
+  return req;
+}
+
+export async function getPurReqSourcingAnalytics(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+
+    {
+      $group: {
+        _id: "$sourcingMethod",
+        total: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $match: {
+        _id: {
+          $ne: null,
+        },
+      },
+    },
+  ];
+
+  let req = await RequestModel.aggregate(pipeline);
+  return req;
+}
+
+export async function getPurReqServiceCat(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $project: {
+        month: {
+          $month: "$createdAt",
+        },
+        serviceCategory: 1,
+        createdAt: 1,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          month: "$month",
+          serviceCategory: "$serviceCategory",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        count: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          monthName: "$month",
+          monthNum: "$_id.month",
+        },
+        categories: {
+          $addToSet: {
+            category: "$_id.serviceCategory",
+            count: "$count",
+          },
+        },
+        count: {
+          $sum: "$count",
+        },
+      },
+    },
+    {
+      $project: {
+        name: "$_id",
+        categories: 1,
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        name: "$name.monthName",
+        month: "$name.monthNum",
+        categories: {
+          $arrayToObject: {
+            $map: {
+              input: "$categories",
+              as: "category",
+              in: {
+                k: "$$category.category",
+                v: "$$category.count",
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        "categories.name": "$name",
+        "categories.month": "$month",
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$categories",
+      },
+    },
+  ];
+
+  let req = await RequestModel.aggregate(pipeline).sort({ month: 1 });
+  return req;
 }
