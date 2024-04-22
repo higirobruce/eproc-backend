@@ -761,6 +761,137 @@ export async function getPayReqStatusAnalytics(year: any) {
   return req;
 }
 
+export async function getPayReqSpendTrack(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: 2024,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        requests: {
+          $sum: 1,
+        },
+        total_paid: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$status", "paid"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        total_requests: {
+          $sum: "$amount",
+        },
+      },
+    },
+  ];
+
+  try {
+    let req = await PaymentRequestModel.aggregate(pipeline);
+    return req;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
+export async function getPayReqSpendTrackTotals(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: 2024,
+      },
+    },
+    {
+      $group: {
+        _id: "",
+        total_requests: {
+          $sum: 1,
+        },
+        // total_paid: {
+        //   $sum: {
+        //     $cond: {
+        //       if: {
+        //         $eq: ["$status", "paid"],
+        //       },
+        //       then: "$amount",
+        //       else: 0,
+        //     },
+        //   },
+        // },
+        total_amount: {
+          $sum: "$amount",
+        },
+        average_request: {
+          $avg: "$amount",
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
+}
+
 export async function getVendorEmail(reqId: any) {
   let pipeline = [
     {
