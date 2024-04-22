@@ -108,7 +108,7 @@ userRouter.get("/:id", async (req, res) => {
   res.send(await getUser(id));
 });
 
-userRouter.post("/", ensureUserAuthorized, async (req, res) => {
+userRouter.post("/", async (req, res) => {
   let {
     userType,
     email,
