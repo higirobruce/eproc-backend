@@ -892,6 +892,100 @@ export async function getPayReqSpendTrackTotals(year: any) {
   return req;
 }
 
+export async function getPayReqSpendTrackBudgets(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$amount",
+        },
+        budgeted: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$budgeted", true],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+        unbudgeted: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$budgeted", false],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+        total_budgeted: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$budgeted", true],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+        total_unbudgeted: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$budgeted", false],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        budget_ration: {
+          $divide: ["$total_budgeted", "$total_unbudgeted"],
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        budgetedPercentage: {
+          $multiply: [
+            {
+              $divide: ["$budgeted", "$total"],
+            },
+            100,
+          ],
+        },
+        unbudgetedPercentage: {
+          $multiply: [
+            {
+              $divide: ["$unbudgeted", "$total"],
+            },
+            100,
+          ],
+        },
+        total_budgeted: 1,
+        total_unbudgeted: 1,
+        budget_ration: 1,
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
+}
+
 export async function getVendorEmail(reqId: any) {
   let pipeline = [
     {

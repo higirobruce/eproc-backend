@@ -5,6 +5,7 @@ import {
   getAllRequestsByStatus,
   getPaymentRequestById,
   getPayReqSpendTrack,
+  getPayReqSpendTrackBudgets,
   getPayReqSpendTrackTotals,
   getPayReqStatusAnalytics,
   getPayReqTotalAnalytics,
@@ -95,10 +96,12 @@ paymentRequestRouter.get("/spendTracking", async (req, res) => {
   let { year } = req.query;
   let paidVsAll = await getPayReqSpendTrack(year);
   let totals = await getPayReqSpendTrackTotals(year);
+  let budgets = await getPayReqSpendTrackBudgets(year);
 
   res.send({
     data: paidVsAll,
     totals,
+    budgets,
   });
 });
 
