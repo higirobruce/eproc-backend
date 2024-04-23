@@ -22,8 +22,11 @@ uploadRouter.post("/termsOfReferencesssss/", (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).array("files[]");
-  // var upload = multer({ storage: storage }).array('file',100)
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).array("files[]");
+  // var upload = multer({ storage: storage,  limits: { fileSize: 12 * 1024 * 1024 }, }).array('file',100)
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -63,8 +66,11 @@ uploadRouter.post("/termsOfReference/", (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).array("files[]");
-  // var upload = multer({ storage: storage }).array('file',100)
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).array("files[]");
+  // var upload = multer({ storage: storage,  limits: { fileSize: 12 * 1024 * 1024 }, }).array('file',100)
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -94,7 +100,10 @@ uploadRouter.post("/rdbCerts/", (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).single("file");
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).single("file");
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -123,7 +132,10 @@ uploadRouter.post("/vatCerts/", (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).single("file");
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).single("file");
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -155,7 +167,10 @@ uploadRouter.post("/tenderDocs/", (req, res) => {
   });
 
   console.log("Tender doc");
-  var upload = multer({ storage: storage }).single("file");
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).single("file");
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -184,7 +199,10 @@ uploadRouter.post("/bidDocs/", (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).single("file");
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).single("file");
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -225,8 +243,11 @@ uploadRouter.post("/bidOtherDocs/", (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).array("files[]");
-  // var upload = multer({ storage: storage }).array('file',100)
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).array("files[]");
+  // var upload = multer({ storage: storage,  limits: { fileSize: 12 * 1024 * 1024 }, }).array('file',100)
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -256,7 +277,10 @@ uploadRouter.post("/evaluationReports/", (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).single("file");
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).single("file");
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -286,7 +310,10 @@ uploadRouter.post("/reqAttachments/", (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).single("file");
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).single("file");
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -336,8 +363,11 @@ uploadRouter.post("/paymentRequests/", (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).array("files[]");
-  // var upload = multer({ storage: storage }).array('file',100)
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).array("files[]");
+  // var upload = multer({ storage: storage,  limits: { fileSize: 12 * 1024 * 1024 }, }).array('file',100)
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -378,8 +408,11 @@ uploadRouter.post("/updatePaymentRequests/", async (req, res) => {
     },
   });
 
-  var upload = multer({ storage: storage }).single("file");
-  // var upload = multer({ storage: storage }).array('file',100)
+  var upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 },
+  }).single("file");
+  // var upload = multer({ storage: storage,  limits: { fileSize: 12 * 1024 * 1024 }, }).array('file',100)
   upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -438,7 +471,7 @@ uploadRouter.post("/updatePaymentRequests/", async (req, res) => {
 //     },
 //   });
 
-//   var upload = multer({ storage: storage }).single("file");
+//   var upload = multer({ storage: storage,  limits: { fileSize: 12 * 1024 * 1024 }, }).single("file");
 //   upload(req, res, function (err) {
 //     if (err instanceof multer.MulterError) {
 //       console.log(err);
