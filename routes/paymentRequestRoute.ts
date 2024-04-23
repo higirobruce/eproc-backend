@@ -4,6 +4,9 @@ import {
   getAllRequestsByCreator,
   getAllRequestsByStatus,
   getPaymentRequestById,
+  getPayReqSpendTrack,
+  getPayReqSpendTrackBudgets,
+  getPayReqSpendTrackTotals,
   getPayReqStatusAnalytics,
   getPayReqTotalAnalytics,
   getVendorEmail,
@@ -86,6 +89,19 @@ paymentRequestRouter.get("/totalOverview", async (req, res) => {
   res.send({
     data: resTotals,
     statusData: resStatusData,
+  });
+});
+
+paymentRequestRouter.get("/spendTracking", async (req, res) => {
+  let { year } = req.query;
+  let paidVsAll = await getPayReqSpendTrack(year);
+  let totals = await getPayReqSpendTrackTotals(year);
+  let budgets = await getPayReqSpendTrackBudgets(year);
+
+  res.send({
+    data: paidVsAll,
+    totals,
+    budgets,
   });
 });
 

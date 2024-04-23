@@ -24,7 +24,7 @@ dashboardRoute.get("/", async (req, res) => {
 
   let nPos = await getPoTotalAnalytics(year);
 
-  let merged = nContracts.concat(nTenders);
+  let merged = nContracts.concat(nTenders).concat(nPos);
 
   let statusContracts = await getContractStatusAnalytics(year);
   let statusTenders = await getTenderStatusAnalytics(year);
@@ -36,7 +36,14 @@ dashboardRoute.get("/", async (req, res) => {
   //   { item: "Purchase Orders", data: nPos, statusData: statusPOS },
   // ]);
 
-  res.send(groupBy(merged, "month"));
+  res.send({
+    data: groupBy(merged, "month"),
+    statusData: {
+      tenders: statusTenders,
+      contracts: statusContracts,
+      purchaseOrders: statusPOS,
+    },
+  });
 });
 
 function groupBy(objectArray: any, property: any) {

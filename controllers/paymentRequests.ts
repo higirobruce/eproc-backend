@@ -761,6 +761,231 @@ export async function getPayReqStatusAnalytics(year: any) {
   return req;
 }
 
+export async function getPayReqSpendTrack(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: 2024,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        requests: {
+          $sum: 1,
+        },
+        total_paid: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$status", "paid"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        total_requests: {
+          $sum: "$amount",
+        },
+      },
+    },
+  ];
+
+  try {
+    let req = await PaymentRequestModel.aggregate(pipeline);
+    return req;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
+export async function getPayReqSpendTrackTotals(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: 2024,
+      },
+    },
+    {
+      $group: {
+        _id: "",
+        total_requests: {
+          $sum: 1,
+        },
+        // total_paid: {
+        //   $sum: {
+        //     $cond: {
+        //       if: {
+        //         $eq: ["$status", "paid"],
+        //       },
+        //       then: "$amount",
+        //       else: 0,
+        //     },
+        //   },
+        // },
+        total_amount: {
+          $sum: "$amount",
+        },
+        average_request: {
+          $avg: "$amount",
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
+}
+
+export async function getPayReqSpendTrackBudgets(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$amount",
+        },
+        budgeted: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$budgeted", true],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+        unbudgeted: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$budgeted", false],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+        total_budgeted: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$budgeted", true],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+        total_unbudgeted: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$budgeted", false],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        budget_ration: {
+          $divide: ["$total_budgeted", "$total_unbudgeted"],
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        budgetedPercentage: {
+          $multiply: [
+            {
+              $divide: ["$budgeted", "$total"],
+            },
+            100,
+          ],
+        },
+        unbudgetedPercentage: {
+          $multiply: [
+            {
+              $divide: ["$unbudgeted", "$total"],
+            },
+            100,
+          ],
+        },
+        total_budgeted: 1,
+        total_unbudgeted: 1,
+        budget_ration: 1,
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
+}
+
 export async function getVendorEmail(reqId: any) {
   let pipeline = [
     {
