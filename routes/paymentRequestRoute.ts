@@ -101,7 +101,11 @@ paymentRequestRouter.get("/spendTracking", async (req, res) => {
   res.send({
     data: paidVsAll,
     totals,
-    budgets,
+    budgetData: [
+      {name:"budgeted", value: budgets[0]?.total_budgeted},
+      {name:"nonbudgeted", value: budgets[0]?.total_unbudgeted}
+    ]
+
   });
 });
 

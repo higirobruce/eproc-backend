@@ -712,6 +712,47 @@ const newUserAccount = (cred: any) => {
 </mjml>`;
 };
 
+const newVendorAccount = (cred: any) => {
+  return `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your account is created</mj-text>
+    </mj-column>
+  </mj-section>
+
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+        Hi there, <br /><br/><br />
+        I hope that you are well. <br/><br />
+        I would like to inform you that your account has been created in Irembo Procure.<br/><br/>
+        There is a pending approval process that follows. We will reach out to you once the process is over.<br><br />
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+};
+
 const passwordReset = (cred: any) => {
   return `<mjml>
 <mj-body>
@@ -1220,6 +1261,14 @@ export async function send(
         subject,
         text,
         html: mjml(newUserAccount(JSON.parse(text))).html,
+      });
+    else if (type === "newVendorAccount")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(newVendorAccount(JSON.parse(text))).html,
       });
     else if (type === "passwordReset")
       return await transporter.sendMail({

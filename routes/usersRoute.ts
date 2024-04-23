@@ -186,14 +186,25 @@ userRouter.post("/", async (req, res) => {
         payload: req.body,
       },
     });
-    send(
-      "",
-      email,
-      "Account created",
-      JSON.stringify({ email, password: password_new }),
-      "",
-      "newUserAccount"
-    );
+    if (createdUser?.userType == "VENDOR") {
+      send(
+        "",
+        email,
+        "Account created",
+        JSON.stringify({ email, password: password_new }),
+        "",
+        "newVendorAccount"
+      );
+    } else {
+      send(
+        "",
+        email,
+        "Account created",
+        JSON.stringify({ email, password: password_new }),
+        "",
+        "newUserAccount"
+      );
+    }
   }
   res.status(201).send(createdUser);
 });
@@ -264,7 +275,7 @@ userRouter.post("/approve/:id", ensureUserAuthorized, async (req, res) => {
   res.send(result).status(201);
 });
 
-userRouter.post("/decline/:id",ensureUserAuthorized, async (req, res) => {
+userRouter.post("/decline/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   logger.log({
     level: "info",
@@ -277,7 +288,7 @@ userRouter.post("/decline/:id",ensureUserAuthorized, async (req, res) => {
   res.send(await declineUser(id));
 });
 
-userRouter.post("/ban/:id",ensureUserAuthorized, async (req, res) => {
+userRouter.post("/ban/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   logger.log({
     level: "info",
@@ -290,7 +301,7 @@ userRouter.post("/ban/:id",ensureUserAuthorized, async (req, res) => {
   res.send(await banUser(id));
 });
 
-userRouter.post("/activate/:id",ensureUserAuthorized, async (req, res) => {
+userRouter.post("/activate/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   logger.log({
     level: "info",
@@ -303,7 +314,7 @@ userRouter.post("/activate/:id",ensureUserAuthorized, async (req, res) => {
   res.send(await activateUser(id));
 });
 
-userRouter.put("/:id",ensureUserAuthorized, async (req, res) => {
+userRouter.put("/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   let { newUser } = req.body;
 
@@ -351,7 +362,6 @@ userRouter.put("/updatePassword/:id", async (req, res) => {
     logger.log({
       level: "warn",
       message: `Password for ${id} was successfully reset`,
-      
     });
   }
   res.send(updatedUser);
