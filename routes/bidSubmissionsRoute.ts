@@ -11,6 +11,7 @@ import {
   rejectSubmission,
   saveBidSubmission,
   selectSubmission,
+  updateSubmission,
   updateSubmissionStatus,
 } from "../controllers/bidSubmissions";
 import { BidSubmission } from "../classrepo/bidSubmissions";
@@ -158,4 +159,54 @@ submissionsRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
   res.send(await updateSubmissionStatus(id, status));
+});
+
+submissionsRouter.put("/:id", async (req, res) => {
+  let { id } = req.params;
+  console.log(id);
+  let {
+    proposalUrls,
+    deliveryDate,
+    price,
+    currency,
+    warranty,
+    discount,
+    status,
+    comment,
+    createdBy,
+    tender,
+    warrantyDuration,
+    bankName,
+    bankAccountNumber,
+    bankAccountName,
+    proposalDocId,
+    otherDocId,
+    otherDocIds,
+    deliveryTimeFrameDuration,
+    deliveryTimeFrame,
+  } = req.body;
+  res.send(
+    await updateSubmission(
+      id,
+      proposalUrls,
+      deliveryDate,
+      price,
+      currency,
+      warranty,
+      discount,
+      status,
+      comment,
+      createdBy,
+      tender,
+      warrantyDuration,
+      bankName,
+      bankAccountNumber,
+      bankAccountName,
+      proposalDocId,
+      otherDocId,
+      otherDocIds,
+      deliveryTimeFrameDuration,
+      deliveryTimeFrame
+    )
+  );
 });
