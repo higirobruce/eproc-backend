@@ -753,6 +753,91 @@ const newVendorAccount = (cred: any) => {
 </mjml>`;
 };
 
+const accountApproved = (cred: any) => {
+  return `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your account is approved</mj-text>
+    </mj-column>
+  </mj-section>
+
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+        Hi there, <br /><br/><br />
+        I hope that you are well. <br/><br />
+        I would like to inform you that your account has been approved in Irembo Procure.<br/><br/>
+        Please proceed to the e-procurement application by clicking the button below.<br><br />
+        
+      </mj-text>
+
+      <mj-button background-color="#0063CF" href=${process.env.IRMB_APP_SERVER}>Go to application</mj-button>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+};
+
+const accountDeclined = (cred: any) => {
+  return `<mjml>
+<mj-body>
+  <!-- Company Header -->
+  <mj-section>
+    <mj-column>
+    <mj-image src="https://firebasestorage.googleapis.com/v0/b/movies-85a7a.appspot.com/o/blue%20icon.png?alt=media&token=12cc6ce4-4c78-4b12-9197-57b8be52d09e" alt="irembolgo" width="100px" padding="10px 25px"></mj-image><mj-text align='center' font-style="" font-size="20px" color="#626262">
+      <mj-text>
+        Irembo Procure
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Image Header -->
+  <mj-section>
+    <mj-column width="600px">
+      <mj-text align="center" color="#626262" font-size="26px" font-family="Helvetica Neue">Your account is declined</mj-text>
+    </mj-column>
+  </mj-section>
+
+
+  <!-- Intro text -->
+  <mj-section background-color="">
+    <mj-column width="500px">
+
+      <mj-text color="#525252">
+        Hi there, <br /><br/><br />
+        I hope that you are well. <br/><br />
+        I regret to inform you that your account has been declined in Irembo Procure. Please reach out to Irembo for more information.<br/><br/>
+        
+      </mj-text>
+    </mj-column>
+  </mj-section>
+
+  <!-- Social icons -->
+  <mj-section background-color=""></mj-section>
+
+</mj-body>
+</mjml>`;
+};
+
 const passwordReset = (cred: any) => {
   return `<mjml>
 <mj-body>
@@ -1269,6 +1354,22 @@ export async function send(
         subject,
         text,
         html: mjml(newVendorAccount(JSON.parse(text))).html,
+      });
+    else if (type === "accountApproved")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(accountApproved(JSON.parse(text))).html,
+      });
+    else if (type === "accountDeclined")
+      return await transporter.sendMail({
+        from: process.env.IRMB_SENDER_EMAIL,
+        to,
+        subject,
+        text,
+        html: mjml(accountDeclined(JSON.parse(text))).html,
       });
     else if (type === "passwordReset")
       return await transporter.sendMail({

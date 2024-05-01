@@ -175,18 +175,19 @@ userRouter.post("/", async (req, res) => {
     ""
   );
 
-  let createdUser = await saveUser(userToCreate);
+  let createdUserId = await saveUser(userToCreate);
 
-  if (createdUser?._id) {
+  if (createdUserId) {
     logger.log({
       level: "info",
-      message: `${createdUser?._id} was successfully created`,
+      message: `${createdUserId?._id} was successfully created`,
       meta: {
         doneBy: req.session?.user,
         payload: req.body,
       },
     });
-    if (createdUser?.userType == "VENDOR") {
+    console.log("UserType:", createdUserId);
+    if (userType === "VENDOR") {
       send(
         "",
         email,
@@ -206,7 +207,7 @@ userRouter.post("/", async (req, res) => {
       );
     }
   }
-  res.status(201).send(createdUser);
+  res.status(201).send(createdUserId);
 });
 
 userRouter.post("/login", async (req, res) => {
@@ -263,7 +264,7 @@ userRouter.post("/login", async (req, res) => {
 userRouter.post("/approve/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   let { approvedBy, avgRate } = req.body;
-  let result = await approveUser(id);
+  let result: any = await approveUser(id);
   logger.log({
     level: "info",
     message: `Approval of User ${id} successfully done`,
@@ -272,6 +273,14 @@ userRouter.post("/approve/:id", ensureUserAuthorized, async (req, res) => {
       payload: req.body,
     },
   });
+  send(
+    "",
+    result?.email,
+    "Account approved",
+    JSON.stringify({ email: result?.email }),
+    "",
+    "accountApproved"
+  );
   res.send(result).status(201);
 });
 
@@ -285,7 +294,17 @@ userRouter.post("/decline/:id", ensureUserAuthorized, async (req, res) => {
       payload: req.body,
     },
   });
-  res.send(await declineUser(id));
+  let result:any = await declineUser(id) 
+  send(
+    "",
+    result?.email,
+    "Account declined",
+    JSON.stringify({ email: result?.email }),
+    "",
+    "accountDeclined"
+  );
+  res.send(result);
+  
 });
 
 userRouter.post("/ban/:id", ensureUserAuthorized, async (req, res) => {
