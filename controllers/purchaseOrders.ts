@@ -277,6 +277,20 @@ export async function updatePOStatus(id: String, newStatus: String) {
       }
     }
 
+    if (newStatus == "terminated") {
+      let reqs = await getPOPendingRequests(id as string);
+      let ids = reqs.map((r) => {
+        return r._id;
+      });
+
+      await PaymentRequestModel.updateMany(
+        {
+          _id: { $in: ids },
+        },
+        { $set: { status: "withdrawn" } }
+      );
+    }
+
     return { message: "done" };
   } catch (err) {
     return {
@@ -517,6 +531,37 @@ export async function getPOPaymentRequests(id: string) {
   } catch (err: any) {
     console.log(err);
     return { totalPaymentVal: 0, poVal: -1 };
+  }
+}
+
+export async function getPOPendingRequests(id: string) {
+  let pipeline = [
+    {
+      $match: {
+        purchaseOrder: new mongoose.Types.ObjectId(id),
+        status: {
+          $nin: ["withdrawn", "declined", "paid"],
+        },
+      },
+    },
+    {
+      $project:
+        /**
+         * specifications: The fields to
+         *   include or exclude.
+         */
+        {
+          _id: 1,
+        },
+    },
+  ];
+  try {
+    let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
+
+    return pipelineResult;
+  } catch (err: any) {
+    console.log(err);
+    return [];
   }
 }
 
