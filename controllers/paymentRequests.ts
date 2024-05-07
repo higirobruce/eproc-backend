@@ -775,7 +775,7 @@ export async function getPayReqSpendTrack(year: any) {
     },
     {
       $match: {
-        year,
+        year: year,
       },
     },
     {
@@ -858,7 +858,7 @@ export async function getPayReqSpendTrackTotals(year: any) {
     },
     {
       $match: {
-        year,
+        year: year,
       },
     },
     {
@@ -906,7 +906,7 @@ export async function getPayReqSpendTrackBudgets(year: any) {
     },
     {
       $match: {
-        year,
+        year: year,
       },
     },
     {
@@ -1064,7 +1064,7 @@ export async function getDepartmentSpend(year: any) {
     },
     {
       $match: {
-        year,
+        year: year,
       },
     },
     {
