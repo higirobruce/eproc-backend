@@ -765,6 +765,7 @@ export async function getPayReqSpendTrack(year: any) {
   if (!year) {
     year = "2024";
   }
+  console.log(year);
   let pipeline = [
     {
       $addFields: {
@@ -775,7 +776,7 @@ export async function getPayReqSpendTrack(year: any) {
     },
     {
       $match: {
-        year: year,
+        year: parseInt(year),
       },
     },
     {
@@ -837,6 +838,7 @@ export async function getPayReqSpendTrack(year: any) {
 
   try {
     let req = await PaymentRequestModel.aggregate(pipeline);
+    console.log(req);
     return req;
   } catch (err) {
     console.log(err);
@@ -858,7 +860,7 @@ export async function getPayReqSpendTrackTotals(year: any) {
     },
     {
       $match: {
-        year: year,
+        year: parseInt(year),
       },
     },
     {
@@ -906,7 +908,7 @@ export async function getPayReqSpendTrackBudgets(year: any) {
     },
     {
       $match: {
-        year: year,
+        year: parseInt(year),
       },
     },
     {
@@ -1064,7 +1066,7 @@ export async function getDepartmentSpend(year: any) {
     },
     {
       $match: {
-        year: year,
+        year: parseInt(year),
       },
     },
     {
