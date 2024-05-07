@@ -13,6 +13,7 @@ import {
 } from "../controllers/purchaseOrders";
 
 import * as _ from "lodash";
+import { getDepartmentSpend } from "../controllers/paymentRequests";
 
 export const dashboardRoute = Router();
 
@@ -30,6 +31,8 @@ dashboardRoute.get("/", async (req, res) => {
   let statusTenders = await getTenderStatusAnalytics(year);
   let statusPOS = await getPoStatusAnalytics(year);
 
+  let departmentSpend = await getDepartmentSpend(year);
+
   // res.send([
   //   { item: "Tenders", data: nTenders, statusData: statusTenders },
   //   { item: "Contracts", data: nContracts, statusData: statusContracts },
@@ -43,6 +46,7 @@ dashboardRoute.get("/", async (req, res) => {
       contracts: statusContracts,
       purchaseOrders: statusPOS,
     },
+    departmentExpanditure: departmentSpend,
   });
 });
 

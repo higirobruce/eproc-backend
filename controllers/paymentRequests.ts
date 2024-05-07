@@ -775,7 +775,7 @@ export async function getPayReqSpendTrack(year: any) {
     },
     {
       $match: {
-        year: 2024,
+        year,
       },
     },
     {
@@ -858,7 +858,7 @@ export async function getPayReqSpendTrackTotals(year: any) {
     },
     {
       $match: {
-        year: 2024,
+        year,
       },
     },
     {
@@ -897,6 +897,18 @@ export async function getPayReqSpendTrackBudgets(year: any) {
     year = "2024";
   }
   let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year,
+      },
+    },
     {
       $group: {
         _id: null,
@@ -1036,4 +1048,101 @@ export async function getVendorEmail(reqId: any) {
 
   let emailObjs = await PaymentRequestModel.aggregate(pipeline);
   return emailObjs;
+}
+
+export async function getDepartmentSpend(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "approver",
+        foreignField: "_id",
+        as: "approver",
+      },
+    },
+    {
+      $unwind: {
+        path: "$approver",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departments",
+        localField: "approver.department",
+        foreignField: "_id",
+        as: "department",
+      },
+    },
+    {
+      $unwind: {
+        path: "$department",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $match: {
+        status: "paid",
+      },
+    },
+    {
+      $addFields: {
+        department: "$department.description",
+      },
+    },
+    {
+      $group: {
+        _id: "$department",
+        budgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", true],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        nonBudgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", false],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        name: "$_id",
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+      },
+    },
+  ];
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
 }
