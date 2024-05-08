@@ -223,7 +223,9 @@ export async function updateSubmission(
   deliveryTimeFrameDuration: any,
   deliveryTimeFrame: any
 ) {
+  
   try {
+    console.log('Updateing')
     await BidSubmissionModel.findByIdAndUpdate(id, {
       $set: {
         proposalUrls,

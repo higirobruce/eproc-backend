@@ -761,6 +761,156 @@ export async function getPayReqStatusAnalytics(year: any) {
   return req;
 }
 
+export async function getVendorEmail(reqId: any) {
+  let pipeline = [
+    {
+      $match: {
+        category: "external",
+        _id: new mongoose.Types.ObjectId(reqId),
+      },
+    },
+    {
+      $lookup: {
+        from: "purchaseorders",
+        localField: "purchaseOrder",
+        foreignField: "_id",
+        as: "purchaseOrder",
+      },
+    },
+    {
+      $unwind: {
+        path: "$purchaseOrder",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "purchaseOrder.vendor",
+        foreignField: "_id",
+        as: "vendor",
+      },
+    },
+    {
+      $unwind: {
+        path: "$vendor",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $addFields: {
+        vendorEmail: "$vendor.email",
+      },
+    },
+    {
+      $project: {
+        vendorEmail: 1,
+      },
+    },
+  ];
+
+  let emailObjs = await PaymentRequestModel.aggregate(pipeline);
+  return emailObjs;
+}
+
+export async function getDepartmentSpend(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "approver",
+        foreignField: "_id",
+        as: "approver",
+      },
+    },
+    {
+      $unwind: {
+        path: "$approver",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departments",
+        localField: "approver.department",
+        foreignField: "_id",
+        as: "department",
+      },
+    },
+    {
+      $unwind: {
+        path: "$department",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $match: {
+        status: "paid",
+      },
+    },
+    {
+      $addFields: {
+        department: "$department.description",
+      },
+    },
+    {
+      $group: {
+        _id: "$department",
+        budgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", true],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        nonBudgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", false],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        name: "$_id",
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+      },
+    },
+  ];
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
+}
+
+// Spend Tracking
 export async function getPayReqSpendTrack(year: any) {
   if (!year) {
     year = "2024";
@@ -1000,59 +1150,104 @@ export async function getPayReqSpendTrackBudgets(year: any) {
   return req;
 }
 
-export async function getVendorEmail(reqId: any) {
+// Expense Planning
+export async function getPayReqExpenseTrack(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  console.log(year);
   let pipeline = [
     {
-      $match: {
-        category: "external",
-        _id: new mongoose.Types.ObjectId(reqId),
-      },
-    },
-    {
-      $lookup: {
-        from: "purchaseorders",
-        localField: "purchaseOrder",
-        foreignField: "_id",
-        as: "purchaseOrder",
-      },
-    },
-    {
-      $unwind: {
-        path: "$purchaseOrder",
-        preserveNullAndEmptyArrays: false,
-      },
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "purchaseOrder.vendor",
-        foreignField: "_id",
-        as: "vendor",
-      },
-    },
-    {
-      $unwind: {
-        path: "$vendor",
-        preserveNullAndEmptyArrays: false,
-      },
-    },
-    {
       $addFields: {
-        vendorEmail: "$vendor.email",
+        year: {
+          $year: "$createdAt",
+        },
       },
     },
     {
-      $project: {
-        vendorEmail: 1,
+      $match: {
+        year: parseInt(year),
+        status: {
+          $nin: ["withdrawn", "paid", "declined", "rejected"],
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        requests: {
+          $sum: 1,
+        },
+        external_requests: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$category", "external"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        internal_requests: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$category", "internal"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
       },
     },
   ];
 
-  let emailObjs = await PaymentRequestModel.aggregate(pipeline);
-  return emailObjs;
+  try {
+    let req = await PaymentRequestModel.aggregate(pipeline);
+    console.log(req);
+    return req;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
 }
 
-export async function getDepartmentSpend(year: any) {
+export async function getPayReqExpenseTrackTotals(year: any) {
   if (!year) {
     year = "2024";
   }
@@ -1067,83 +1262,137 @@ export async function getDepartmentSpend(year: any) {
     {
       $match: {
         year: parseInt(year),
-      },
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "approver",
-        foreignField: "_id",
-        as: "approver",
-      },
-    },
-    {
-      $unwind: {
-        path: "$approver",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
-        from: "departments",
-        localField: "approver.department",
-        foreignField: "_id",
-        as: "department",
-      },
-    },
-    {
-      $unwind: {
-        path: "$department",
-        preserveNullAndEmptyArrays: false,
-      },
-    },
-    {
-      $match: {
-        status: "paid",
-      },
-    },
-    {
-      $addFields: {
-        department: "$department.description",
+        status: {
+          $nin: ["withdrawn", "paid", "declined", "rejected"],
+        },
       },
     },
     {
       $group: {
-        _id: "$department",
-        budgeted: {
+        _id: "",
+        total_requests_amount: {
+          $sum: "$amount",
+        },
+        total_pending_payments: {
           $sum: {
             $cond: {
               if: {
-                $eq: ["$budgeted", true],
+                $eq: ["$status", "approved"],
               },
               then: "$amount",
               else: 0,
             },
           },
         },
-        nonBudgeted: {
+        count_pending_payments: {
           $sum: {
             $cond: {
               if: {
-                $eq: ["$budgeted", false],
+                $eq: ["$status", "approved"],
               },
-              then: "$amount",
+              then: 1,
               else: 0,
             },
           },
         },
       },
     },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
+}
+
+export async function getDepartmentExpenseTracking(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
     {
-      $addFields: {
-        name: "$_id",
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-      },
-    },
+      '$addFields': {
+        'year': {
+          '$year': '$createdAt'
+        }
+      }
+    }, {
+      '$match': {
+        'year': parseInt(year)
+      }
+    }, {
+      '$lookup': {
+        'from': 'users', 
+        'localField': 'approver', 
+        'foreignField': '_id', 
+        'as': 'approver'
+      }
+    }, {
+      '$unwind': {
+        'path': '$approver', 
+        'preserveNullAndEmptyArrays': true
+      }
+    }, {
+      '$lookup': {
+        'from': 'departments', 
+        'localField': 'approver.department', 
+        'foreignField': '_id', 
+        'as': 'department'
+      }
+    }, {
+      '$unwind': {
+        'path': '$department', 
+        'preserveNullAndEmptyArrays': false
+      }
+    }, {
+      '$match': {
+        'status': {
+          '$nin': [
+            'withdrawn', 'paid', 'declined', 'rejected'
+          ]
+        }
+      }
+    }, {
+      '$addFields': {
+        'department': '$department.description'
+      }
+    }, {
+      '$group': {
+        '_id': '$department', 
+        'external_requests': {
+          '$sum': {
+            '$cond': {
+              'if': {
+                '$eq': [
+                  '$category', 'external'
+                ]
+              }, 
+              'then': '$amount', 
+              'else': 0
+            }
+          }
+        }, 
+        'internal_requests': {
+          '$sum': {
+            '$cond': {
+              'if': {
+                '$eq': [
+                  '$category', 'internal'
+                ]
+              }, 
+              'then': '$amount', 
+              'else': 0
+            }
+          }
+        }
+      }
+    }, {
+      '$addFields': {
+        'name': '$_id'
+      }
+    }, {
+      '$project': {
+        '_id': 0
+      }
+    }
   ];
   let req = await PaymentRequestModel.aggregate(pipeline);
   return req;

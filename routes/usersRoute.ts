@@ -33,6 +33,7 @@ import jwt from "jsonwebtoken";
 import { UserModel } from "../models/users";
 import { updateBusinessPartnerById } from "../services/b1";
 import * as _ from "lodash";
+import mongoose from "mongoose";
 
 export let SALT =
   process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
@@ -269,7 +270,7 @@ userRouter.post("/approve/:id", ensureUserAuthorized, async (req, res) => {
     level: "info",
     message: `Approval of User ${id} successfully done`,
     meta: {
-      doneBy: req.session?.user,
+      doneBy: new mongoose.Types.ObjectId(req.session?.user?.user),
       payload: req.body,
     },
   });
@@ -290,7 +291,7 @@ userRouter.post("/decline/:id", ensureUserAuthorized, async (req, res) => {
     level: "info",
     message: `Declining of User ${id} successfully done`,
     meta: {
-      doneBy: req.session?.user,
+      doneBy: new mongoose.Types.ObjectId(req.session?.user?.user),
       payload: req.body,
     },
   });
@@ -313,7 +314,7 @@ userRouter.post("/ban/:id", ensureUserAuthorized, async (req, res) => {
     level: "info",
     message: `Banning of User ${id} successfully done`,
     meta: {
-      doneBy: req.session?.user,
+      doneBy: new mongoose.Types.ObjectId(req.session?.user?.user),
       payload: req.body,
     },
   });
@@ -326,7 +327,7 @@ userRouter.post("/activate/:id", ensureUserAuthorized, async (req, res) => {
     level: "info",
     message: `Activation of User ${id} successfully done`,
     meta: {
-      doneBy: req.session?.user,
+      doneBy: new mongoose.Types.ObjectId(req.session?.user?.user),
       payload: req.body,
     },
   });
@@ -345,7 +346,7 @@ userRouter.put("/:id", ensureUserAuthorized, async (req, res) => {
     level: "info",
     message: `Update of User ${id} successfully done`,
     meta: {
-      doneBy: req.session?.user,
+      doneBy: new mongoose.Types.ObjectId(req.session?.user?.user),
       payload: req.body,
     },
   });
@@ -359,7 +360,7 @@ userRouter.put("/update/:id", ensureUserAuthorized, async (req, res) => {
     level: "info",
     message: `Update of User ${req.params.id} successfully done`,
     meta: {
-      doneBy: req.session?.user,
+      doneBy: new mongoose.Types.ObjectId(req.session?.user?.user),
       payload: req.body,
     },
   });

@@ -496,6 +496,7 @@ export async function getUserByEmail(userEmail: String) {
   return user;
 }
 
+
 export async function getVendorByCompanyName(name: String) {
   let user = await UserModel.findOne({ companyName: name });
   return user;

@@ -30,6 +30,7 @@ import { hashPassword } from "../services/users";
 import { logger } from "../utils/logger";
 import { send } from "../utils/sendEmailNode";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 export let SALT =
   process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
@@ -140,7 +141,7 @@ contractRouter.post("/",ensureUserAuthorized, async (req, res) => {
     level: "info",
     message: `Contract ${createdContract?._id} successfully created`,
     meta: {
-      doneBy: req.session?.user,
+      doneBy: new mongoose.Types.ObjectId(req.session?.user?.user),
       payload: req.body,
     },
   });

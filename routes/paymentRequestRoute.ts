@@ -3,7 +3,10 @@ import {
   getAllPaymentRequests,
   getAllRequestsByCreator,
   getAllRequestsByStatus,
+  getDepartmentExpenseTracking,
   getPaymentRequestById,
+  getPayReqExpenseTrack,
+  getPayReqExpenseTrackTotals,
   getPayReqSpendTrack,
   getPayReqSpendTrackBudgets,
   getPayReqSpendTrackTotals,
@@ -102,10 +105,22 @@ paymentRequestRouter.get("/spendTracking", async (req, res) => {
     data: paidVsAll,
     totals,
     budgetData: [
-      {name:"Budgeted", value: budgets[0]?.total_budgeted},
-      {name:"Non-budgeted", value: budgets[0]?.total_unbudgeted}
-    ]
+      { name: "Budgeted", value: budgets[0]?.total_budgeted },
+      { name: "Non-budgeted", value: budgets[0]?.total_unbudgeted },
+    ],
+  });
+});
 
+paymentRequestRouter.get("/expensePlanning", async (req, res) => {
+  let { year } = req.query;
+  let interalVSExternal = await getPayReqExpenseTrack(year);
+  let totals = await getPayReqExpenseTrackTotals(year);
+  let dapartmentalExpenses = await getDepartmentExpenseTracking(year);
+
+  res.send({
+    data: interalVSExternal,
+    totals,
+    dapartmentalExpenses,
   });
 });
 
