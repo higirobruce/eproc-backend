@@ -701,6 +701,54 @@ export async function getPayReqTotalAnalytics(year: any) {
   return req;
 }
 
+export async function getPayReqLeadTime(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        average_lead_time: {
+          $avg: {
+            $subtract: ["$hof_approvalDate", "$createdAt"],
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        average_lead_time: {
+          $divide: ["$average_lead_time", 86400000],
+        },
+      },
+    },
+    {
+      $project: {
+        days: {
+          $round: ["$average_lead_time"],
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
+  return req;
+}
+
 export async function getPayReqStatusAnalytics(year: any) {
   if (!year) {
     year = "2024";
@@ -1309,90 +1357,94 @@ export async function getDepartmentExpenseTracking(year: any) {
   }
   let pipeline = [
     {
-      '$addFields': {
-        'year': {
-          '$year': '$createdAt'
-        }
-      }
-    }, {
-      '$match': {
-        'year': parseInt(year)
-      }
-    }, {
-      '$lookup': {
-        'from': 'users', 
-        'localField': 'approver', 
-        'foreignField': '_id', 
-        'as': 'approver'
-      }
-    }, {
-      '$unwind': {
-        'path': '$approver', 
-        'preserveNullAndEmptyArrays': true
-      }
-    }, {
-      '$lookup': {
-        'from': 'departments', 
-        'localField': 'approver.department', 
-        'foreignField': '_id', 
-        'as': 'department'
-      }
-    }, {
-      '$unwind': {
-        'path': '$department', 
-        'preserveNullAndEmptyArrays': false
-      }
-    }, {
-      '$match': {
-        'status': {
-          '$nin': [
-            'withdrawn', 'paid', 'declined', 'rejected'
-          ]
-        }
-      }
-    }, {
-      '$addFields': {
-        'department': '$department.description'
-      }
-    }, {
-      '$group': {
-        '_id': '$department', 
-        'external_requests': {
-          '$sum': {
-            '$cond': {
-              'if': {
-                '$eq': [
-                  '$category', 'external'
-                ]
-              }, 
-              'then': '$amount', 
-              'else': 0
-            }
-          }
-        }, 
-        'internal_requests': {
-          '$sum': {
-            '$cond': {
-              'if': {
-                '$eq': [
-                  '$category', 'internal'
-                ]
-              }, 
-              'then': '$amount', 
-              'else': 0
-            }
-          }
-        }
-      }
-    }, {
-      '$addFields': {
-        'name': '$_id'
-      }
-    }, {
-      '$project': {
-        '_id': 0
-      }
-    }
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "approver",
+        foreignField: "_id",
+        as: "approver",
+      },
+    },
+    {
+      $unwind: {
+        path: "$approver",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departments",
+        localField: "approver.department",
+        foreignField: "_id",
+        as: "department",
+      },
+    },
+    {
+      $unwind: {
+        path: "$department",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $match: {
+        status: {
+          $nin: ["withdrawn", "paid", "declined", "rejected"],
+        },
+      },
+    },
+    {
+      $addFields: {
+        department: "$department.description",
+      },
+    },
+    {
+      $group: {
+        _id: "$department",
+        external_requests: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$category", "external"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        internal_requests: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$category", "internal"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        name: "$_id",
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+      },
+    },
   ];
   let req = await PaymentRequestModel.aggregate(pipeline);
   return req;
