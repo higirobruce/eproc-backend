@@ -21,6 +21,7 @@ import {
   getPurReqStatusAnalytics,
   getPurReqSourcingAnalytics,
   getPurReqServiceCat,
+  getPurReqLeadTime,
 } from "../controllers/requests";
 
 import { UserModel } from "../models/users";
@@ -76,12 +77,14 @@ requetsRouter.get("/totalOverview", async (req, res) => {
   let resStatuses = await getPurReqStatusAnalytics(year);
   let resSourcing = await getPurReqSourcingAnalytics(year);
   let resServiceCat = await getPurReqServiceCat(year);
+  let leadTimeDays = await getPurReqLeadTime(year);
 
   res.send({
     data: resTotals,
     statusData: resStatuses,
     sourcingData: resSourcing,
     serviceCatData: resServiceCat,
+    leadTimeDays: leadTimeDays[0]?.days || 0,
   });
 });
 

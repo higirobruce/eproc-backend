@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  getContractLeadTime,
   getContractStatusAnalytics,
   getContractsTotalAnalytics,
 } from "../controllers/contracts";
@@ -8,6 +9,7 @@ import {
   getTendersTotalAnalytics,
 } from "../controllers/tenders";
 import {
+  getPOLeadTime,
   getPoStatusAnalytics,
   getPoTotalAnalytics,
 } from "../controllers/purchaseOrders";
@@ -20,10 +22,12 @@ export const dashboardRoute = Router();
 dashboardRoute.get("/", async (req, res) => {
   let { year } = req.query;
   let nContracts = await getContractsTotalAnalytics(year);
+  let contractsLeadTime = await getContractLeadTime(year);
 
   let nTenders = await getTendersTotalAnalytics(year);
 
   let nPos = await getPoTotalAnalytics(year);
+  let posLeadTime = await getPOLeadTime(year)
 
   let merged = nContracts.concat(nTenders).concat(nPos);
 
@@ -47,6 +51,8 @@ dashboardRoute.get("/", async (req, res) => {
       purchaseOrders: statusPOS,
     },
     departmentExpanditure: departmentSpend,
+    contractsLeadTime: contractsLeadTime[0]?.days || 0,
+    posLeadTime: posLeadTime[0]?.days || 0
   });
 });
 

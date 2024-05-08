@@ -887,3 +887,51 @@ export async function getPurReqServiceCat(year: any) {
   let req = await RequestModel.aggregate(pipeline).sort({ month: 1 });
   return req;
 }
+
+export async function getPurReqLeadTime(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        average_lead_time: {
+          $avg: {
+            $subtract: ["$pm_approvalDate", "$createdAt"],
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        average_lead_time: {
+          $divide: ["$average_lead_time", 86400000],
+        },
+      },
+    },
+    {
+      $project: {
+        days: {
+          $round: ["$average_lead_time"],
+        },
+      },
+    },
+  ];
+
+  let req = await RequestModel.aggregate(pipeline).sort({ month: 1 });
+  return req;
+}
