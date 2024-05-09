@@ -17,6 +17,7 @@ import {
 import { timingSafeEqual } from "crypto";
 import fetch from "cross-fetch";
 import * as _ from "lodash";
+import { LogModel } from "../models/logs";
 
 let localstorage = new LocalStorage("./dist");
 
@@ -496,7 +497,6 @@ export async function getUserByEmail(userEmail: String) {
   return user;
 }
 
-
 export async function getVendorByCompanyName(name: String) {
   let user = await UserModel.findOne({ companyName: name });
   return user;
@@ -781,6 +781,28 @@ export async function saveBankDetails(
   }
 }
 
-export async function getMyActivity(id: String){
+export async function getMyActivity(id: String) {
+  let pipeline = [
+    {
+      $match: {
+        "meta.doneBy": id,
+        "meta.referenceId": {
+          $ne: null,
+        },
+        level: "info",
+      },
+    },
+    {
+      $project: {
+        action: "$message",
+        doneAt: "$timestamp",
+        doneBy: "$meta.doneBy",
+        referenceId: "$meta.referenceId",
+        module: "$meta.module",
+      },
+    },
+  ];
 
+  let result = await LogModel.aggregate(pipeline);
+  return result;
 }

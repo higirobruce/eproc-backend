@@ -20,6 +20,7 @@ import {
   updateMyPassword,
   updateUser,
   getUser,
+  getMyActivity,
 } from "../controllers/users";
 import {
   generatePassword,
@@ -102,6 +103,13 @@ userRouter.get("/internal/byStatus/:status", async (req, res) => {
 
   if (status === "all") res.send(await getAllInternalUsers());
   else res.send(await getAllInternalUsersByStatus(status));
+});
+
+userRouter.get("/activity/:id", async (req, res) => {
+  let { id } = req.params;
+
+  console.log(id)
+  res.send(await getMyActivity(id as String));
 });
 
 userRouter.get("/:id", async (req, res) => {
@@ -355,7 +363,7 @@ userRouter.put("/:id", ensureUserAuthorized, async (req, res) => {
 
   let nUser = _.omit(newUser, "sapCode");
 
-  let updates:any = await updateUser(id, nUser);
+  let updates: any = await updateUser(id, nUser);
 
   logger.log({
     level: "info",
