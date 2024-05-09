@@ -150,7 +150,6 @@ poRouter.post("/", async (req, response) => {
             rate,
             rateComment
           );
-
           let createdPO = await savePO(poToCreate);
 
           if (createdPO) {
@@ -166,15 +165,16 @@ poRouter.post("/", async (req, response) => {
               "internalSignature"
             );
 
+
             logger.log({
               level: "info",
-              message: `Purchase Order ${createdPO?._id} successfully created`,
+              message: `created purchase order`,
               meta: {
-                doneBy: req.session?.user,
-                payload: req.body,
+                doneBy: req.session?.user?.user,
+                referenceId: `${createdPO?._id} `,
+                module: 'purchase-orders'
               },
             });
-
             if (refs?.length >= 1) {
               refs.forEach(async (r) => {
                 await updateB1Po(r, {
@@ -197,7 +197,7 @@ poRouter.post("/", async (req, response) => {
         level: "error",
         message: `Creating a Purchase Order failed. Error: ${err}`,
         meta: {
-          doneBy: req.session?.user,
+          doneBy: req.session?.user?.user,
           payload: req.body,
         },
       });
@@ -211,12 +211,14 @@ poRouter.put("/status/:id", async (req, res) => {
   let updatedPO = await updatePOStatus(id, status);
 
   if (!updatedPO.error) {
+   
     logger.log({
       level: "info",
-      message: `Purchase Order ${id} successfully updated`,
+      message: `updated purchase order`,
       meta: {
-        doneBy: req.session?.user,
-        payload: req.body,
+        doneBy: req.session?.user?.user,
+        referenceId: `${id}`,
+        module: 'purchase-orders'
       },
     });
   } else {
@@ -224,7 +226,7 @@ poRouter.put("/status/:id", async (req, res) => {
       level: "error",
       message: `Updating Purchase Order ${id} failed. ${updatedPO?.errorMessage}`,
       meta: {
-        doneBy: req.session?.user,
+        doneBy: req.session?.user?.user,
         payload: req.body,
       },
     });
@@ -298,10 +300,11 @@ poRouter.put("/:id", async (req, res) => {
   if (updated) {
     logger.log({
       level: "info",
-      message: `Purchase Order ${id} successfully updated`,
+      message: `updated purchase order`,
       meta: {
-        doneBy: req.session?.user,
-        payload: req.body,
+        doneBy: req.session?.user?.user,
+        referenceId: `${id}`,
+        module: 'purchase-orders'
       },
     });
   } else {
@@ -309,7 +312,7 @@ poRouter.put("/:id", async (req, res) => {
       level: "error",
       message: `Updating Purchase Order ${id} failed`,
       meta: {
-        doneBy: req.session?.user,
+        doneBy: req.session?.user?.user,
         payload: req.body,
       },
     });

@@ -27,6 +27,7 @@ import {
 import { generateReqNumber } from "../services/requests";
 import { generateTenderNumber } from "../services/tenders";
 import { send } from "../utils/sendEmailNode";
+import { logger } from "../utils/logger";
 
 export const tenderRouter = Router();
 
@@ -35,7 +36,7 @@ tenderRouter.get("/", async (req, res) => {
 });
 
 tenderRouter.get("/byStatus/:status", async (req, res) => {
-  let {status} = req.params;
+  let { status } = req.params;
   res.send(await getAllTendersByStatus(status));
 });
 
@@ -69,7 +70,7 @@ tenderRouter.get("/stats", async (req, res) => {
 });
 
 tenderRouter.get("/:id", async (req, res) => {
-  let {id} = req.params;
+  let { id } = req.params;
   res.send(await getTendersById(id));
 });
 
@@ -111,6 +112,15 @@ tenderRouter.post("/", async (req, res) => {
   );
 
   let createdTender = await saveTender(tenderToCreate);
+  logger.log({
+    level: "info",
+    message: `created tender`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      referenceId: `${createdTender?._id}`,
+      module: "tenders",
+    },
+  });
   res.status(201).send(createdTender);
 });
 
@@ -123,7 +133,7 @@ tenderRouter.put("/:id", async (req, res) => {
   if (sendInvitation) {
     let invitees = newTender?.invitees;
     let inviteesEmails = invitees?.map((i: any) => {
-     return i?.approver
+      return i?.approver;
     });
 
     send(
@@ -135,11 +145,30 @@ tenderRouter.put("/:id", async (req, res) => {
       "bidEvaluationInvite"
     );
   }
+  logger.log({
+    level: "info",
+    message: `updated tender`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: "tenders",
+    },
+  });
   res.send(updatedTender);
 });
 
 tenderRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
-  res.send(await updateTenderStatus(id, status));
+  let tender = await updateTenderStatus(id, status);
+  logger.log({
+    level: "info",
+    message: `updated tender`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: "tenders",
+    },
+  });
+  res.send(tender);
 });

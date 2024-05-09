@@ -111,9 +111,19 @@ submissionsRouter.post("/select/:id", async (req, res) => {
     $set: { evaluationReportId },
   });
   selectSubmission(id).then(async (r) => {
+    // logger.log({
+    //   level: "info",
+    //   message: `Bid ${id} selected for the tender ${tenderId}`,
+    // });
+
     logger.log({
       level: "info",
-      message: `Bid ${id} selected for the tender ${tenderId}`,
+      message: `selected bid for the tender`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: `${tenderId}`,
+        module: 'tenders'
+      },
     });
     await deselectOtherSubmissions(tenderId);
 
@@ -141,9 +151,19 @@ submissionsRouter.post("/award/:id", async (req, res) => {
   let { id } = req.params;
   let { tenderId } = req.query;
   awardSubmission(id).then(async (r) => {
+    // logger.log({
+    //   level: "info",
+    //   message: `Bid ${id} was awarded for the tender ${tenderId}`,
+    // });
+
     logger.log({
       level: "info",
-      message: `Bid ${id} was awarded for the tender ${tenderId}`,
+      message: `awarded a bid for the tender`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: `${tenderId}`,
+        module: 'tenders'
+      },
     });
     await rejectOtherSubmissions(tenderId);
     res.send(r);

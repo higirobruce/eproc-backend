@@ -780,3 +780,7 @@ export async function saveBankDetails(
     };
   }
 }
+
+export async function getMyActivity(id: String){
+
+}

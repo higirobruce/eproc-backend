@@ -25,6 +25,7 @@ import {
   getAllFinanceApprovers,
   getAllPaymentReviewers,
 } from "../controllers/users";
+import { logger } from "../utils/logger";
 export const paymentRequestRouter = Router();
 
 paymentRequestRouter.get("/", async (req, res) => {
@@ -70,6 +71,16 @@ paymentRequestRouter.post("/", async (req, res) => {
         "payment-request-review"
       );
     }
+
+    logger.log({
+      level: "info",
+      message: `created ${newPaymentRequest?._id}`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: newPaymentRequest?._id.toString(),
+        module:'payment-requests'
+      },
+    });
 
     res.status(201).send(newPaymentRequest);
   } catch (err) {

@@ -44,10 +44,7 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     let createdPaymentRequest = await PaymentRequestModel.create(
       paymentRequest
     );
-    logger.log({
-      level: "info",
-      message: `${createdPaymentRequest} successfully created`,
-    });
+    
     return createdPaymentRequest.populate(
       "purchaseOrder createdBy approver reviewedBy budgetLine"
     );
@@ -60,6 +57,7 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     throw err;
   }
 }
+
 
 export async function getPaymentRequestById(id: String) {
   let reqs = await PaymentRequestModel.findById(id)
