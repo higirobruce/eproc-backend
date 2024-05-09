@@ -185,7 +185,7 @@ userRouter.post("/", async (req, res) => {
       meta: {
         doneBy: req.session?.user?.user,
         referenceId: `${createdUserId?._id}`,
-        module: "users",
+        module: userType === "VENDOR" ? "vendors" : "users",
       },
     });
     if (userType === "VENDOR") {
@@ -226,7 +226,7 @@ userRouter.post("/login", async (req, res) => {
         meta: {
           doneBy: req.session?.user?.user,
           referenceId: user?._id?.toString(),
-          module: "users",
+          module: user?.userType === "VENDOR" ? "vendors" : "users",
         },
       });
 
@@ -278,7 +278,7 @@ userRouter.post("/approve/:id", ensureUserAuthorized, async (req, res) => {
     meta: {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
-      module: "users",
+      module: result?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
 
@@ -296,16 +296,17 @@ userRouter.post("/approve/:id", ensureUserAuthorized, async (req, res) => {
 userRouter.post("/decline/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
 
+  let result: any = await declineUser(id);
+
   logger.log({
     level: "info",
     message: `declined user account`,
     meta: {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
-      module: "users",
+      module: result?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
-  let result: any = await declineUser(id);
   send(
     "",
     result?.email,
@@ -319,32 +320,33 @@ userRouter.post("/decline/:id", ensureUserAuthorized, async (req, res) => {
 
 userRouter.post("/ban/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
-
+  let result: any = await banUser(id);
   logger.log({
     level: "info",
     message: `banned user account`,
     meta: {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
-      module: "users",
+      module: result?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
-  res.send(await banUser(id));
+  res.send(result);
 });
 
 userRouter.post("/activate/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
 
+  let result: any = await activateUser(id);
   logger.log({
     level: "info",
     message: `activated user account`,
     meta: {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
-      module: "users",
+      module: result?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
-  res.send(await activateUser(id));
+  res.send(result);
 });
 
 userRouter.put("/:id", ensureUserAuthorized, async (req, res) => {
@@ -353,7 +355,7 @@ userRouter.put("/:id", ensureUserAuthorized, async (req, res) => {
 
   let nUser = _.omit(newUser, "sapCode");
 
-  let updates = await updateUser(id, nUser);
+  let updates:any = await updateUser(id, nUser);
 
   logger.log({
     level: "info",
@@ -361,7 +363,7 @@ userRouter.put("/:id", ensureUserAuthorized, async (req, res) => {
     meta: {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
-      module: "users",
+      module: updates?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
 
