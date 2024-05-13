@@ -803,6 +803,6 @@ export async function getMyActivity(id: String) {
     },
   ];
 
-  let result = await LogModel.aggregate(pipeline);
+  let result = await LogModel.aggregate(pipeline).sort({'doneAt':-1});
   return result;
 }
