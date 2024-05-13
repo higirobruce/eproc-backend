@@ -6,6 +6,7 @@ import { requetsRouter } from "./routes/requestsRoute";
 import { serviceCategoryRouter } from "./routes/serviceCategories";
 import { rdbServiceCategoryRouter } from "./routes/rdbServiceCategories";
 import { dptRouter } from "./routes/dptRoute";
+import { masterDataRoute } from "./routes/masterDataRoute";
 import { tenderRouter } from "./routes/tenders";
 import { submissionsRouter } from "./routes/bidSubmissionsRoute";
 import { poRouter } from "./routes/purchaseOrders";
@@ -25,6 +26,8 @@ import { LocalStorage } from "node-localstorage";
 import path from "path";
 import { logger } from "./utils/logger";
 import { dashboardRoute } from "./routes/dashboardRoute";
+import { getPOPendingRequests } from "./controllers/purchaseOrders";
+import { getDepartmentSpend } from "./controllers/paymentRequests";
 const oneDay = 1000 * 60 * 60 * 24;
 
 declare module "express-session" {
@@ -72,8 +75,10 @@ let auth = (req: Request, res: Response, next: NextFunction) => {
   if (login && password && login === auth.login && password === auth.password) {
     logger.log({
       level: "info",
-      message: `${login} Successfully logged in.`,
-      payload: req.baseUrl,
+      message: `logged in.`,
+      meta: {
+        payload: req.baseUrl,
+      },
     });
     return next();
   }
@@ -123,6 +128,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/users", userRouter);
 app.use("/requests", ensureUserAuthorized, requetsRouter);
 app.use("/dpts", dptRouter);
+app.use("/masterData", masterDataRoute);
 app.use("/serviceCategories", serviceCategoryRouter);
 app.use("/rdbServiceCategories", rdbServiceCategoryRouter);
 app.use("/tenders", ensureUserAuthorized, tenderRouter);
@@ -132,7 +138,7 @@ app.use("/contracts", ensureUserAuthorized, contractRouter);
 app.use("/budgetLines", ensureUserAuthorized, budgetLinesRouter);
 app.use("/paymentRequests", ensureUserAuthorized, paymentRequestRouter);
 app.use("/uploads", uploadRouter);
-app.use("/dashboards", dashboardRoute);
+app.use("/dashboards", ensureUserAuthorized, dashboardRoute);
 app.use("/b1", ensureUserAuthorized, b1Router);
 app.get("/file/:folder/:name", function (req, res, next) {
   var folder = req.params.folder;
