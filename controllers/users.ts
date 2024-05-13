@@ -785,7 +785,7 @@ export async function getMyActivity(id: String) {
   let pipeline = [
     {
       $match: {
-        "meta.doneBy": id,
+        $or: [{ "meta.doneBy": id }, { "meta.referenceId": id }],
         "meta.referenceId": {
           $ne: null,
         },
@@ -803,6 +803,6 @@ export async function getMyActivity(id: String) {
     },
   ];
 
-  let result = await LogModel.aggregate(pipeline).sort({'doneAt':-1});
+  let result = await LogModel.aggregate(pipeline).sort({ doneAt: -1 });
   return result;
 }
