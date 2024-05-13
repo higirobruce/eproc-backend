@@ -21,7 +21,7 @@ export const logger = winston.createLogger({
     // Add MongoDB transport
     new winston.transports.MongoDB({
       level: "info", // Log level for this transport
-      db: "mongodb://localhost:27017/eproc", // MongoDB connection URL
+      db: "mongodb://127.0.0.1:27017/eproc", // MongoDB connection URL
       options: {
         useNewUrlParser: true, // MongoDB connection options
         useUnifiedTopology: true,
