@@ -12,6 +12,10 @@ export const DepartmentSchema = new Schema<iDepartment>({
     description: {
         type: String, unique: true,
         dropDups: true,
+    },
+    visible:{
+        type: Boolean,
+        default: false,
     }
 },{timestamps: true})
 
