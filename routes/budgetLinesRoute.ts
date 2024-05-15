@@ -11,7 +11,7 @@ budgetLinesRouter.get("/", async (req, res) => {
 budgetLinesRouter.post("/", async (req, res) => {
   let { title, subLines } = req.body;
 
-  let budgetLine = new BudgetLine(title, subLines);
+  let budgetLine = new BudgetLine(title, subLines, true);
 
   res.status(201).send(await saveBudgetLine(budgetLine));
 });
