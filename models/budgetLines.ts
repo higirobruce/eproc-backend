@@ -1,17 +1,24 @@
 import { model, Schema, Types } from "mongoose";
 import { IBudgetLines } from "../interfaces/iBudgetLines";
 
-
-export const BudgetLinesSchema = new Schema<IBudgetLines>({
-   
+export const BudgetLinesSchema = new Schema<IBudgetLines>(
+  {
     title: {
-        type: String
+      type: String,
     },
     subLines: [],
-    visible:{
-        type: Boolean,
-        default: false,
-    }
-},{timestamps: true})
+    description: {
+      type: String,
+    },
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
 
-export const BudgetLineModel = model<IBudgetLines>('BudgetLine', BudgetLinesSchema);
+export const BudgetLineModel = model<IBudgetLines>(
+  "BudgetLine",
+  BudgetLinesSchema
+);

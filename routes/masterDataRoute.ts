@@ -9,6 +9,5 @@ masterDataRoute.get("/departments", async (req, res) => {
 });
 
 masterDataRoute.get("/budgetlines", async (req, res) => {
-  console.log("hksdsdjsdsl");
   res.status(200).send(await getAllBudgetLinesOnly());
 });

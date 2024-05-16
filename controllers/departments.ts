@@ -24,3 +24,10 @@ export async function saveDepartment(dpt: Department) {
     };
   }
 }
+
+export async function updateDepartment(id: String, update: any) {
+  try {
+    let updatedDpt = await DepartmentModel.findByIdAndUpdate(id, update);
+    return updatedDpt;
+  } catch (err) {}
+}

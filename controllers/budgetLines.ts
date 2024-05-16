@@ -73,3 +73,18 @@ export async function saveBudgetLine(budgetLine: BudgetLine) {
     };
   }
 }
+
+export async function updateBudgetLine(id: String, update: any) {
+  try {
+    let updatedBg = await BudgetLineModel.updateOne(
+      { _id: id },
+      { $set: { description: update?.description, visible: update?.visible } },
+      { new: true }
+    );
+
+    console.log(updatedBg);
+    return updatedBg;
+  } catch (err) {
+    console.log(err);
+  }
+}
