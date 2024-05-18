@@ -2,7 +2,7 @@ import { PipelineStage } from "mongoose";
 import { ServiceCategoryModel } from "../models/serviceCategories";
 import { RdbServiceCategoryModel } from "../models/rdbServiceCategories";
 
-export async function getAllServiceCategories() {
+export async function getAllServiceCategories(visible: any) {
   //   let pipeline: PipelineStage[] = [
   //     {
   //       '$lookup': {
@@ -66,7 +66,20 @@ export async function getAllServiceCategories() {
   //     description: 1,
   //   });
 
-  let categs = await RdbServiceCategoryModel.find().sort({
+  let query = {};
+
+  if (visible == 1 || visible == "1") {
+    query = {
+      visible: true,
+    };
+  }
+  if (visible == 0 || visible == "0") {
+    query = {
+      visible: false,
+    };
+  }
+
+  let categs = await RdbServiceCategoryModel.find(query).sort({
     description: "asc",
   });
   return categs;

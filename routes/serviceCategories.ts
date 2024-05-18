@@ -8,9 +8,11 @@ import {
 export const serviceCategoryRouter = Router();
 
 serviceCategoryRouter.get("/", async (req, res) => {
-  let categs = await getAllServiceCategories();
+  let { visible } = req.query;
+  let categs = await getAllServiceCategories(visible);
   res.status(200).send(categs);
 });
+
 
 serviceCategoryRouter.post("/", async (req, res) => {
   let { description } = req.body;
