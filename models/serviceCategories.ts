@@ -10,6 +10,10 @@ export const ServiceCategory = new Schema({
     rdbServiceId:{
         type: mongoose.Types.ObjectId,
         ref: "RdbServiceCategory"
+    },
+    visible: {
+        type: Boolean,
+        default: true
     }
 },{timestamps: true})
 

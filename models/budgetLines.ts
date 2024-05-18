@@ -1,18 +1,17 @@
 import { model, Schema, Types } from "mongoose";
-import { IBudgetLines } from "../interfaces/iBudgetLines";
+import { IBudgetLines, IBudgetLinesDocument } from "../interfaces/iBudgetLines";
 
-export const BudgetLinesSchema = new Schema<IBudgetLines>(
+export const BudgetLinesSchema = new Schema<IBudgetLinesDocument>(
   {
-    title: {
-      type: String,
-    },
-    subLines: [],
     description: {
       type: String,
     },
     visible: {
       type: Boolean,
-      default: false,
+      default: true,
+    },
+    department: {
+      type: Types.ObjectId,
     },
   },
   { timestamps: true }

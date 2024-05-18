@@ -51,7 +51,7 @@ export async function getAllBudgetLinesOnly() {
 
   try {
     // let dpts = await BudgetLineModel.find().sort({ description: 1 });
-    let dpts = await BudgetLineModel.aggregate(pipeline);
+    let dpts = await BudgetLineModel.aggregate(pipeline).sort({description:1});
 
     return dpts;
   } catch (err) {

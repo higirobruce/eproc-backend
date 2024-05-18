@@ -15,7 +15,7 @@ export const DepartmentSchema = new Schema<iDepartment>({
     },
     visible:{
         type: Boolean,
-        default: false,
+        default: true,
     }
 },{timestamps: true})
 
