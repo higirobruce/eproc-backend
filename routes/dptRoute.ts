@@ -24,10 +24,12 @@ dptRouter.post("/", async (req, res) => {
   res.send(newDpt);
 });
 
+
 dptRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { update } = req.body;
 
-  let updated = updateDepartment(id as String, update);
+  let updated = await updateDepartment(id as String, update);
+  console.log(updated)
   res.send(updated);
 });
