@@ -11,6 +11,7 @@ import {
   rejectSubmission,
   saveBidSubmission,
   selectSubmission,
+  updateSubmission,
   updateSubmissionStatus,
 } from "../controllers/bidSubmissions";
 import { BidSubmission } from "../classrepo/bidSubmissions";
@@ -110,9 +111,19 @@ submissionsRouter.post("/select/:id", async (req, res) => {
     $set: { evaluationReportId },
   });
   selectSubmission(id).then(async (r) => {
+    // logger.log({
+    //   level: "info",
+    //   message: `Bid ${id} selected for the tender ${tenderId}`,
+    // });
+
     logger.log({
       level: "info",
-      message: `Bid ${id} selected for the tender ${tenderId}`,
+      message: `selected bid for the tender`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: `${tenderId}`,
+        module: 'tenders'
+      },
     });
     await deselectOtherSubmissions(tenderId);
 
@@ -140,9 +151,19 @@ submissionsRouter.post("/award/:id", async (req, res) => {
   let { id } = req.params;
   let { tenderId } = req.query;
   awardSubmission(id).then(async (r) => {
+    // logger.log({
+    //   level: "info",
+    //   message: `Bid ${id} was awarded for the tender ${tenderId}`,
+    // });
+
     logger.log({
       level: "info",
-      message: `Bid ${id} was awarded for the tender ${tenderId}`,
+      message: `awarded a bid for the tender`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: `${tenderId}`,
+        module: 'tenders'
+      },
     });
     await rejectOtherSubmissions(tenderId);
     res.send(r);
@@ -158,4 +179,54 @@ submissionsRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
   res.send(await updateSubmissionStatus(id, status));
+});
+
+submissionsRouter.put("/:id", async (req, res) => {
+  let { id } = req.params;
+  console.log(id);
+  let {
+    proposalUrls,
+    deliveryDate,
+    price,
+    currency,
+    warranty,
+    discount,
+    status,
+    comment,
+    createdBy,
+    tender,
+    warrantyDuration,
+    bankName,
+    bankAccountNumber,
+    bankAccountName,
+    proposalDocId,
+    otherDocId,
+    otherDocIds,
+    deliveryTimeFrameDuration,
+    deliveryTimeFrame,
+  } = req.body;
+  res.send(
+    await updateSubmission(
+      id,
+      proposalUrls,
+      deliveryDate,
+      price,
+      currency,
+      warranty,
+      discount,
+      status,
+      comment,
+      createdBy,
+      tender,
+      warrantyDuration,
+      bankName,
+      bankAccountNumber,
+      bankAccountName,
+      proposalDocId,
+      otherDocId,
+      otherDocIds,
+      deliveryTimeFrameDuration,
+      deliveryTimeFrame
+    )
+  );
 });

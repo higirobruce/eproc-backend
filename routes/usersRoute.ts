@@ -20,6 +20,7 @@ import {
   updateMyPassword,
   updateUser,
   getUser,
+  getMyActivity,
 } from "../controllers/users";
 import {
   generatePassword,
@@ -33,6 +34,7 @@ import jwt from "jsonwebtoken";
 import { UserModel } from "../models/users";
 import { updateBusinessPartnerById } from "../services/b1";
 import * as _ from "lodash";
+import mongoose from "mongoose";
 
 export let SALT =
   process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
@@ -101,6 +103,13 @@ userRouter.get("/internal/byStatus/:status", async (req, res) => {
 
   if (status === "all") res.send(await getAllInternalUsers());
   else res.send(await getAllInternalUsersByStatus(status));
+});
+
+userRouter.get("/activity/:id", async (req, res) => {
+  let { id } = req.params;
+
+  console.log(id)
+  res.send(await getMyActivity(id as String));
 });
 
 userRouter.get("/:id", async (req, res) => {
@@ -175,27 +184,39 @@ userRouter.post("/", async (req, res) => {
     ""
   );
 
-  let createdUser = await saveUser(userToCreate);
+  let createdUserId = await saveUser(userToCreate);
 
-  if (createdUser?._id) {
+  if (createdUserId) {
     logger.log({
       level: "info",
-      message: `${createdUser?._id} was successfully created`,
+      message: `created user`,
       meta: {
-        doneBy: req.session?.user,
-        payload: req.body,
+        doneBy: req.session?.user?.user,
+        referenceId: `${createdUserId?._id}`,
+        module: userType === "VENDOR" ? "vendors" : "users",
       },
     });
-    send(
-      "",
-      email,
-      "Account created",
-      JSON.stringify({ email, password: password_new }),
-      "",
-      "newUserAccount"
-    );
+    if (userType === "VENDOR") {
+      send(
+        "",
+        email,
+        "Account created",
+        JSON.stringify({ email, password: password_new }),
+        "",
+        "newVendorAccount"
+      );
+    } else {
+      send(
+        "",
+        email,
+        "Account created",
+        JSON.stringify({ email, password: password_new }),
+        "",
+        "newUserAccount"
+      );
+    }
   }
-  res.status(201).send(createdUser);
+  res.status(201).send(createdUserId);
 });
 
 userRouter.post("/login", async (req, res) => {
@@ -209,7 +230,12 @@ userRouter.post("/login", async (req, res) => {
     if (user) {
       logger.log({
         level: "info",
-        message: `${user?.email} successfully logged in`,
+        message: `logged in`,
+        meta: {
+          doneBy: req.session?.user?.user,
+          referenceId: user?._id?.toString(),
+          module: user?.userType === "VENDOR" ? "vendors" : "users",
+        },
       });
 
       let accessToken = jwt.sign(
@@ -252,71 +278,100 @@ userRouter.post("/login", async (req, res) => {
 userRouter.post("/approve/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   let { approvedBy, avgRate } = req.body;
-  let result = await approveUser(id);
+  let result: any = await approveUser(id);
+
   logger.log({
     level: "info",
-    message: `Approval of User ${id} successfully done`,
+    message: `approved of user account`,
     meta: {
-      doneBy: req.session?.user,
-      payload: req.body,
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: result?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
+
+  send(
+    "",
+    result?.email,
+    "Account approved",
+    JSON.stringify({ email: result?.email }),
+    "",
+    "accountApproved"
+  );
   res.send(result).status(201);
 });
 
-userRouter.post("/decline/:id",ensureUserAuthorized, async (req, res) => {
+userRouter.post("/decline/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
+
+  let result: any = await declineUser(id);
+
   logger.log({
     level: "info",
-    message: `Declining of User ${id} successfully done`,
+    message: `declined user account`,
     meta: {
-      doneBy: req.session?.user,
-      payload: req.body,
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: result?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
-  res.send(await declineUser(id));
+  send(
+    "",
+    result?.email,
+    "Account declined",
+    JSON.stringify({ email: result?.email }),
+    "",
+    "accountDeclined"
+  );
+  res.send(result);
 });
 
-userRouter.post("/ban/:id",ensureUserAuthorized, async (req, res) => {
+userRouter.post("/ban/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
+  let result: any = await banUser(id);
   logger.log({
     level: "info",
-    message: `Banning of User ${id} successfully done`,
+    message: `banned user account`,
     meta: {
-      doneBy: req.session?.user,
-      payload: req.body,
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: result?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
-  res.send(await banUser(id));
+  res.send(result);
 });
 
-userRouter.post("/activate/:id",ensureUserAuthorized, async (req, res) => {
+userRouter.post("/activate/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
+
+  let result: any = await activateUser(id);
   logger.log({
     level: "info",
-    message: `Activation of User ${id} successfully done`,
+    message: `activated user account`,
     meta: {
-      doneBy: req.session?.user,
-      payload: req.body,
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: result?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
-  res.send(await activateUser(id));
+  res.send(result);
 });
 
-userRouter.put("/:id",ensureUserAuthorized, async (req, res) => {
+userRouter.put("/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   let { newUser } = req.body;
 
   let nUser = _.omit(newUser, "sapCode");
 
-  let updates = await updateUser(id, nUser);
+  let updates: any = await updateUser(id, nUser);
 
   logger.log({
     level: "info",
-    message: `Update of User ${id} successfully done`,
+    message: `updated user account`,
     meta: {
-      doneBy: req.session?.user,
-      payload: req.body,
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: updates?.userType === "VENDOR" ? "vendors" : "users",
     },
   });
 
@@ -325,12 +380,14 @@ userRouter.put("/:id",ensureUserAuthorized, async (req, res) => {
 
 userRouter.put("/update/:id", ensureUserAuthorized, async (req, res) => {
   let nu = await updateBusinessPartnerById(req.params.id, req.body);
+
   logger.log({
     level: "info",
-    message: `Update of User ${req.params.id} successfully done`,
+    message: `updated of user account`,
     meta: {
-      doneBy: req.session?.user,
-      payload: req.body,
+      doneBy: req.session?.user?.user,
+      referenceId: `${req.params.id}`,
+      module: "users",
     },
   });
 
@@ -349,9 +406,13 @@ userRouter.put("/updatePassword/:id", async (req, res) => {
 
   if (updatedUser) {
     logger.log({
-      level: "warn",
-      message: `Password for ${id} was successfully reset`,
-      
+      level: "info",
+      message: `rest password for `,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: `${id}`,
+        module: "users",
+      },
     });
   }
   res.send(updatedUser);
@@ -364,10 +425,16 @@ userRouter.put("/reset/:email", async (req, res) => {
 
   if (updatedUser) {
     logger.log({
-      level: "warn",
-      message: `Password for ${updatedUser?._id} was successfully reset`,
+      level: "info",
+      message: `rest password for `,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: `${updatedUser?._id}`,
+        module: "users",
+      },
     });
   }
+
   res.send(updatedUser);
 });
 

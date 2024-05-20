@@ -21,6 +21,7 @@ import {
   getPurReqStatusAnalytics,
   getPurReqSourcingAnalytics,
   getPurReqServiceCat,
+  getPurReqLeadTime,
 } from "../controllers/requests";
 
 import { UserModel } from "../models/users";
@@ -31,6 +32,7 @@ import {
   validPassword,
 } from "../services/users";
 import { send } from "../utils/sendEmailNode";
+import { logger } from "../utils/logger";
 
 export const requetsRouter = Router();
 
@@ -76,12 +78,14 @@ requetsRouter.get("/totalOverview", async (req, res) => {
   let resStatuses = await getPurReqStatusAnalytics(year);
   let resSourcing = await getPurReqSourcingAnalytics(year);
   let resServiceCat = await getPurReqServiceCat(year);
+  let leadTimeDays = await getPurReqLeadTime(year);
 
   res.send({
     data: resTotals,
     statusData: resStatuses,
     sourcingData: resSourcing,
     serviceCatData: resServiceCat,
+    leadTimeDays: leadTimeDays[0]?.days || 0,
   });
 });
 
@@ -144,36 +148,88 @@ requetsRouter.post("/", async (req, res) => {
     currency
   );
   let createdRequest = await saveRequest(requestToCreate);
+  if (createdRequest) {
+    logger.log({
+      level: "info",
+      message: `created purchase request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: `${createdRequest?._id}`,
+        module: "requests",
+      },
+    });
+  }
   res.status(201).send(createdRequest);
 });
 
 requetsRouter.post("/approve/:id", async (req, res) => {
   let { id } = req.params;
-  res.send(await approveRequest(id));
+  let request = await approveRequest(id);
+  logger.log({
+    level: "info",
+    message: `approved purchase request`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: "requests",
+    },
+  });
+  res.send(request);
 });
 
 requetsRouter.post("/decline/:id", async (req, res) => {
   let { id } = req.params;
   let { reason, declinedBy } = req.body;
-  res.send(await declineRequest(id, reason, declinedBy));
+
+  let request = await declineRequest(id, reason, declinedBy);
+  logger.log({
+    level: "info",
+    message: `declined purchase request`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: "requests",
+    },
+  });
+  res.send(request);
 });
 
 requetsRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
+  let request = await updateRequestStatus(id, status);
 
-  res.send(await updateRequestStatus(id, status));
+  res.send(request);
 });
 
 requetsRouter.put("/sourcingMethod/:id", async (req, res) => {
   let { id } = req.params;
   let { sourcingMethod } = req.body;
-
-  res.send(await updateRequestSourcingMethod(id, sourcingMethod));
+  let request = await updateRequestSourcingMethod(id, sourcingMethod);
+  logger.log({
+    level: "info",
+    message: `updated sourcing method for purchase request`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: "requests",
+    },
+  });
+  res.send(request);
 });
 
 requetsRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
   let { updates } = req.body;
-  res.send(await updateRequest(id, updates));
+  let request = await updateRequest(id, updates);
+  logger.log({
+    level: "info",
+    message: `updated purchase request`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: "requests",
+    },
+  });
+  res.send(request);
 });

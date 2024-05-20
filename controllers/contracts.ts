@@ -345,3 +345,76 @@ export async function getTotalNumberOfContracts(year: any) {
   else return 0;
   // return count;
 }
+
+export async function getContractLeadTime(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      '$addFields': {
+        'year': {
+          '$year': '$createdAt'
+        }
+      }
+    }, {
+      '$match': {
+        'year': parseInt(year)
+      }
+    }, {
+      '$unwind': {
+        'path': '$signatories', 
+        'preserveNullAndEmptyArrays': false
+      }
+    }, {
+      '$match': {
+        'signatories.onBehalfOf': {
+          '$ne': 'Irembo Ltd'
+        }
+      }
+    }, {
+      '$addFields': {
+        'signedAt': {
+          '$toDate': '$signatories.signedAt'
+        }
+      }
+    }, {
+      '$match': {
+        'signedAt': {
+          '$ne': null
+        }
+      }
+    }, {
+      '$group': {
+        '_id': null, 
+        'average_lead_time': {
+          '$avg': {
+            '$subtract': [
+              '$signedAt', '$createdAt'
+            ]
+          }
+        }
+      }
+    }, {
+      '$project': {
+        '_id': 0, 
+        'average_lead_time': {
+          '$divide': [
+            '$average_lead_time', 86400000
+          ]
+        }
+      }
+    }, {
+      '$project': {
+        'days': {
+          '$round': [
+            '$average_lead_time'
+          ]
+        }
+      }
+    }
+  ]
+
+  let req = await ContractModel.aggregate(pipeline);
+  return req;
+}

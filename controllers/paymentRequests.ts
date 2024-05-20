@@ -44,10 +44,7 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     let createdPaymentRequest = await PaymentRequestModel.create(
       paymentRequest
     );
-    logger.log({
-      level: "info",
-      message: `${createdPaymentRequest} successfully created`,
-    });
+    
     return createdPaymentRequest.populate(
       "purchaseOrder createdBy approver reviewedBy budgetLine"
     );
@@ -60,6 +57,7 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     throw err;
   }
 }
+
 
 export async function getPaymentRequestById(id: String) {
   let reqs = await PaymentRequestModel.findById(id)
@@ -701,6 +699,54 @@ export async function getPayReqTotalAnalytics(year: any) {
   return req;
 }
 
+export async function getPayReqLeadTime(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        average_lead_time: {
+          $avg: {
+            $subtract: ["$hof_approvalDate", "$createdAt"],
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        average_lead_time: {
+          $divide: ["$average_lead_time", 86400000],
+        },
+      },
+    },
+    {
+      $project: {
+        days: {
+          $round: ["$average_lead_time"],
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
+  return req;
+}
+
 export async function getPayReqStatusAnalytics(year: any) {
   if (!year) {
     year = "2024";
@@ -761,7 +807,59 @@ export async function getPayReqStatusAnalytics(year: any) {
   return req;
 }
 
-export async function getPayReqSpendTrack(year: any) {
+export async function getVendorEmail(reqId: any) {
+  let pipeline = [
+    {
+      $match: {
+        category: "external",
+        _id: new mongoose.Types.ObjectId(reqId),
+      },
+    },
+    {
+      $lookup: {
+        from: "purchaseorders",
+        localField: "purchaseOrder",
+        foreignField: "_id",
+        as: "purchaseOrder",
+      },
+    },
+    {
+      $unwind: {
+        path: "$purchaseOrder",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "purchaseOrder.vendor",
+        foreignField: "_id",
+        as: "vendor",
+      },
+    },
+    {
+      $unwind: {
+        path: "$vendor",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $addFields: {
+        vendorEmail: "$vendor.email",
+      },
+    },
+    {
+      $project: {
+        vendorEmail: 1,
+      },
+    },
+  ];
+
+  let emailObjs = await PaymentRequestModel.aggregate(pipeline);
+  return emailObjs;
+}
+
+export async function getDepartmentSpend(year: any) {
   if (!year) {
     year = "2024";
   }
@@ -775,7 +873,106 @@ export async function getPayReqSpendTrack(year: any) {
     },
     {
       $match: {
-        year: 2024,
+        year: parseInt(year),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "approver",
+        foreignField: "_id",
+        as: "approver",
+      },
+    },
+    {
+      $unwind: {
+        path: "$approver",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departments",
+        localField: "approver.department",
+        foreignField: "_id",
+        as: "department",
+      },
+    },
+    {
+      $unwind: {
+        path: "$department",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $match: {
+        status: "paid",
+      },
+    },
+    {
+      $addFields: {
+        department: "$department.description",
+      },
+    },
+    {
+      $group: {
+        _id: "$department",
+        budgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", true],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        nonBudgeted: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$budgeted", false],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        name: "$_id",
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+      },
+    },
+  ];
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
+}
+
+// Spend Tracking
+export async function getPayReqSpendTrack(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  console.log(year);
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
       },
     },
     {
@@ -837,6 +1034,7 @@ export async function getPayReqSpendTrack(year: any) {
 
   try {
     let req = await PaymentRequestModel.aggregate(pipeline);
+    console.log(req);
     return req;
   } catch (err) {
     console.log(err);
@@ -858,7 +1056,7 @@ export async function getPayReqSpendTrackTotals(year: any) {
     },
     {
       $match: {
-        year: 2024,
+        year: parseInt(year),
       },
     },
     {
@@ -897,6 +1095,18 @@ export async function getPayReqSpendTrackBudgets(year: any) {
     year = "2024";
   }
   let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
     {
       $group: {
         _id: null,
@@ -986,54 +1196,254 @@ export async function getPayReqSpendTrackBudgets(year: any) {
   return req;
 }
 
-export async function getVendorEmail(reqId: any) {
+// Expense Planning
+export async function getPayReqExpenseTrack(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  console.log(year);
   let pipeline = [
     {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
       $match: {
-        category: "external",
-        _id: new mongoose.Types.ObjectId(reqId),
+        year: parseInt(year),
+        status: {
+          $nin: ["withdrawn", "paid", "declined", "rejected"],
+        },
       },
     },
     {
-      $lookup: {
-        from: "purchaseorders",
-        localField: "purchaseOrder",
-        foreignField: "_id",
-        as: "purchaseOrder",
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        requests: {
+          $sum: 1,
+        },
+        external_requests: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$category", "external"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        internal_requests: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$category", "internal"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+      },
+    },
+  ];
+
+  try {
+    let req = await PaymentRequestModel.aggregate(pipeline);
+    console.log(req);
+    return req;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
+export async function getPayReqExpenseTrackTotals(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
       },
     },
     {
-      $unwind: {
-        path: "$purchaseOrder",
-        preserveNullAndEmptyArrays: false,
+      $match: {
+        year: parseInt(year),
+        status: {
+          $nin: ["withdrawn", "paid", "declined", "rejected"],
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "",
+        total_requests_amount: {
+          $sum: "$amount",
+        },
+        total_pending_payments: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$status", "approved"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        count_pending_payments: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$status", "approved"],
+              },
+              then: 1,
+              else: 0,
+            },
+          },
+        },
+      },
+    },
+  ];
+
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
+}
+
+export async function getDepartmentExpenseTracking(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
       },
     },
     {
       $lookup: {
         from: "users",
-        localField: "purchaseOrder.vendor",
+        localField: "approver",
         foreignField: "_id",
-        as: "vendor",
+        as: "approver",
       },
     },
     {
       $unwind: {
-        path: "$vendor",
+        path: "$approver",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departments",
+        localField: "approver.department",
+        foreignField: "_id",
+        as: "department",
+      },
+    },
+    {
+      $unwind: {
+        path: "$department",
         preserveNullAndEmptyArrays: false,
       },
     },
     {
+      $match: {
+        status: {
+          $nin: ["withdrawn", "paid", "declined", "rejected"],
+        },
+      },
+    },
+    {
       $addFields: {
-        vendorEmail: "$vendor.email",
+        department: "$department.description",
+      },
+    },
+    {
+      $group: {
+        _id: "$department",
+        external_requests: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$category", "external"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+        internal_requests: {
+          $sum: {
+            $cond: {
+              if: {
+                $eq: ["$category", "internal"],
+              },
+              then: "$amount",
+              else: 0,
+            },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        name: "$_id",
       },
     },
     {
       $project: {
-        vendorEmail: 1,
+        _id: 0,
       },
     },
   ];
-
-  let emailObjs = await PaymentRequestModel.aggregate(pipeline);
-  return emailObjs;
+  let req = await PaymentRequestModel.aggregate(pipeline);
+  return req;
 }

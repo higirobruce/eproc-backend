@@ -30,6 +30,7 @@ import { hashPassword } from "../services/users";
 import { logger } from "../utils/logger";
 import { send } from "../utils/sendEmailNode";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 export let SALT =
   process.env.TOKEN_SALT || "968d8b95-72cd-4470-b13e-1017138d32cf";
@@ -130,18 +131,28 @@ contractRouter.post("/",ensureUserAuthorized, async (req, res) => {
       "",
       "contractReview"
     );
-    logger.log({
-      level: "info",
-      message: `Contract ${createdContract?._id} successfully created`,
-    });
+    // logger.log({
+    //   level: "info",
+    //   message: `Contract ${createdContract?._id} successfully created`,
+    // });
   }
+
+  // logger.log({
+  //   level: "info",
+  //   message: `Contract ${createdContract?._id} successfully created`,
+  //   meta: {
+  //     doneBy: new mongoose.Types.ObjectId(req.session?.user?.user),
+  //     payload: req.body,
+  //   },
+  // });
 
   logger.log({
     level: "info",
-    message: `Contract ${createdContract?._id} successfully created`,
+    message: `created contract`,
     meta: {
-      doneBy: req.session?.user,
-      payload: req.body,
+      doneBy: req.session?.user?.user,
+      referenceId: `${createdContract?._id}`,
+      module: 'contracts'
     },
   });
   res.status(201).send(createdContract);
@@ -252,10 +263,11 @@ contractRouter.put("/:id",ensureUserAuthorized, async (req, res) => {
   if (updated) {
     logger.log({
       level: "info",
-      message: `Contract ${id} successfully updated`,
+      message: `updated contract`,
       meta: {
-        doneBy: req.session?.user,
-        payload: req.body,
+        doneBy: req.session?.user?.user,
+        referenceId: `${id}`,
+        module: 'contracts'
       },
     });
   }

@@ -277,6 +277,20 @@ export async function updatePOStatus(id: String, newStatus: String) {
       }
     }
 
+    if (newStatus == "terminated") {
+      let reqs = await getPOPendingRequests(id as string);
+      let ids = reqs.map((r) => {
+        return r._id;
+      });
+
+      await PaymentRequestModel.updateMany(
+        {
+          _id: { $in: ids },
+        },
+        { $set: { status: "withdrawn" } }
+      );
+    }
+
     return { message: "done" };
   } catch (err) {
     return {
@@ -517,6 +531,37 @@ export async function getPOPaymentRequests(id: string) {
   } catch (err: any) {
     console.log(err);
     return { totalPaymentVal: 0, poVal: -1 };
+  }
+}
+
+export async function getPOPendingRequests(id: string) {
+  let pipeline = [
+    {
+      $match: {
+        purchaseOrder: new mongoose.Types.ObjectId(id),
+        status: {
+          $nin: ["withdrawn", "declined", "paid"],
+        },
+      },
+    },
+    {
+      $project:
+        /**
+         * specifications: The fields to
+         *   include or exclude.
+         */
+        {
+          _id: 1,
+        },
+    },
+  ];
+  try {
+    let pipelineResult = await PaymentRequestModel.aggregate(pipeline);
+
+    return pipelineResult;
+  } catch (err: any) {
+    console.log(err);
+    return [];
   }
 }
 
@@ -783,4 +828,77 @@ export async function getTotalNumberOfPOs(year: any) {
   if (count?.length >= 1) return count[0]?.total_records;
   else return 0;
   // return count;
+}
+
+export async function getPOLeadTime(year: any) {
+  if (!year) {
+    year = "2024";
+  }
+  let pipeline = [
+    {
+      '$addFields': {
+        'year': {
+          '$year': '$createdAt'
+        }
+      }
+    }, {
+      '$match': {
+        'year': parseInt(year)
+      }
+    }, {
+      '$unwind': {
+        'path': '$signatories', 
+        'preserveNullAndEmptyArrays': false
+      }
+    }, {
+      '$match': {
+        'signatories.onBehalfOf': {
+          '$ne': 'Irembo Ltd'
+        }
+      }
+    }, {
+      '$addFields': {
+        'signedAt': {
+          '$toDate': '$signatories.signedAt'
+        }
+      }
+    }, {
+      '$match': {
+        'signedAt': {
+          '$ne': null
+        }
+      }
+    }, {
+      '$group': {
+        '_id': null, 
+        'average_lead_time': {
+          '$avg': {
+            '$subtract': [
+              '$signedAt', '$createdAt'
+            ]
+          }
+        }
+      }
+    }, {
+      '$project': {
+        '_id': 0, 
+        'average_lead_time': {
+          '$divide': [
+            '$average_lead_time', 86400000
+          ]
+        }
+      }
+    }, {
+      '$project': {
+        'days': {
+          '$round': [
+            '$average_lead_time'
+          ]
+        }
+      }
+    }
+  ]
+
+  let req = await PurchaseOrderModel.aggregate(pipeline);
+  return req;
 }

@@ -1,72 +1,30 @@
 import { Router } from "express";
-import { ServiceCategoryModel } from "../models/serviceCategories";
-import { RdbServiceCategoryModel } from "../models/rdbServiceCategories";
-import { PipelineStage } from "mongoose";
+import {
+  getAllServiceCategories,
+  saveCategoryService,
+  updateServiceCategory,
+} from "../controllers/serviceCategoris";
 
 export const serviceCategoryRouter = Router();
 
 serviceCategoryRouter.get("/", async (req, res) => {
-  let pipeline: PipelineStage[] = [
-    {
-      $lookup: {
-        from: "rdbservicecategories",
-        localField: "rdbServiceId",
-        foreignField: "_id",
-        as: "rdbServiceId",
-      },
-    },
-    {
-      $unwind: {
-        path: "$rdbServiceId",
-        preserveNullAndEmptyArrays: false,
-      },
-    },
-    {
-      $addFields: {
-        description: "$rdbServiceId.description",
-        _id: "$rdbServiceId._id",
-      },
-    },
-    {
-      $project: {
-        rdbServiceId: 0,
-      },
-    },
-    {
-      $group: {
-        _id: "$description",
-        uniqueRecords: {
-          $addToSet: "$_id",
-        },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        description: "$_id",
-        uniqueRecords: 1,
-      },
-    },
-    {
-      $unwind: {
-        path: "$uniqueRecords",
-        preserveNullAndEmptyArrays: false,
-      },
-    },
-    {
-      $project: {
-        _id: "$uniqueRecords",
-        description: 1,
-      },
-    },
-    {
-      $sort: {
-        description: 1,
-      },
-    },
-  ];
-
-  // let categs = await ServiceCategoryModel.find().sort({description:'asc'});
-  let categs = await ServiceCategoryModel.aggregate(pipeline);
+  let { visible } = req.query;
+  let categs = await getAllServiceCategories(visible);
   res.status(200).send(categs);
+});
+
+
+serviceCategoryRouter.post("/", async (req, res) => {
+  let { description } = req.body;
+  console.log(description);
+  let categ = await saveCategoryService(description as String);
+  res.send(categ);
+});
+
+serviceCategoryRouter.put("/:id", async (req, res) => {
+  let { id } = req.params;
+  let { update } = req.body;
+
+  let updated = await updateServiceCategory(id as String, update);
+  res.send(updated);
 });

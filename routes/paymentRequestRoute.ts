@@ -3,7 +3,11 @@ import {
   getAllPaymentRequests,
   getAllRequestsByCreator,
   getAllRequestsByStatus,
+  getDepartmentExpenseTracking,
   getPaymentRequestById,
+  getPayReqExpenseTrack,
+  getPayReqExpenseTrackTotals,
+  getPayReqLeadTime,
   getPayReqSpendTrack,
   getPayReqSpendTrackBudgets,
   getPayReqSpendTrackTotals,
@@ -21,6 +25,7 @@ import {
   getAllFinanceApprovers,
   getAllPaymentReviewers,
 } from "../controllers/users";
+import { logger } from "../utils/logger";
 export const paymentRequestRouter = Router();
 
 paymentRequestRouter.get("/", async (req, res) => {
@@ -67,6 +72,16 @@ paymentRequestRouter.post("/", async (req, res) => {
       );
     }
 
+    logger.log({
+      level: "info",
+      message: `created ${newPaymentRequest?._id}`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: newPaymentRequest?._id.toString(),
+        module:'payment-requests'
+      },
+    });
+
     res.status(201).send(newPaymentRequest);
   } catch (err) {
     console.log(err);
@@ -85,10 +100,12 @@ paymentRequestRouter.get("/totalOverview", async (req, res) => {
   let { year } = req.query;
   let resTotals = await getPayReqTotalAnalytics(year);
   let resStatusData = await getPayReqStatusAnalytics(year);
+  let leadTime = await getPayReqLeadTime(year);
 
   res.send({
     data: resTotals,
     statusData: resStatusData,
+    leadTimeDays: leadTime[0]?.days || 0,
   });
 });
 
@@ -101,7 +118,23 @@ paymentRequestRouter.get("/spendTracking", async (req, res) => {
   res.send({
     data: paidVsAll,
     totals,
-    budgets,
+    budgetData: [
+      { name: "Budgeted", value: budgets[0]?.total_budgeted },
+      { name: "Non-budgeted", value: budgets[0]?.total_unbudgeted },
+    ],
+  });
+});
+
+paymentRequestRouter.get("/expensePlanning", async (req, res) => {
+  let { year } = req.query;
+  let interalVSExternal = await getPayReqExpenseTrack(year);
+  let totals = await getPayReqExpenseTrackTotals(year);
+  let dapartmentalExpenses = await getDepartmentExpenseTracking(year);
+
+  res.send({
+    data: interalVSExternal,
+    totals,
+    dapartmentalExpenses,
   });
 });
 

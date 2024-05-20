@@ -98,7 +98,7 @@ export async function getAverageBidsPerTender() {
     },
   ];
 
-  let avgs = await BidSubmissionModel.aggregate(pipeline)
+  let avgs = await BidSubmissionModel.aggregate(pipeline);
   return avgs;
 }
 
@@ -191,6 +191,63 @@ export async function updateSubmissionStatus(id: String, newStatus: String) {
   try {
     await BidSubmissionModel.findByIdAndUpdate(id, {
       $set: { status: newStatus },
+    });
+    return { message: "done" };
+  } catch (err) {
+    return {
+      error: true,
+      errorMessage: `Error :${err}`,
+    };
+  }
+}
+
+export async function updateSubmission(
+  id: String,
+  proposalUrls: any,
+  deliveryDate: any,
+  price: any,
+  currency: any,
+  warranty: any,
+  discount: any,
+  status: any,
+  comment: any,
+  createdBy: any,
+  tender: any,
+  warrantyDuration: any,
+  bankName: any,
+  bankAccountNumber: any,
+  bankAccountName: any,
+  proposalDocId: any,
+  otherDocId: any,
+  otherDocIds: any,
+  deliveryTimeFrameDuration: any,
+  deliveryTimeFrame: any
+) {
+  
+  try {
+    console.log('Updateing')
+    await BidSubmissionModel.findByIdAndUpdate(id, {
+      $set: {
+        proposalUrls,
+        deliveryDate,
+        price,
+        currency,
+        warranty,
+        discount,
+        status,
+        comment,
+        createdBy,
+        tender,
+        warrantyDuration,
+        bankName,
+        bankAccountNumber,
+        bankAccountName,
+        proposalDocId,
+        otherDocId,
+        otherDocIds,
+        deliveryTimeFrameDuration,
+        deliveryTimeFrame,
+      },
     });
     return { message: "done" };
   } catch (err) {
