@@ -98,6 +98,16 @@ submissionsRouter.post("/", async (req, res) => {
 
   let createdSubmission = await saveBidSubmission(submission);
   if (createdSubmission) {
+    logger.log({
+      level: "info",
+      message: `submitted bid for the tender`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        messageModule: `bid submitted`,
+        referenceId: `${createdSubmission?._id}`,
+        module: 'tenders'
+      },
+    });
   }
   res.status(201).send(createdSubmission);
 });
@@ -121,6 +131,7 @@ submissionsRouter.post("/select/:id", async (req, res) => {
       message: `selected bid for the tender`,
       meta: {
         doneBy: req.session?.user?.user,
+        messageModule: `bid selected`,
         referenceId: `${tenderId}`,
         module: 'tenders'
       },
@@ -161,6 +172,7 @@ submissionsRouter.post("/award/:id", async (req, res) => {
       message: `awarded a bid for the tender`,
       meta: {
         doneBy: req.session?.user?.user,
+        messageModule:`bid awarded`,
         referenceId: `${tenderId}`,
         module: 'tenders'
       },
@@ -172,18 +184,39 @@ submissionsRouter.post("/award/:id", async (req, res) => {
 
 submissionsRouter.post("/reject/:id", async (req, res) => {
   let { id } = req.params;
-  res.send(await rejectSubmission(id));
+
+  let rejected = await rejectSubmission(id)
+  logger.log({
+    level: "info",
+    message: `rejected a bid for the tender`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      messageModule:`bid rejected`,
+      referenceId: `${id}`,
+      module: 'tenders'
+    },
+  });
+  res.send(rejected);
 });
 
 submissionsRouter.put("/status/:id", async (req, res) => {
   let { id } = req.params;
   let { status } = req.body;
+  logger.log({
+    level: "info",
+    message: `rejected a bid for the tender`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      messageModule:`bid rejected`,
+      referenceId: `${id}`,
+      module: 'tenders'
+    },
+  });
   res.send(await updateSubmissionStatus(id, status));
 });
 
 submissionsRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
-  console.log(id);
   let {
     proposalUrls,
     deliveryDate,
@@ -228,5 +261,7 @@ submissionsRouter.put("/:id", async (req, res) => {
       deliveryTimeFrameDuration,
       deliveryTimeFrame
     )
+
+    
   );
 });

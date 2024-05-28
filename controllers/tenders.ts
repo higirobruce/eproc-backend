@@ -180,11 +180,13 @@ export async function saveTender(tender: Tender) {
   if (category == "Others") {
     vendors = await UserModel.find({
       status: { $eq: "approved" },
+      userType: "VENDOR",
     });
   } else {
     vendors = await UserModel.find({
       services: { $elemMatch: { $eq: category } },
       status: { $eq: "approved" },
+      userType: "VENDOR",
     });
   }
 
