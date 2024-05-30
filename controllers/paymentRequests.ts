@@ -44,7 +44,7 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     let createdPaymentRequest = await PaymentRequestModel.create(
       paymentRequest
     );
-    
+
     return createdPaymentRequest.populate(
       "purchaseOrder createdBy approver reviewedBy budgetLine"
     );
@@ -57,7 +57,6 @@ export async function savePaymentRequest(paymentRequest: PaymentRequest) {
     throw err;
   }
 }
-
 
 export async function getPaymentRequestById(id: String) {
   let reqs = await PaymentRequestModel.findById(id)
@@ -961,7 +960,6 @@ export async function getPayReqSpendTrack(year: any) {
   if (!year) {
     year = "2024";
   }
-  console.log(year);
   let pipeline = [
     {
       $addFields: {
@@ -1030,10 +1028,11 @@ export async function getPayReqSpendTrack(year: any) {
         },
       },
     },
+    
   ];
 
   try {
-    let req = await PaymentRequestModel.aggregate(pipeline);
+    let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
     console.log(req);
     return req;
   } catch (err) {
@@ -1284,7 +1283,7 @@ export async function getPayReqExpenseTrack(year: any) {
   ];
 
   try {
-    let req = await PaymentRequestModel.aggregate(pipeline);
+    let req = await PaymentRequestModel.aggregate(pipeline).sort({_id:1});
     console.log(req);
     return req;
   } catch (err) {
