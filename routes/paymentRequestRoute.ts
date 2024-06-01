@@ -78,7 +78,8 @@ paymentRequestRouter.post("/", async (req, res) => {
       meta: {
         doneBy: req.session?.user?.user,
         referenceId: newPaymentRequest?._id.toString(),
-        module:'payment-requests'
+        module: "payment-requests",
+        moduleMessage: `created by ${req.session?.user?.user}`,
       },
     });
 
@@ -234,6 +235,17 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         "payment-request-update4"
       );
     });
+
+    logger.log({
+      level: "info",
+      message: `reviewed pament request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `reviewed by`,
+      },
+    });
   }
 
   if (updatedRequest?.status == "approved (hod)") {
@@ -270,6 +282,17 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         "payment-request-approval"
       );
     });
+
+    logger.log({
+      level: "info",
+      message: `approved payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `approved by`,
+      },
+    });
   }
 
   if (updatedRequest?.status == "approved") {
@@ -292,6 +315,16 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         "html",
         "payment-request-update2"
       );
+    });
+    logger.log({
+      level: "info",
+      message: `approved payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `approved by`,
+      },
     });
   }
 
@@ -317,6 +350,17 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         "payment-request-update3"
       );
     });
+    logger.log({
+      level: "info",
+      message: `paid payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `paid by`,
+      },
+    });
   }
+
   res.send(updates);
 });

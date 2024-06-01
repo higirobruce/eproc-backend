@@ -156,6 +156,7 @@ requetsRouter.post("/", async (req, res) => {
         doneBy: req.session?.user?.user,
         referenceId: `${createdRequest?._id}`,
         module: "requests",
+        moduleMessage: `created by`,
       },
     });
   }
@@ -172,6 +173,7 @@ requetsRouter.post("/approve/:id", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: "requests",
+      moduleMessage: `approved by`,
     },
   });
   res.send(request);
@@ -189,6 +191,7 @@ requetsRouter.post("/decline/:id", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: "requests",
+      moduleMessage: `declined by`,
     },
   });
   res.send(request);
@@ -199,6 +202,16 @@ requetsRouter.put("/status/:id", async (req, res) => {
   let { status } = req.body;
   let request = await updateRequestStatus(id, status);
 
+  logger.log({
+    level: "info",
+    message: `updapted purchase request`,
+    meta: {
+      doneBy: req.session?.user?.user,
+      referenceId: `${id}`,
+      module: "requests",
+      moduleMessage: `updapted by`,
+    },
+  });
   res.send(request);
 });
 
@@ -213,6 +226,7 @@ requetsRouter.put("/sourcingMethod/:id", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: "requests",
+      moduleMessage: `sourcing method updated by`,
     },
   });
   res.send(request);
@@ -229,6 +243,7 @@ requetsRouter.put("/:id", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: "requests",
+      moduleMessage: `updated by`,
     },
   });
   res.send(request);

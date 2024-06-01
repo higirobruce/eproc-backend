@@ -119,6 +119,7 @@ tenderRouter.post("/", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${createdTender?._id}`,
       module: "tenders",
+      moduleMessage: `created by`,
     },
   });
   res.status(201).send(createdTender);
@@ -152,6 +153,7 @@ tenderRouter.put("/:id", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: "tenders",
+      moduleMessage: `updated by`,
     },
   });
   res.send(updatedTender);
@@ -168,6 +170,7 @@ tenderRouter.put("/status/:id", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: "tenders",
+      moduleMessage: `updated by`,
     },
   });
   res.send(tender);
