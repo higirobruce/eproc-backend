@@ -25,6 +25,7 @@ import { hashPassword } from "../services/users";
 import { send } from "../utils/sendEmailNode";
 import { logger } from "../utils/logger";
 import { RequestModel } from "../models/requests";
+import { getTransactionLogs } from "../controllers/requests";
 
 export const poRouter = Router();
 
@@ -72,6 +73,11 @@ poRouter.get("/totalOverview", async (req, res) => {
   res.send({
     data: totals,
   });
+});
+
+poRouter.get("/logs/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getTransactionLogs(id));
 });
 
 poRouter.get("/:id", async (req, res) => {
@@ -165,14 +171,14 @@ poRouter.post("/", async (req, response) => {
               "internalSignature"
             );
 
-
             logger.log({
               level: "info",
               message: `created purchase order`,
               meta: {
                 doneBy: req.session?.user?.user,
                 referenceId: `${createdPO?._id} `,
-                module: 'purchase-orders'
+                module: "purchase-orders",
+                moduleMessage: "created by",
               },
             });
             if (refs?.length >= 1) {
@@ -211,14 +217,14 @@ poRouter.put("/status/:id", async (req, res) => {
   let updatedPO = await updatePOStatus(id, status);
 
   if (!updatedPO.error) {
-   
     logger.log({
       level: "info",
       message: `updated purchase order`,
       meta: {
         doneBy: req.session?.user?.user,
         referenceId: `${id}`,
-        module: 'purchase-orders'
+        module: "purchase-orders",
+        moduleMessage: "updated by",
       },
     });
   } else {
@@ -237,7 +243,31 @@ poRouter.put("/status/:id", async (req, res) => {
 poRouter.put("/progress/:id", async (req, res) => {
   let { id } = req.params;
   let { updates } = req.body;
-  res.send(await updateProgress(id, updates));
+
+  let updatedPO = await updateProgress(id, updates);
+  if (updatedPO) {
+    logger.log({
+      level: "info",
+      message: `updated purchase order`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: `${id}`,
+        module: "purchase-orders",
+        moduleMessage: "updated by",
+      },
+    });
+  } else {
+    logger.log({
+      level: "error",
+      message: `Updating Purchase Order ${id} failed.`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        payload: req.body,
+      },
+    });
+  }
+
+  res.send(updatedPO);
 });
 
 poRouter.put("/:id", async (req, res) => {
@@ -304,7 +334,8 @@ poRouter.put("/:id", async (req, res) => {
       meta: {
         doneBy: req.session?.user?.user,
         referenceId: `${id}`,
-        module: 'purchase-orders'
+        module: "purchase-orders",
+        moduleMessage: 'updated by'
       },
     });
   } else {
@@ -314,6 +345,7 @@ poRouter.put("/:id", async (req, res) => {
       meta: {
         doneBy: req.session?.user?.user,
         payload: req.body,
+        moduleMessage: 'attempt to be updated by'
       },
     });
   }

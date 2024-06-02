@@ -22,6 +22,7 @@ import {
   getPurReqSourcingAnalytics,
   getPurReqServiceCat,
   getPurReqLeadTime,
+  getTransactionLogs,
 } from "../controllers/requests";
 
 import { UserModel } from "../models/users";
@@ -70,6 +71,11 @@ requetsRouter.get("/byStatus/:status/:id", async (req, res) => {
 requetsRouter.get("/byCreator/:createdBy", async (req, res) => {
   let { createdBy } = req.params;
   res.send(await getAllRequestsByCreator(createdBy));
+});
+
+requetsRouter.get("/logs/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getTransactionLogs(id));
 });
 
 requetsRouter.get("/totalOverview", async (req, res) => {

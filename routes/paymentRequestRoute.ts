@@ -26,6 +26,7 @@ import {
   getAllPaymentReviewers,
 } from "../controllers/users";
 import { logger } from "../utils/logger";
+import { getTransactionLogs } from "../controllers/requests";
 export const paymentRequestRouter = Router();
 
 paymentRequestRouter.get("/", async (req, res) => {
@@ -139,10 +140,17 @@ paymentRequestRouter.get("/expensePlanning", async (req, res) => {
   });
 });
 
+paymentRequestRouter.get("/logs/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getTransactionLogs(id));
+});
+
 paymentRequestRouter.get("/:id", async (req, res) => {
   let { id } = req.params;
   res.send(await getPaymentRequestById(id));
 });
+
+
 
 paymentRequestRouter.put("/:id", async (req, res) => {
   let { id } = req.params;

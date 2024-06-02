@@ -7,6 +7,7 @@ import {
   approveRequest,
   declineRequest,
   getAllRequests,
+  getTransactionLogs,
   saveRequest,
   updateRequestStatus,
 } from "../controllers/requests";
@@ -67,6 +68,11 @@ tenderRouter.get("/stats", async (req, res) => {
     open: openTenders.length,
     closed: closedTenders.length,
   });
+});
+
+tenderRouter.get("/logs/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getTransactionLogs(id));
 });
 
 tenderRouter.get("/:id", async (req, res) => {

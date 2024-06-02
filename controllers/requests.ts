@@ -9,6 +9,7 @@ import {
   postSlackMessage,
   sendMessage,
 } from "../utils/postToSlack";
+import { LogModel } from "../models/logs";
 
 export async function getAllRequests() {
   let reqs = await RequestModel.find({ status: { $ne: "withdrawn" } })
@@ -934,4 +935,10 @@ export async function getPurReqLeadTime(year: any) {
 
   let req = await RequestModel.aggregate(pipeline).sort({ month: 1 });
   return req;
+}
+
+export async function getTransactionLogs(id:String){
+  let logs = await LogModel.find({'meta.referenceId': id})
+
+  return logs;
 }
