@@ -246,7 +246,7 @@ paymentRequestRouter.put("/:id", async (req, res) => {
 
     logger.log({
       level: "info",
-      message: `reviewed pament request`,
+      message: `reviewed payment request`,
       meta: {
         doneBy: req.session?.user?.user,
         referenceId: updatedRequest?._id.toString(),
@@ -254,7 +254,7 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         moduleMessage: `reviewed by`,
       },
     });
-  }
+  } else
 
   if (updatedRequest?.status == "approved (hod)") {
     let initiator = await UserModel.findById(updatedRequest?.createdBy);
@@ -301,7 +301,7 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         moduleMessage: `approved by`,
       },
     });
-  }
+  } else
 
   if (updatedRequest?.status == "approved") {
     let initiator = await UserModel.findById(updatedRequest?.createdBy);
@@ -334,7 +334,22 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         moduleMessage: `approved by`,
       },
     });
-  }
+  } else
+
+  if (updatedRequest?.status == "withdrawn") {
+    let initiator = await UserModel.findById(updatedRequest?.createdBy);
+  
+    logger.log({
+      level: "info",
+      message: `withdrawn payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `withdrawn by`,
+      },
+    });
+  } else
 
   if (updatedRequest?.status == "paid") {
     let initiator = await UserModel.findById(updatedRequest?.createdBy);
@@ -366,6 +381,17 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         referenceId: updatedRequest?._id.toString(),
         module: "payment-requests",
         moduleMessage: `paid by`,
+      },
+    });
+  } else {
+    logger.log({
+      level: "info",
+      message: `updated payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `updated by`,
       },
     });
   }

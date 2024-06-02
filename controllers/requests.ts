@@ -937,8 +937,50 @@ export async function getPurReqLeadTime(year: any) {
   return req;
 }
 
-export async function getTransactionLogs(id:String){
-  let logs = await LogModel.find({'meta.referenceId': id})
+export async function getTransactionLogs(id: String) {
+  let pipeline = [
+    {
+      $match: {
+        "meta.doneBy": {
+          $exists: true,
+        },
+        "meta.referenceId": id,
+      },
+    },
+    {
+      $addFields: {
+        "meta.doneBy": {
+          $toObjectId: "$meta.doneBy",
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "meta.doneBy",
+        foreignField: "_id",
+        as: "meta.doneBy",
+      },
+    },
+    {
+      $unwind: "$meta.doneBy",
+    },
+    {
+      $project: {
+        "meta.doneBy.password": 0,
+        "meta.doneBy.telephone": 0,
+        "meta.doneBy.status": 0,
+        "meta.doneBy.createdOn": 0,
+        "meta.doneBy.createdBy": 0,
+        "meta.doneBy.companyName": 0,
+        "meta.doneBy.services": 0,
+        "meta.doneBy.permissions": 0,
+        "meta.doneBy.updatedAt": 0,
+      },
+    },
+  ];
+
+  let logs = await LogModel.aggregate(pipeline).sort({ _id: -1 });
 
   return logs;
 }
