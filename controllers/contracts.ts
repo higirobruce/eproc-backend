@@ -191,82 +191,118 @@ export async function getContractsTotalAnalytics(year: any) {
   }
   let pipeline = [
     {
-      $addFields: {
-        year: {
-          $year: "$createdAt",
-        },
-      },
-    },
-    {
-      $match: {
-        year: parseInt(year),
-      },
-    },
-
-    {
-      $group: {
-        _id: {
-          $month: "$createdAt",
-        },
-        month: {
-          $first: {
-            $let: {
-              vars: {
-                months: [
-                  null,
-                  "JAN",
-                  "FEB",
-                  "MAR",
-                  "APR",
-                  "MAY",
-                  "JUN",
-                  "JUL",
-                  "AUG",
-                  "SEP",
-                  "OCT",
-                  "NOV",
-                  "DEC",
-                ],
-              },
-              in: {
-                $arrayElemAt: [
-                  "$$months",
+      '$lookup': {
+        'from': 'requests', 
+        'localField': 'request', 
+        'foreignField': '_id', 
+        'as': 'request'
+      }
+    }, {
+      '$unwind': {
+        'path': '$request', 
+        'preserveNullAndEmptyArrays': true
+      }
+    }, {
+      '$addFields': {
+        'currency': '$request.currency'
+      }
+    }, {
+      '$lookup': {
+        'from': 'exchangerates', 
+        'let': {
+          'month': {
+            '$month': '$createdAt'
+          }, 
+          'year': {
+            '$year': '$createdAt'
+          }
+        }, 
+        'pipeline': [
+          {
+            '$match': {
+              '$expr': {
+                '$and': [
                   {
-                    $month: "$createdAt",
-                  },
-                ],
-              },
-            },
-          },
-        },
-        // budgeted: {
-        //   $sum: {
-        //     $cond: {
-        //       if: {
-        //         $eq: ["$budgeted", true],
-        //       },
-        //       then: 1,
-        //       else: 0,
-        //     },
-        //   },
-        // },
-        // nonbudgeted: {
-        //   $sum: {
-        //     $cond: {
-        //       if: {
-        //         $eq: ["$budgeted", false],
-        //       },
-        //       then: 1,
-        //       else: 0,
-        //     },
-        //   },
-        // },
-        contracts: {
-          $sum: 1,
-        },
-      },
-    },
-  ];
+                    '$ne': [
+                      '$currency', 'RWF'
+                    ]
+                  }, {
+                    '$eq': [
+                      {
+                        '$month': '$Date'
+                      }, '$$month'
+                    ]
+                  }, {
+                    '$eq': [
+                      {
+                        '$year': '$Date'
+                      }, '$$year'
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ], 
+        'as': 'exchangeRates'
+      }
+    }, {
+      '$unwind': '$exchangeRates'
+    }, {
+      '$addFields': {
+        'amount': {
+          '$cond': [
+            {
+              '$ne': [
+                '$currency', 'RWF'
+              ]
+            }, {
+              '$multiply': [
+                '$amount', '$exchangeRates.Open'
+              ]
+            }, '$amount'
+          ]
+        }
+      }
+    }, {
+      '$addFields': {
+        'year': {
+          '$year': '$createdAt'
+        }
+      }
+    }, {
+      '$match': {
+        'year': parseInt(year)
+      }
+    }, {
+      '$group': {
+        '_id': {
+          '$month': '$createdAt'
+        }, 
+        'month': {
+          '$first': {
+            '$let': {
+              'vars': {
+                'months': [
+                  null, 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
+                ]
+              }, 
+              'in': {
+                '$arrayElemAt': [
+                  '$$months', {
+                    '$month': '$createdAt'
+                  }
+                ]
+              }
+            }
+          }
+        }, 
+        'contracts': {
+          '$sum': 1
+        }
+      }
+    }
+  ]
 
   let req = await ContractModel.aggregate(pipeline).sort({ _id: 1 });
   return req;

@@ -580,6 +580,67 @@ export async function getPurReqTotalAnalytics(year: any) {
   }
   let pipeline = [
     {
+      $lookup: {
+        from: "exchangerates",
+        let: {
+          month: {
+            $month: "$createdAt",
+          },
+          year: {
+            $year: "$createdAt",
+          },
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $ne: ["$currency", "RWF"],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $month: "$Date",
+                      },
+                      "$$month",
+                    ],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $year: "$Date",
+                      },
+                      "$$year",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "exchangeRates",
+      },
+    },
+    {
+      $unwind: "$exchangeRates",
+    },
+    {
+      $addFields: {
+        amount: {
+          $cond: [
+            {
+              $ne: ["$currency", "RWF"],
+            },
+            {
+              $multiply: ["$amount", "$exchangeRates.Open"],
+            },
+            "$amount",
+          ],
+        },
+      },
+    },
+    {
       $addFields: {
         year: {
           $year: "$createdAt",

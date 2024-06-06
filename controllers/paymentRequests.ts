@@ -962,6 +962,67 @@ export async function getPayReqSpendTrack(year: any) {
   }
   let pipeline = [
     {
+      $lookup: {
+        from: "exchangerates",
+        let: {
+          month: {
+            $month: "$createdAt",
+          },
+          year: {
+            $year: "$createdAt",
+          },
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $ne: ["$currency", "RWF"],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $month: "$Date",
+                      },
+                      "$$month",
+                    ],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $year: "$Date",
+                      },
+                      "$$year",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "exchangeRates",
+      },
+    },
+    {
+      $unwind: "$exchangeRates",
+    },
+    {
+      $addFields: {
+        amount: {
+          $cond: [
+            {
+              $ne: ["$currency", "RWF"],
+            },
+            {
+              $multiply: ["$amount", "$exchangeRates.Open"],
+            },
+            "$amount",
+          ],
+        },
+      },
+    },
+    {
       $addFields: {
         year: {
           $year: "$createdAt",
@@ -1028,7 +1089,6 @@ export async function getPayReqSpendTrack(year: any) {
         },
       },
     },
-    
   ];
 
   try {
@@ -1046,6 +1106,67 @@ export async function getPayReqSpendTrackTotals(year: any) {
     year = "2024";
   }
   let pipeline = [
+    {
+      $lookup: {
+        from: "exchangerates",
+        let: {
+          month: {
+            $month: "$createdAt",
+          },
+          year: {
+            $year: "$createdAt",
+          },
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $ne: ["$currency", "RWF"],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $month: "$Date",
+                      },
+                      "$$month",
+                    ],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $year: "$Date",
+                      },
+                      "$$year",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "exchangeRates",
+      },
+    },
+    {
+      $unwind: "$exchangeRates",
+    },
+    {
+      $addFields: {
+        amount: {
+          $cond: [
+            {
+              $ne: ["$currency", "RWF"],
+            },
+            {
+              $multiply: ["$amount", "$exchangeRates.Open"],
+            },
+            "$amount",
+          ],
+        },
+      },
+    },
     {
       $addFields: {
         year: {
@@ -1094,6 +1215,67 @@ export async function getPayReqSpendTrackBudgets(year: any) {
     year = "2024";
   }
   let pipeline = [
+    {
+      $lookup: {
+        from: "exchangerates",
+        let: {
+          month: {
+            $month: "$createdAt",
+          },
+          year: {
+            $year: "$createdAt",
+          },
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $ne: ["$currency", "RWF"],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $month: "$Date",
+                      },
+                      "$$month",
+                    ],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $year: "$Date",
+                      },
+                      "$$year",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "exchangeRates",
+      },
+    },
+    {
+      $unwind: "$exchangeRates",
+    },
+    {
+      $addFields: {
+        amount: {
+          $cond: [
+            {
+              $ne: ["$currency", "RWF"],
+            },
+            {
+              $multiply: ["$amount", "$exchangeRates.Open"],
+            },
+            "$amount",
+          ],
+        },
+      },
+    },
     {
       $addFields: {
         year: {
@@ -1203,6 +1385,67 @@ export async function getPayReqExpenseTrack(year: any) {
   console.log(year);
   let pipeline = [
     {
+      $lookup: {
+        from: "exchangerates",
+        let: {
+          month: {
+            $month: "$createdAt",
+          },
+          year: {
+            $year: "$createdAt",
+          },
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $ne: ["$currency", "RWF"],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $month: "$Date",
+                      },
+                      "$$month",
+                    ],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $year: "$Date",
+                      },
+                      "$$year",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "exchangeRates",
+      },
+    },
+    {
+      $unwind: "$exchangeRates",
+    },
+    {
+      $addFields: {
+        amount: {
+          $cond: [
+            {
+              $ne: ["$currency", "RWF"],
+            },
+            {
+              $multiply: ["$amount", "$exchangeRates.Open"],
+            },
+            "$amount",
+          ],
+        },
+      },
+    },
+    {
       $addFields: {
         year: {
           $year: "$createdAt",
@@ -1283,7 +1526,7 @@ export async function getPayReqExpenseTrack(year: any) {
   ];
 
   try {
-    let req = await PaymentRequestModel.aggregate(pipeline).sort({_id:1});
+    let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
     console.log(req);
     return req;
   } catch (err) {
@@ -1297,6 +1540,67 @@ export async function getPayReqExpenseTrackTotals(year: any) {
     year = "2024";
   }
   let pipeline = [
+    {
+      $lookup: {
+        from: "exchangerates",
+        let: {
+          month: {
+            $month: "$createdAt",
+          },
+          year: {
+            $year: "$createdAt",
+          },
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $ne: ["$currency", "RWF"],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $month: "$Date",
+                      },
+                      "$$month",
+                    ],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $year: "$Date",
+                      },
+                      "$$year",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "exchangeRates",
+      },
+    },
+    {
+      $unwind: "$exchangeRates",
+    },
+    {
+      $addFields: {
+        amount: {
+          $cond: [
+            {
+              $ne: ["$currency", "RWF"],
+            },
+            {
+              $multiply: ["$amount", "$exchangeRates.Open"],
+            },
+            "$amount",
+          ],
+        },
+      },
+    },
     {
       $addFields: {
         year: {
@@ -1353,6 +1657,67 @@ export async function getDepartmentExpenseTracking(year: any) {
     year = "2024";
   }
   let pipeline = [
+    {
+      $lookup: {
+        from: "exchangerates",
+        let: {
+          month: {
+            $month: "$createdAt",
+          },
+          year: {
+            $year: "$createdAt",
+          },
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $ne: ["$currency", "RWF"],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $month: "$Date",
+                      },
+                      "$$month",
+                    ],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $year: "$Date",
+                      },
+                      "$$year",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "exchangeRates",
+      },
+    },
+    {
+      $unwind: "$exchangeRates",
+    },
+    {
+      $addFields: {
+        amount: {
+          $cond: [
+            {
+              $ne: ["$currency", "RWF"],
+            },
+            {
+              $multiply: ["$amount", "$exchangeRates.Open"],
+            },
+            "$amount",
+          ],
+        },
+      },
+    },
     {
       $addFields: {
         year: {
