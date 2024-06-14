@@ -85,7 +85,7 @@ contractRouter.get("/:id", async (req, res) => {
   res.send(await getContractById(id));
 });
 
-contractRouter.post("/",ensureUserAuthorized, async (req, res) => {
+contractRouter.post("/", ensureUserAuthorized, async (req, res) => {
   let {
     vendor,
     tender,
@@ -98,7 +98,16 @@ contractRouter.post("/",ensureUserAuthorized, async (req, res) => {
     contractEndDate,
     signatories,
     reqAttachmentDocId,
+    title,
+    receiverPartyLabel,
+    senderPartyLabel,
   } = req.body;
+
+  console.log({
+    title,
+    receiverPartyLabel,
+    senderPartyLabel,
+  });
 
   let number = await generateContractNumber();
 
@@ -110,6 +119,9 @@ contractRouter.post("/",ensureUserAuthorized, async (req, res) => {
     createdBy,
     sections,
     status,
+    title,
+    senderPartyLabel,
+    receiverPartyLabel,
     deliveryProgress,
     contractStartDate,
     contractEndDate,
@@ -152,13 +164,13 @@ contractRouter.post("/",ensureUserAuthorized, async (req, res) => {
     meta: {
       doneBy: req.session?.user?.user,
       referenceId: `${createdContract?._id}`,
-      module: 'contracts'
+      module: "contracts",
     },
   });
   res.status(201).send(createdContract);
 });
 
-contractRouter.put("/:id",ensureUserAuthorized, async (req, res) => {
+contractRouter.put("/:id", ensureUserAuthorized, async (req, res) => {
   let { id } = req.params;
   let {
     newContract,
@@ -267,7 +279,7 @@ contractRouter.put("/:id",ensureUserAuthorized, async (req, res) => {
       meta: {
         doneBy: req.session?.user?.user,
         referenceId: `${id}`,
-        module: 'contracts'
+        module: "contracts",
       },
     });
   }

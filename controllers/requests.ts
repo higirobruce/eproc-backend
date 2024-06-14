@@ -9,6 +9,7 @@ import {
   postSlackMessage,
   sendMessage,
 } from "../utils/postToSlack";
+import { LogModel } from "../models/logs";
 
 export async function getAllRequests() {
   let reqs = await RequestModel.find({ status: { $ne: "withdrawn" } })
@@ -579,6 +580,67 @@ export async function getPurReqTotalAnalytics(year: any) {
   }
   let pipeline = [
     {
+      $lookup: {
+        from: "exchangerates",
+        let: {
+          month: {
+            $month: "$createdAt",
+          },
+          year: {
+            $year: "$createdAt",
+          },
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $ne: ["$currency", "RWF"],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $month: "$Date",
+                      },
+                      "$$month",
+                    ],
+                  },
+                  {
+                    $eq: [
+                      {
+                        $year: "$Date",
+                      },
+                      "$$year",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "exchangeRates",
+      },
+    },
+    {
+      $unwind: "$exchangeRates",
+    },
+    {
+      $addFields: {
+        amount: {
+          $cond: [
+            {
+              $ne: ["$currency", "RWF"],
+            },
+            {
+              $multiply: ["$amount", "$exchangeRates.Open"],
+            },
+            "$amount",
+          ],
+        },
+      },
+    },
+    {
       $addFields: {
         year: {
           $year: "$createdAt",
@@ -934,4 +996,52 @@ export async function getPurReqLeadTime(year: any) {
 
   let req = await RequestModel.aggregate(pipeline).sort({ month: 1 });
   return req;
+}
+
+export async function getTransactionLogs(id: String) {
+  let pipeline = [
+    {
+      $match: {
+        "meta.doneBy": {
+          $exists: true,
+        },
+        "meta.referenceId": id,
+      },
+    },
+    {
+      $addFields: {
+        "meta.doneBy": {
+          $toObjectId: "$meta.doneBy",
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "meta.doneBy",
+        foreignField: "_id",
+        as: "meta.doneBy",
+      },
+    },
+    {
+      $unwind: "$meta.doneBy",
+    },
+    {
+      $project: {
+        "meta.doneBy.password": 0,
+        "meta.doneBy.telephone": 0,
+        "meta.doneBy.status": 0,
+        "meta.doneBy.createdOn": 0,
+        "meta.doneBy.createdBy": 0,
+        "meta.doneBy.companyName": 0,
+        "meta.doneBy.services": 0,
+        "meta.doneBy.permissions": 0,
+        "meta.doneBy.updatedAt": 0,
+      },
+    },
+  ];
+
+  let logs = await LogModel.aggregate(pipeline).sort({ _id: -1 });
+
+  return logs;
 }

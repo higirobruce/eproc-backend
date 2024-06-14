@@ -785,7 +785,10 @@ export async function getMyActivity(id: String) {
   let pipeline = [
     {
       $match: {
-        $or: [{ "meta.doneBy": id }, { "meta.referenceId": id }],
+        $or: [
+          { "meta.doneBy": id },
+          { "meta.referenceId": id, "meta.module": { $ne: "users" } },
+        ],
         "meta.referenceId": {
           $ne: null,
         },

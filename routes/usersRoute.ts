@@ -194,6 +194,7 @@ userRouter.post("/", async (req, res) => {
         doneBy: req.session?.user?.user,
         referenceId: `${createdUserId?._id}`,
         module: userType === "VENDOR" ? "vendors" : "users",
+        moduleMessage: `created by`
       },
     });
     if (userType === "VENDOR") {
@@ -287,6 +288,7 @@ userRouter.post("/approve/:id", ensureUserAuthorized, async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: result?.userType === "VENDOR" ? "vendors" : "users",
+      moduleMessage: 'approved by'
     },
   });
 
@@ -313,6 +315,7 @@ userRouter.post("/decline/:id", ensureUserAuthorized, async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: result?.userType === "VENDOR" ? "vendors" : "users",
+      moduleMessage: `declined by`
     },
   });
   send(
@@ -336,6 +339,7 @@ userRouter.post("/ban/:id", ensureUserAuthorized, async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: result?.userType === "VENDOR" ? "vendors" : "users",
+      moduleMessage: `banned by`
     },
   });
   res.send(result);
@@ -352,6 +356,7 @@ userRouter.post("/activate/:id", ensureUserAuthorized, async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: result?.userType === "VENDOR" ? "vendors" : "users",
+      moduleMessage: `activated by`
     },
   });
   res.send(result);
@@ -372,6 +377,7 @@ userRouter.put("/:id", ensureUserAuthorized, async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: updates?.userType === "VENDOR" ? "vendors" : "users",
+      moduleMessage: `update by`
     },
   });
 
@@ -388,6 +394,7 @@ userRouter.put("/update/:id", ensureUserAuthorized, async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${req.params.id}`,
       module: "users",
+      moduleMessage: `updated by`
     },
   });
 
@@ -412,6 +419,7 @@ userRouter.put("/updatePassword/:id", async (req, res) => {
         doneBy: req.session?.user?.user,
         referenceId: `${id}`,
         module: "users",
+        moduleMessage: `password reset by`
       },
     });
   }
@@ -431,6 +439,7 @@ userRouter.put("/reset/:email", async (req, res) => {
         doneBy: req.session?.user?.user,
         referenceId: `${updatedUser?._id}`,
         module: "users",
+        moduleMessage: `password reset by`
       },
     });
   }
@@ -466,6 +475,17 @@ userRouter.put("/resetPassword/:id", async (req, res) => {
             new: true,
           }
         );
+
+        logger.log({
+          level: "info",
+          message: `rest password for `,
+          meta: {
+            doneBy: req.session?.user?.user,
+            referenceId: `${updatedUser?._id}`,
+            module: "users",
+            moduleMessage: `password reset by`
+          },
+        });
 
         res.status(201).send({ updatedUser });
       } else {

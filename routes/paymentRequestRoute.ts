@@ -26,6 +26,7 @@ import {
   getAllPaymentReviewers,
 } from "../controllers/users";
 import { logger } from "../utils/logger";
+import { getTransactionLogs } from "../controllers/requests";
 export const paymentRequestRouter = Router();
 
 paymentRequestRouter.get("/", async (req, res) => {
@@ -78,7 +79,8 @@ paymentRequestRouter.post("/", async (req, res) => {
       meta: {
         doneBy: req.session?.user?.user,
         referenceId: newPaymentRequest?._id.toString(),
-        module:'payment-requests'
+        module: "payment-requests",
+        moduleMessage: `created by ${req.session?.user?.user}`,
       },
     });
 
@@ -138,10 +140,17 @@ paymentRequestRouter.get("/expensePlanning", async (req, res) => {
   });
 });
 
+paymentRequestRouter.get("/logs/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getTransactionLogs(id));
+});
+
 paymentRequestRouter.get("/:id", async (req, res) => {
   let { id } = req.params;
   res.send(await getPaymentRequestById(id));
 });
+
+
 
 paymentRequestRouter.put("/:id", async (req, res) => {
   let { id } = req.params;
@@ -234,7 +243,18 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         "payment-request-update4"
       );
     });
-  }
+
+    logger.log({
+      level: "info",
+      message: `reviewed payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `reviewed by`,
+      },
+    });
+  } else
 
   if (updatedRequest?.status == "approved (hod)") {
     let initiator = await UserModel.findById(updatedRequest?.createdBy);
@@ -270,7 +290,18 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         "payment-request-approval"
       );
     });
-  }
+
+    logger.log({
+      level: "info",
+      message: `approved payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `approved by`,
+      },
+    });
+  } else
 
   if (updatedRequest?.status == "approved") {
     let initiator = await UserModel.findById(updatedRequest?.createdBy);
@@ -293,7 +324,32 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         "payment-request-update2"
       );
     });
-  }
+    logger.log({
+      level: "info",
+      message: `approved payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `approved by`,
+      },
+    });
+  } else
+
+  if (updatedRequest?.status == "withdrawn") {
+    let initiator = await UserModel.findById(updatedRequest?.createdBy);
+  
+    logger.log({
+      level: "info",
+      message: `withdrawn payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `withdrawn by`,
+      },
+    });
+  } else
 
   if (updatedRequest?.status == "paid") {
     let initiator = await UserModel.findById(updatedRequest?.createdBy);
@@ -317,6 +373,28 @@ paymentRequestRouter.put("/:id", async (req, res) => {
         "payment-request-update3"
       );
     });
+    logger.log({
+      level: "info",
+      message: `paid payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `paid by`,
+      },
+    });
+  } else {
+    logger.log({
+      level: "info",
+      message: `updated payment request`,
+      meta: {
+        doneBy: req.session?.user?.user,
+        referenceId: updatedRequest?._id.toString(),
+        module: "payment-requests",
+        moduleMessage: `updated by`,
+      },
+    });
   }
+
   res.send(updates);
 });

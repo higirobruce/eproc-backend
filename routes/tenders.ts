@@ -7,6 +7,7 @@ import {
   approveRequest,
   declineRequest,
   getAllRequests,
+  getTransactionLogs,
   saveRequest,
   updateRequestStatus,
 } from "../controllers/requests";
@@ -69,6 +70,11 @@ tenderRouter.get("/stats", async (req, res) => {
   });
 });
 
+tenderRouter.get("/logs/:id", async (req, res) => {
+  let { id } = req.params;
+  res.send(await getTransactionLogs(id));
+});
+
 tenderRouter.get("/:id", async (req, res) => {
   let { id } = req.params;
   res.send(await getTendersById(id));
@@ -119,6 +125,7 @@ tenderRouter.post("/", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${createdTender?._id}`,
       module: "tenders",
+      moduleMessage: `created by`,
     },
   });
   res.status(201).send(createdTender);
@@ -152,6 +159,7 @@ tenderRouter.put("/:id", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: "tenders",
+      moduleMessage: `updated by`,
     },
   });
   res.send(updatedTender);
@@ -168,6 +176,7 @@ tenderRouter.put("/status/:id", async (req, res) => {
       doneBy: req.session?.user?.user,
       referenceId: `${id}`,
       module: "tenders",
+      moduleMessage: `updated by`,
     },
   });
   res.send(tender);

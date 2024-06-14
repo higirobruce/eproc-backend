@@ -10,6 +10,9 @@ export class Contract implements IContract {
   createdBy: Types.ObjectId;
   sections: [];
   status: String;
+  title: String;
+  senderPartyLabel: String;
+  receiverPartyLabel: String;
   deliveryProgress: number;
   startDate: Date;
   endDate: Date;
@@ -24,6 +27,9 @@ export class Contract implements IContract {
     createdBy: string,
     sections: [],
     status: string,
+    title: string,
+    senderPartyLabel: string,
+    receiverPartyLabel: string,
     deliveryProgress: number,
     startDate: Date,
     endDate: Date,
@@ -39,6 +45,9 @@ export class Contract implements IContract {
       : new Types.ObjectId();
     this.sections = sections;
     this.status = status;
+    this.title = title;
+    this.senderPartyLabel = senderPartyLabel;
+    this.receiverPartyLabel = receiverPartyLabel;
     this.deliveryProgress = deliveryProgress;
     this.startDate = startDate;
     this.endDate = endDate;

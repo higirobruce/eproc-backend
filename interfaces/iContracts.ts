@@ -4,11 +4,14 @@ export interface IContract {
   number: number;
   sections: [];
   status: String;
+  title: String;
+  senderPartyLabel: String;
+  receiverPartyLabel: String;
   deliveryProgress: number;
   startDate: Date;
   endDate: Date;
   signatories: [];
-  reqAttachmentDocId: String
+  reqAttachmentDocId: String;
 }
 
 export interface IContractDocument extends IContract, Document {
