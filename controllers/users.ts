@@ -288,7 +288,7 @@ export async function getAllFinanceApprovers() {
 export async function getAllPaymentReviewers() {
   let users = await UserModel.find(
     {
-      "permissions.canEditPaymentRequests": true,
+      "permissions.canReviewPaymentRequests": true,
     },
     {
       email: 1,
