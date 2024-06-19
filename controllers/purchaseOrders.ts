@@ -23,9 +23,6 @@ export async function getAllPOs(req?: any) {
   const currentPage = +req.query.page;
   const status = req.query.status;
   const search = req.query.search;
-
-  console.log("Seearh: ", search);
-
   let pipeline: any[] = [
     {
       $lookup: {
@@ -127,9 +124,9 @@ export async function getAllPOs(req?: any) {
     },
     {
       $sort: {
-        number: -1
-      }
-    }
+        number: -1,
+      },
+    },
   ];
 
   let query =
@@ -152,9 +149,17 @@ export async function getAllPOs(req?: any) {
 
   if (search && search !== "null" && search !== "" && search != "undefined") {
     pipeline.push({
+      $addFields: {
+        numberAsString: {
+          $toString: "$number",
+        },
+      },
+    });
+
+    pipeline.push({
       $match: {
         $or: [
-          { number: { $regex: search, $options: "i" } },
+          { numberAsString: { $regex: search, $options: "i" } },
           { "vendor.companyName": { $regex: search, $options: "i" } },
         ],
       },

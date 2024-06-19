@@ -97,36 +97,135 @@ export async function getContractById(id: String) {
 export async function getContractByStatus(req: any, status: String) {
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
+  const search = req.query.search;
   let pos: any;
   let totalPages: any;
   let query = {};
 
-  if (status === "all") query = {};
-  else query = { status };
-
-  const contractQuery = ContractModel.find(query)
-    .populate("tender")
-    .populate("request")
-    .populate("vendor")
-    .populate("createdBy")
-    .populate({
-      path: "tender",
-      populate: {
-        path: "purchaseRequest",
-        model: "Request",
+  console.log("Seeearrr", search);
+  let pipeline: any = [
+    {
+      $addFields: {
+        numberAsString: {
+          $toString: "$number",
+        },
       },
-    })
-    .sort({ number: -1 });
+    },
+    {
+      $lookup: {
+        from: "tenders",
+        localField: "tender",
+        foreignField: "_id",
+        as: "tender",
+        pipeline: [
+          {
+            $lookup: {
+              from: "requests",
+              localField: "purchaseRequest",
+              foreignField: "_id",
+              as: "purchaseRequest",
+            },
+          },
+          {
+            $unwind: {
+              path: "$purchaseRequest",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$tender",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "vendor",
+        foreignField: "_id",
+        as: "vendor",
+      },
+    },
+    {
+      $unwind: {
+        path: "$vendor",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "createdBy",
+      },
+    },
+    {
+      $unwind: {
+        path: "$createdBy",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ];
 
-  totalPages = await contractQuery;
+  if (status === "all") query = { $match: {} };
+  else
+    query = {
+      $match: {
+        status: status,
+      },
+    };
 
-  if (pageSize && currentPage) {
-    contractQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  pipeline.unshift(query);
+
+  if (search) {
+    pipeline.push({
+      $match: {
+        $or: [
+          // { numberAsString: { $regex: search, $options: "i" } },
+          { "vendor.companyName": { $regex: search, $options: "i" } },
+        ],
+      },
+    });
   }
 
-  pos = await contractQuery.clone();
+  let contractQuery = await ContractModel.aggregate(pipeline).sort({
+    number: -1,
+  });
 
-  return { data: pos, totalPages: totalPages?.length };
+  totalPages = contractQuery.length;
+
+  if (pageSize && currentPage) {
+    pipeline.push({
+      $skip: pageSize * (currentPage - 1),
+    });
+    pipeline.push({
+      $limit: pageSize,
+    });
+  }
+
+  contractQuery = await ContractModel.aggregate(pipeline).sort({
+    number: -1,
+  });
+
+  return { data: contractQuery, totalPages: totalPages };
 }
 
 export async function getContractByVendorId(
@@ -191,118 +290,139 @@ export async function getContractsTotalAnalytics(year: any) {
   }
   let pipeline = [
     {
-      '$lookup': {
-        'from': 'requests', 
-        'localField': 'request', 
-        'foreignField': '_id', 
-        'as': 'request'
-      }
-    }, {
-      '$unwind': {
-        'path': '$request', 
-        'preserveNullAndEmptyArrays': true
-      }
-    }, {
-      '$addFields': {
-        'currency': '$request.currency'
-      }
-    }, {
-      '$lookup': {
-        'from': 'exchangerates', 
-        'let': {
-          'month': {
-            '$month': '$createdAt'
-          }, 
-          'year': {
-            '$year': '$createdAt'
-          }
-        }, 
-        'pipeline': [
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $addFields: {
+        currency: "$request.currency",
+      },
+    },
+    {
+      $lookup: {
+        from: "exchangerates",
+        let: {
+          month: {
+            $month: "$createdAt",
+          },
+          year: {
+            $year: "$createdAt",
+          },
+        },
+        pipeline: [
           {
-            '$match': {
-              '$expr': {
-                '$and': [
+            $match: {
+              $expr: {
+                $and: [
                   {
-                    '$ne': [
-                      '$currency', 'RWF'
-                    ]
-                  }, {
-                    '$eq': [
+                    $ne: ["$currency", "RWF"],
+                  },
+                  {
+                    $eq: [
                       {
-                        '$month': '$Date'
-                      }, '$$month'
-                    ]
-                  }, {
-                    '$eq': [
+                        $month: "$Date",
+                      },
+                      "$$month",
+                    ],
+                  },
+                  {
+                    $eq: [
                       {
-                        '$year': '$Date'
-                      }, '$$year'
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        ], 
-        'as': 'exchangeRates'
-      }
-    }, {
-      '$unwind': '$exchangeRates'
-    }, {
-      '$addFields': {
-        'amount': {
-          '$cond': [
+                        $year: "$Date",
+                      },
+                      "$$year",
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "exchangeRates",
+      },
+    },
+    {
+      $unwind: "$exchangeRates",
+    },
+    {
+      $addFields: {
+        amount: {
+          $cond: [
             {
-              '$ne': [
-                '$currency', 'RWF'
-              ]
-            }, {
-              '$multiply': [
-                '$amount', '$exchangeRates.Open'
-              ]
-            }, '$amount'
-          ]
-        }
-      }
-    }, {
-      '$addFields': {
-        'year': {
-          '$year': '$createdAt'
-        }
-      }
-    }, {
-      '$match': {
-        'year': parseInt(year)
-      }
-    }, {
-      '$group': {
-        '_id': {
-          '$month': '$createdAt'
-        }, 
-        'month': {
-          '$first': {
-            '$let': {
-              'vars': {
-                'months': [
-                  null, 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
-                ]
-              }, 
-              'in': {
-                '$arrayElemAt': [
-                  '$$months', {
-                    '$month': '$createdAt'
-                  }
-                ]
-              }
-            }
-          }
-        }, 
-        'contracts': {
-          '$sum': 1
-        }
-      }
-    }
-  ]
+              $ne: ["$currency", "RWF"],
+            },
+            {
+              $multiply: ["$amount", "$exchangeRates.Open"],
+            },
+            "$amount",
+          ],
+        },
+      },
+    },
+    {
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $month: "$createdAt",
+        },
+        month: {
+          $first: {
+            $let: {
+              vars: {
+                months: [
+                  null,
+                  "JAN",
+                  "FEB",
+                  "MAR",
+                  "APR",
+                  "MAY",
+                  "JUN",
+                  "JUL",
+                  "AUG",
+                  "SEP",
+                  "OCT",
+                  "NOV",
+                  "DEC",
+                ],
+              },
+              in: {
+                $arrayElemAt: [
+                  "$$months",
+                  {
+                    $month: "$createdAt",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        contracts: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
 
   let req = await ContractModel.aggregate(pipeline).sort({ _id: 1 });
   return req;
@@ -388,68 +508,70 @@ export async function getContractLeadTime(year: any) {
   }
   let pipeline = [
     {
-      '$addFields': {
-        'year': {
-          '$year': '$createdAt'
-        }
-      }
-    }, {
-      '$match': {
-        'year': parseInt(year)
-      }
-    }, {
-      '$unwind': {
-        'path': '$signatories', 
-        'preserveNullAndEmptyArrays': false
-      }
-    }, {
-      '$match': {
-        'signatories.onBehalfOf': {
-          '$ne': 'Irembo Ltd'
-        }
-      }
-    }, {
-      '$addFields': {
-        'signedAt': {
-          '$toDate': '$signatories.signedAt'
-        }
-      }
-    }, {
-      '$match': {
-        'signedAt': {
-          '$ne': null
-        }
-      }
-    }, {
-      '$group': {
-        '_id': null, 
-        'average_lead_time': {
-          '$avg': {
-            '$subtract': [
-              '$signedAt', '$createdAt'
-            ]
-          }
-        }
-      }
-    }, {
-      '$project': {
-        '_id': 0, 
-        'average_lead_time': {
-          '$divide': [
-            '$average_lead_time', 86400000
-          ]
-        }
-      }
-    }, {
-      '$project': {
-        'days': {
-          '$round': [
-            '$average_lead_time'
-          ]
-        }
-      }
-    }
-  ]
+      $addFields: {
+        year: {
+          $year: "$createdAt",
+        },
+      },
+    },
+    {
+      $match: {
+        year: parseInt(year),
+      },
+    },
+    {
+      $unwind: {
+        path: "$signatories",
+        preserveNullAndEmptyArrays: false,
+      },
+    },
+    {
+      $match: {
+        "signatories.onBehalfOf": {
+          $ne: "Irembo Ltd",
+        },
+      },
+    },
+    {
+      $addFields: {
+        signedAt: {
+          $toDate: "$signatories.signedAt",
+        },
+      },
+    },
+    {
+      $match: {
+        signedAt: {
+          $ne: null,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        average_lead_time: {
+          $avg: {
+            $subtract: ["$signedAt", "$createdAt"],
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        average_lead_time: {
+          $divide: ["$average_lead_time", 86400000],
+        },
+      },
+    },
+    {
+      $project: {
+        days: {
+          $round: ["$average_lead_time"],
+        },
+      },
+    },
+  ];
 
   let req = await ContractModel.aggregate(pipeline);
   return req;
