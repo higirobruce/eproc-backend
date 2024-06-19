@@ -52,7 +52,7 @@ poRouter.get("/byVendorId/:vendorId", async (req, res) => {
 poRouter.get("/byStatus/:status", async (req, res) => {
   let { status } = req.params;
   status === "all"
-    ? res.send(await getAllPOs())
+    ? res.send(await getAllPOs(req))
     : res.send(await getAllPOsByStatus(status));
 });
 

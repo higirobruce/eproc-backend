@@ -22,9 +22,116 @@ export async function getAllPOs(req?: any) {
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
   const status = req.query.status;
+  const search = req.query.search;
 
-  let pos: any;
-  let totalPages: any;
+  console.log("Seearh: ", search);
+
+  let pipeline: any[] = [
+    {
+      $lookup: {
+        from: "tenders",
+        localField: "tender",
+        foreignField: "_id",
+        as: "tender",
+        pipeline: [
+          {
+            $lookup: {
+              from: "requests",
+              localField: "purchaseRequest",
+              foreignField: "_id",
+              as: "purchaseRequest",
+            },
+          },
+          {
+            $unwind: {
+              path: "$purchaseRequest",
+            },
+          },
+          {
+            $lookup: {
+              from: "budgetlines",
+              localField: "purchaseRequest.budgetLine",
+              foreignField: "_id",
+              as: "purchaseRequest.budgetLine",
+            },
+          },
+          {
+            $unwind: {
+              path: "$purchaseRequest.budgetLine",
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$tender",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "vendor",
+        foreignField: "_id",
+        as: "vendor",
+      },
+    },
+    {
+      $unwind: {
+        path: "$vendor",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "budgetlines",
+        localField: "request.budgetLine",
+        foreignField: "_id",
+        as: "request.budgetLine",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request.budgetLine",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "createdBy",
+      },
+    },
+    {
+      $unwind: {
+        path: "$createdBy",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $sort: {
+        number: -1
+      }
+    }
+  ];
+
   let query =
     status && status !== "null" && status == "all"
       ? {}
@@ -39,50 +146,40 @@ export async function getAllPOs(req?: any) {
         }
       : { status };
 
-  const purchaseOrderQuery = PurchaseOrderModel.find(query)
-    .populate("tender")
-    .populate("vendor")
-    .populate("request")
-    .populate({
-      path: "request",
-      populate: {
-        path: "budgetLine",
-        model: "BudgetLine",
-      },
-    })
-    .populate("createdBy")
-    .populate({
-      path: "tender",
-      populate: {
-        path: "purchaseRequest",
-        model: "Request",
-        populate: {
-          path: "budgetLine",
-          model: "BudgetLine",
-        },
-      },
-    })
-    .sort({ number: -1 });
+  pipeline.unshift({
+    $match: query,
+  });
 
-  totalPages = await purchaseOrderQuery;
-
-  if (pageSize && currentPage) {
-    purchaseOrderQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  if (search && search !== "null" && search !== "" && search != "undefined") {
+    pipeline.push({
+      $match: {
+        $or: [
+          { number: { $regex: search, $options: "i" } },
+          { "vendor.companyName": { $regex: search, $options: "i" } },
+        ],
+      },
+    });
   }
 
-  pos = await purchaseOrderQuery.clone();
+  let purchaseOrderQuery = await PurchaseOrderModel.aggregate(pipeline).sort({
+    number: -1,
+  });
+  let allDocs = purchaseOrderQuery?.length;
 
-  return { data: pos, totalPages: totalPages?.length };
+  if (pageSize && currentPage) {
+    pipeline.push({
+      $skip: pageSize * (currentPage - 1),
+    });
+    pipeline.push({
+      $limit: pageSize,
+    });
+  }
+
+  purchaseOrderQuery = await PurchaseOrderModel.aggregate(pipeline);
+
+  return { data: purchaseOrderQuery, totalPages: allDocs };
 }
 
-/**
- * Get purchase order by tender id. This is used to populate the form fields when creating a new purchase order
- *
- * @param tenderId - The id of the tender
- * @param String
- *
- * @return { Object } The purchase order with the tender id as key and the request as value. If there is no purchase order with the tender id null is
- */
 export async function getPOByTenderId(tenderId: String) {
   let pos = await PurchaseOrderModel.find({ tender: tenderId })
     .populate("tender")
@@ -178,14 +275,6 @@ export async function getPOByRequestId(requestId: String) {
   return pos;
 }
 
-/**
- * Get purchase order by vendor id. This is used for testing purposes to ensure that the user doesn't accidentally get an error when trying to create a purchase order that does not exist.
- *
- * @param vendorId - Vendor id to look for. If null or " " will return all pos.
- * @param String
- *
- * @return { Promise } The promise is resolved with an object with the following properties : tender : The user's tender createdBy : The user's created by
- */
 export async function getPOByVendorId(vendorId: String, status: String) {
   let query =
     status && status !== "null" && status == "all"
@@ -233,15 +322,6 @@ export async function getPOByVendorId(vendorId: String, status: String) {
   return pos;
 }
 
-/**
- * Updates the status of Purchase Order. This is a convenience method for updating the status of a Purchase Order
- *
- * @param id - The id of the Po to update
- * @param String
- * @param newStatus - The status to set the PO to.
- *
- * @return { Object } The result of the action i. e. { message : true|false errorMessage :'Error '
- */
 export async function updatePOStatus(id: String, newStatus: String) {
   try {
     let updatedPO = await PurchaseOrderModel.findByIdAndUpdate(id, {
@@ -300,15 +380,6 @@ export async function updatePOStatus(id: String, newStatus: String) {
   }
 }
 
-/**
- * Updates the progress of purchase order. It is used to update the delivery progress of a purchased order
- *
- * @param id - ID of the purchase order
- * @param String
- * @param progress - String representing the amount of the order that has been dismissed
- *
- * @return { Object } Object with error flag and errorMessage set if an error occured during update otherwise an error is
- */
 export async function updateProgress(id: String, updates: String) {
   try {
     let a = await PurchaseOrderModel.findByIdAndUpdate(id, updates, {
@@ -325,14 +396,6 @@ export async function updateProgress(id: String, updates: String) {
   }
 }
 
-/**
- * Saves a Purchase Order to the database. This will throw if there is an error saving the PO.
- *
- * @param po - The Purchase Order to save. Must be an instance of PurchaseOrder
- * @param PurchaseOrder
- *
- * @return { Promise } The created PO
- */
 export async function savePO(po: PurchaseOrder) {
   try {
     let createdRecord = await PurchaseOrderModel.create(po);
