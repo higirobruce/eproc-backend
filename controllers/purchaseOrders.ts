@@ -739,11 +739,28 @@ export async function getPOPaidRequests(id: string) {
   }
 }
 
-export async function getPoTotalAnalytics(year: any) {
+export async function getPoTotalAnalytics(year: any, currency: any) {
   if (!year) {
     year = "2024";
   }
+  if (!currency) {
+    currency = "RWF";
+  }
   let pipeline = [
+    {
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
     {
       $addFields: {
         year: {
@@ -754,6 +771,7 @@ export async function getPoTotalAnalytics(year: any) {
     {
       $match: {
         year: parseInt(year),
+        "request.currency": currency,
       },
     },
 
@@ -822,15 +840,34 @@ export async function getPoTotalAnalytics(year: any) {
     },
   ];
 
-  let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
+  let req = await PurchaseOrderModel.aggregate(pipeline).sort({ _id: 1 });
+
+  console.log(req);
   return req;
 }
 
-export async function getPoStatusAnalytics(year: any) {
+export async function getPoStatusAnalytics(year: any, currency: any) {
   if (!year) {
     year = "2024";
   }
+  if (!currency) {
+    currency = "RWF";
+  }
   let pipeline = [
+    {
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
     {
       $addFields: {
         year: {
@@ -841,6 +878,7 @@ export async function getPoStatusAnalytics(year: any) {
     {
       $match: {
         year: parseInt(year),
+        "request.currency": currency,
       },
     },
     {
@@ -877,8 +915,28 @@ export async function getPoStatusAnalytics(year: any) {
   return req;
 }
 
-export async function getTotalNumberOfPOs(year: any) {
+export async function getTotalNumberOfPOs(year: any, currency: any) {
+  if (!year) {
+    year = "2024";
+  }
+  if (!currency) {
+    currency = "RWF";
+  }
   let pipeline = [
+    {
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
     {
       $addFields: {
         year: {
@@ -889,6 +947,7 @@ export async function getTotalNumberOfPOs(year: any) {
     {
       $match: {
         year: parseInt(year),
+        "request.currency": currency,
       },
     },
     { $count: "total_records" },
@@ -900,11 +959,28 @@ export async function getTotalNumberOfPOs(year: any) {
   // return count;
 }
 
-export async function getPOLeadTime(year: any) {
+export async function getPOLeadTime(year: any, currency: any) {
   if (!year) {
     year = "2024";
   }
+  if (!currency) {
+    currency = "RWF";
+  }
   let pipeline = [
+    {
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
     {
       $addFields: {
         year: {
@@ -915,6 +991,7 @@ export async function getPOLeadTime(year: any) {
     {
       $match: {
         year: parseInt(year),
+        "request.currency": currency,
       },
     },
     {

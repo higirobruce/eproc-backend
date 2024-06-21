@@ -82,7 +82,6 @@ export async function updateBudgetLine(id: String, update: any) {
       { new: true }
     );
 
-    console.log(updatedBg);
     return updatedBg;
   } catch (err) {
     console.log(err);

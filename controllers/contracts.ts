@@ -284,9 +284,12 @@ export async function updateContract(id: String, contract: Contract) {
   return newContract;
 }
 
-export async function getContractsTotalAnalytics(year: any) {
+export async function getContractsTotalAnalytics(year: any, currency: any) {
   if (!year) {
     year = "2024";
+  }
+  if (!currency) {
+    currency = "RWF";
   }
   let pipeline = [
     {
@@ -303,72 +306,7 @@ export async function getContractsTotalAnalytics(year: any) {
         preserveNullAndEmptyArrays: true,
       },
     },
-    {
-      $addFields: {
-        currency: "$request.currency",
-      },
-    },
-    {
-      $lookup: {
-        from: "exchangerates",
-        let: {
-          month: {
-            $month: "$createdAt",
-          },
-          year: {
-            $year: "$createdAt",
-          },
-        },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  {
-                    $ne: ["$currency", "RWF"],
-                  },
-                  {
-                    $eq: [
-                      {
-                        $month: "$Date",
-                      },
-                      "$$month",
-                    ],
-                  },
-                  {
-                    $eq: [
-                      {
-                        $year: "$Date",
-                      },
-                      "$$year",
-                    ],
-                  },
-                ],
-              },
-            },
-          },
-        ],
-        as: "exchangeRates",
-      },
-    },
-    {
-      $unwind: "$exchangeRates",
-    },
-    {
-      $addFields: {
-        amount: {
-          $cond: [
-            {
-              $ne: ["$currency", "RWF"],
-            },
-            {
-              $multiply: ["$amount", "$exchangeRates.Open"],
-            },
-            "$amount",
-          ],
-        },
-      },
-    },
+
     {
       $addFields: {
         year: {
@@ -379,6 +317,7 @@ export async function getContractsTotalAnalytics(year: any) {
     {
       $match: {
         year: parseInt(year),
+        "request.currency": currency,
       },
     },
     {
@@ -428,11 +367,28 @@ export async function getContractsTotalAnalytics(year: any) {
   return req;
 }
 
-export async function getContractStatusAnalytics(year: any) {
+export async function getContractStatusAnalytics(year: any, currency: any) {
   if (!year) {
     year = "2024";
   }
+  if (!currency) {
+    currency = "RWF";
+  }
   let pipeline = [
+    {
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
     {
       $addFields: {
         year: {
@@ -443,6 +399,7 @@ export async function getContractStatusAnalytics(year: any) {
     {
       $match: {
         year: parseInt(year),
+        "request.currency": currency,
       },
     },
     {
@@ -479,8 +436,28 @@ export async function getContractStatusAnalytics(year: any) {
   return req;
 }
 
-export async function getTotalNumberOfContracts(year: any) {
+export async function getTotalNumberOfContracts(year: any, currency: any) {
+  if (!year) {
+    year = "2024";
+  }
+  if (!currency) {
+    currency = "RWF";
+  }
   let pipeline = [
+    {
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
     {
       $addFields: {
         year: {
@@ -491,6 +468,7 @@ export async function getTotalNumberOfContracts(year: any) {
     {
       $match: {
         year: parseInt(year),
+        "request.currency": currency,
       },
     },
     { $count: "total_records" },
@@ -502,11 +480,28 @@ export async function getTotalNumberOfContracts(year: any) {
   // return count;
 }
 
-export async function getContractLeadTime(year: any) {
+export async function getContractLeadTime(year: any, currency: any) {
   if (!year) {
     year = "2024";
   }
+  if (!currency) {
+    currency = "RWF";
+  }
   let pipeline = [
+    {
+      $lookup: {
+        from: "requests",
+        localField: "request",
+        foreignField: "_id",
+        as: "request",
+      },
+    },
+    {
+      $unwind: {
+        path: "$request",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
     {
       $addFields: {
         year: {
@@ -517,6 +512,7 @@ export async function getContractLeadTime(year: any) {
     {
       $match: {
         year: parseInt(year),
+        "request.currency": currency,
       },
     },
     {
@@ -573,6 +569,10 @@ export async function getContractLeadTime(year: any) {
     },
   ];
 
-  let req = await ContractModel.aggregate(pipeline);
-  return req;
+  try {
+    let req = await ContractModel.aggregate(pipeline);
+    return req;
+  } catch (err) {
+    return [];
+  }
 }

@@ -79,12 +79,12 @@ requetsRouter.get("/logs/:id", async (req, res) => {
 });
 
 requetsRouter.get("/totalOverview", async (req, res) => {
-  let { year } = req.query;
-  let resTotals = await getPurReqTotalAnalytics(year);
-  let resStatuses = await getPurReqStatusAnalytics(year);
-  let resSourcing = await getPurReqSourcingAnalytics(year);
-  let resServiceCat = await getPurReqServiceCat(year);
-  let leadTimeDays = await getPurReqLeadTime(year);
+  let { year, currency } = req.query;
+  let resTotals = await getPurReqTotalAnalytics(year, currency);
+  let resStatuses = await getPurReqStatusAnalytics(year, currency);
+  let resSourcing = await getPurReqSourcingAnalytics(year, currency);
+  let resServiceCat = await getPurReqServiceCat(year, currency);
+  let leadTimeDays = await getPurReqLeadTime(year, currency);
 
   res.send({
     data: resTotals,

@@ -3,8 +3,8 @@ import { IUserDocument } from '../interfaces/iUsers';
 import mongoose, { Schema, model, connect, Document, Types } from 'mongoose';
 import { iDepartment } from '../interfaces/iDepartment';
 
-export const DepartmentSchema = new Schema<iDepartment>({
-   
+export const DepartmentSchema = new Schema<iDepartment>(
+{
     number: {
         type: Number, unique: true,
         dropDups: true,
@@ -17,6 +17,8 @@ export const DepartmentSchema = new Schema<iDepartment>({
         type: Boolean,
         default: true,
     }
-},{timestamps: true})
+},
+{timestamps: true}
+)
 
 export const DepartmentModel = model<iDepartment>('Department', DepartmentSchema);

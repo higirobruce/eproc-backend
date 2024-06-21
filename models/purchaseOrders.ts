@@ -1,7 +1,8 @@
 import mongoose, { Schema, model, connect, Document, Types } from 'mongoose';
 import { IPurchaseOrderDocument } from '../interfaces/iPurchaseOrders';
 
-export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
+export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>(
+{
     number: Number,
     vendor: {
         type: Types.ObjectId,
@@ -40,6 +41,9 @@ export const PurchaseOrderSchema = new Schema<IPurchaseOrderDocument>({
     rateComment:{
         type: String
     }
-},{timestamps: true})
+},
+{timestamps: true}
+
+)
 
 export const PurchaseOrderModel = model<IPurchaseOrderDocument>('PurchaseOrder', PurchaseOrderSchema);

@@ -367,7 +367,7 @@ export async function getTendCountsByCategory() {
   return result;
 }
 
-export async function getTendersTotalAnalytics(year: any) {
+export async function getTendersTotalAnalytics(year: any, currency: any) {
   if (!year) {
     year = "2024";
   }
@@ -455,7 +455,7 @@ export async function getTendersTotalAnalytics(year: any) {
   return req;
 }
 
-export async function getTenderStatusAnalytics(year: any) {
+export async function getTenderStatusAnalytics(year: any, currency: any) {
   if (!year) {
     year = "2024";
   }
