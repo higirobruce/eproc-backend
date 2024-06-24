@@ -49,7 +49,7 @@ export async function updateDepartment(id: any, update: any) {
       );
 
       if (nVisibleBidgetLines[0]?.visible > 0) {
-        console.log("Tyiiin");
+        
         return {
           error: true,
           message: "First hide all the budget lines under this department!",

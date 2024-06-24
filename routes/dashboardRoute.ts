@@ -20,22 +20,22 @@ import { getDepartmentSpend } from "../controllers/paymentRequests";
 export const dashboardRoute = Router();
 
 dashboardRoute.get("/", async (req, res) => {
-  let { year } = req.query;
-  let nContracts = await getContractsTotalAnalytics(year);
-  let contractsLeadTime = await getContractLeadTime(year);
+  let { year, currency } = req.query;
+  let nContracts = await getContractsTotalAnalytics(year, currency);
+  let contractsLeadTime = await getContractLeadTime(year, currency);
 
-  let nTenders = await getTendersTotalAnalytics(year);
+  let nTenders = await getTendersTotalAnalytics(year, currency);
 
-  let nPos = await getPoTotalAnalytics(year);
-  let posLeadTime = await getPOLeadTime(year)
+  let nPos = await getPoTotalAnalytics(year, currency);
+  let posLeadTime = await getPOLeadTime(year, currency)
 
   let merged = nContracts.concat(nTenders).concat(nPos);
 
-  let statusContracts = await getContractStatusAnalytics(year);
-  let statusTenders = await getTenderStatusAnalytics(year);
-  let statusPOS = await getPoStatusAnalytics(year);
+  let statusContracts = await getContractStatusAnalytics(year, currency);
+  let statusTenders = await getTenderStatusAnalytics(year, currency);
+  let statusPOS = await getPoStatusAnalytics(year, currency);
 
-  let departmentSpend = await getDepartmentSpend(year);
+  let departmentSpend = await getDepartmentSpend(year, currency);
 
   // res.send([
   //   { item: "Tenders", data: nTenders, statusData: statusTenders },

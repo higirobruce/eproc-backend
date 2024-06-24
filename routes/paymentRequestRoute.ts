@@ -99,10 +99,10 @@ paymentRequestRouter.get("/byStatus/:status/:id", async (req, res) => {
 });
 
 paymentRequestRouter.get("/totalOverview", async (req, res) => {
-  let { year } = req.query;
-  let resTotals = await getPayReqTotalAnalytics(year);
-  let resStatusData = await getPayReqStatusAnalytics(year);
-  let leadTime = await getPayReqLeadTime(year);
+  let { year, currency } = req.query;
+  let resTotals = await getPayReqTotalAnalytics(year, currency);
+  let resStatusData = await getPayReqStatusAnalytics(year, currency);
+  let leadTime = await getPayReqLeadTime(year, currency);
 
   res.send({
     data: resTotals,
@@ -112,10 +112,10 @@ paymentRequestRouter.get("/totalOverview", async (req, res) => {
 });
 
 paymentRequestRouter.get("/spendTracking", async (req, res) => {
-  let { year } = req.query;
-  let paidVsAll = await getPayReqSpendTrack(year);
-  let totals = await getPayReqSpendTrackTotals(year);
-  let budgets = await getPayReqSpendTrackBudgets(year);
+  let { year, currency } = req.query;
+  let paidVsAll = await getPayReqSpendTrack(year, currency);
+  let totals = await getPayReqSpendTrackTotals(year, currency);
+  let budgets = await getPayReqSpendTrackBudgets(year, currency);
 
   res.send({
     data: paidVsAll,
@@ -128,10 +128,10 @@ paymentRequestRouter.get("/spendTracking", async (req, res) => {
 });
 
 paymentRequestRouter.get("/expensePlanning", async (req, res) => {
-  let { year } = req.query;
-  let interalVSExternal = await getPayReqExpenseTrack(year);
-  let totals = await getPayReqExpenseTrackTotals(year);
-  let dapartmentalExpenses = await getDepartmentExpenseTracking(year);
+  let { year, currency } = req.query;
+  let interalVSExternal = await getPayReqExpenseTrack(year, currency);
+  let totals = await getPayReqExpenseTrackTotals(year, currency);
+  let dapartmentalExpenses = await getDepartmentExpenseTracking(year, currency);
 
   res.send({
     data: interalVSExternal,
@@ -149,8 +149,6 @@ paymentRequestRouter.get("/:id", async (req, res) => {
   let { id } = req.params;
   res.send(await getPaymentRequestById(id));
 });
-
-
 
 paymentRequestRouter.put("/:id", async (req, res) => {
   let { id } = req.params;

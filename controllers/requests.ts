@@ -574,9 +574,12 @@ export async function getReqCountsByCategory() {
   return result.sort((a, b) => (a._id < b._id ? -1 : 1));
 }
 
-export async function getPurReqTotalAnalytics(year: any) {
+export async function getPurReqTotalAnalytics(year: any, currency: any) {
   if (!year) {
     year = "2024";
+  }
+  if (!currency) {
+    currency = "RWF";
   }
   let pipeline = [
     {
@@ -650,6 +653,7 @@ export async function getPurReqTotalAnalytics(year: any) {
     {
       $match: {
         year: parseInt(year),
+        currency: currency,
       },
     },
     {
@@ -727,9 +731,12 @@ export async function getPurReqTotalAnalytics(year: any) {
   return req;
 }
 
-export async function getPurReqStatusAnalytics(year: any) {
+export async function getPurReqStatusAnalytics(year: any, currency: any) {
   if (!year) {
     year = "2024";
+  }
+  if (!currency) {
+    currency = "RWF";
   }
   let pipeline = [
     {
@@ -742,6 +749,7 @@ export async function getPurReqStatusAnalytics(year: any) {
     {
       $match: {
         year: parseInt(year),
+        currency: currency,
       },
     },
     {
@@ -784,9 +792,12 @@ export async function getPurReqStatusAnalytics(year: any) {
   return req;
 }
 
-export async function getPurReqSourcingAnalytics(year: any) {
+export async function getPurReqSourcingAnalytics(year: any, currency: any) {
   if (!year) {
     year = "2024";
+  }
+  if (!currency) {
+    currency = "RWF";
   }
   let pipeline = [
     {
@@ -799,6 +810,7 @@ export async function getPurReqSourcingAnalytics(year: any) {
     {
       $match: {
         year: parseInt(year),
+        currency: currency,
       },
     },
 
@@ -823,9 +835,12 @@ export async function getPurReqSourcingAnalytics(year: any) {
   return req;
 }
 
-export async function getPurReqServiceCat(year: any) {
+export async function getPurReqServiceCat(year: any, currency: any) {
   if (!year) {
     year = "2024";
+  }
+  if (!currency) {
+    currency = "RWF";
   }
   let pipeline = [
     {
@@ -838,6 +853,7 @@ export async function getPurReqServiceCat(year: any) {
     {
       $match: {
         year: parseInt(year),
+        currency: currency,
       },
     },
     {
@@ -950,9 +966,12 @@ export async function getPurReqServiceCat(year: any) {
   return req;
 }
 
-export async function getPurReqLeadTime(year: any) {
+export async function getPurReqLeadTime(year: any, currency: any) {
   if (!year) {
     year = "2024";
+  }
+  if (!currency) {
+    currency = "RWF";
   }
   let pipeline = [
     {
@@ -965,6 +984,7 @@ export async function getPurReqLeadTime(year: any) {
     {
       $match: {
         year: parseInt(year),
+        currency: currency,
       },
     },
     {

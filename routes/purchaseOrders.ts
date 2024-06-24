@@ -52,7 +52,7 @@ poRouter.get("/byVendorId/:vendorId", async (req, res) => {
 poRouter.get("/byStatus/:status", async (req, res) => {
   let { status } = req.params;
   status === "all"
-    ? res.send(await getAllPOs())
+    ? res.send(await getAllPOs(req))
     : res.send(await getAllPOsByStatus(status));
 });
 
@@ -67,8 +67,8 @@ poRouter.get("/paymentsDone/:id", async (req, res) => {
 });
 
 poRouter.get("/totalOverview", async (req, res) => {
-  let { year } = req.query;
-  let totals = await getPoTotalAnalytics(year);
+  let { year, currency } = req.query;
+  let totals = await getPoTotalAnalytics(year, currency);
 
   res.send({
     data: totals,
@@ -335,7 +335,7 @@ poRouter.put("/:id", async (req, res) => {
         doneBy: req.session?.user?.user,
         referenceId: `${id}`,
         module: "purchase-orders",
-        moduleMessage: 'updated by'
+        moduleMessage: "updated by",
       },
     });
   } else {
@@ -345,7 +345,7 @@ poRouter.put("/:id", async (req, res) => {
       meta: {
         doneBy: req.session?.user?.user,
         payload: req.body,
-        moduleMessage: 'attempt to be updated by'
+        moduleMessage: "attempt to be updated by",
       },
     });
   }

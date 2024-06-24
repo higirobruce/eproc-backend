@@ -1,7 +1,8 @@
 import { Schema, model, Types } from "mongoose";
 import { ITenderDocument } from "../interfaces/iTenders";
 
-export const TenderSchema = new Schema<ITenderDocument>({
+export const TenderSchema = new Schema<ITenderDocument>(
+{
   createdBy: {
     type: Types.ObjectId,
     ref: "User",
@@ -29,6 +30,8 @@ export const TenderSchema = new Schema<ITenderDocument>({
   invitees: [],
   docId: String,
   evaluationReportId: String
-},{timestamps: true});
+},
+{timestamps: true}
+);
 
 export const TenderModel = model<ITenderDocument>("Tender", TenderSchema);
