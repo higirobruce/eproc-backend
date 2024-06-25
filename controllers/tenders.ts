@@ -381,7 +381,7 @@ export async function getTendersTotalAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
       },
     },
 
@@ -469,7 +469,7 @@ export async function getTenderStatusAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
       },
     },
     {

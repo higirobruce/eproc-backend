@@ -316,7 +316,7 @@ export async function getContractsTotalAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         "request.currency": currency,
       },
     },
@@ -398,7 +398,7 @@ export async function getContractStatusAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         "request.currency": currency,
       },
     },
@@ -467,7 +467,7 @@ export async function getTotalNumberOfContracts(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         "request.currency": currency,
       },
     },
@@ -511,7 +511,7 @@ export async function getContractLeadTime(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         "request.currency": currency,
       },
     },
