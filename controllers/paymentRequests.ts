@@ -611,7 +611,7 @@ export async function getPayReqTotalAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -719,7 +719,7 @@ export async function getPayReqLeadTime(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -775,7 +775,7 @@ export async function getPayReqStatusAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -891,7 +891,7 @@ export async function getDepartmentSpend(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -993,7 +993,7 @@ export async function getPayReqSpendTrack(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -1056,7 +1056,7 @@ export async function getPayReqSpendTrack(year: any, currency: any) {
 
   try {
     let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
-    
+
     return req;
   } catch (err) {
     console.log(err);
@@ -1081,7 +1081,7 @@ export async function getPayReqSpendTrackTotals(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -1133,7 +1133,7 @@ export async function getPayReqSpendTrackBudgets(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -1249,7 +1249,7 @@ export async function getPayReqExpenseTrack(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
         status: {
           $nin: ["withdrawn", "paid", "declined", "rejected"],
@@ -1323,7 +1323,7 @@ export async function getPayReqExpenseTrack(year: any, currency: any) {
 
   try {
     let req = await PaymentRequestModel.aggregate(pipeline).sort({ _id: 1 });
-   
+
     return req;
   } catch (err) {
     console.log(err);
@@ -1348,7 +1348,7 @@ export async function getPayReqExpenseTrackTotals(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
         status: {
           $nin: ["withdrawn", "paid", "declined", "rejected"],
@@ -1409,7 +1409,7 @@ export async function getDepartmentExpenseTracking(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },

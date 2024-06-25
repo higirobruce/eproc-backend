@@ -130,7 +130,10 @@ export async function getAllPOs(req?: any) {
   ];
 
   let query =
-    status && status !== "null" && status == "all"
+    status &&
+    status !== "null" &&
+    status == "all" &&
+    typeof status !== undefined
       ? {}
       : status == "signed"
       ? { status: { $in: ["signed", "started"] } }
@@ -143,6 +146,7 @@ export async function getAllPOs(req?: any) {
         }
       : { status };
 
+  console.log(query);
   pipeline.unshift({
     $match: query,
   });
@@ -770,7 +774,7 @@ export async function getPoTotalAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         "request.currency": currency,
       },
     },
@@ -877,7 +881,7 @@ export async function getPoStatusAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         "request.currency": currency,
       },
     },
@@ -946,7 +950,7 @@ export async function getTotalNumberOfPOs(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         "request.currency": currency,
       },
     },
@@ -990,7 +994,7 @@ export async function getPOLeadTime(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         "request.currency": currency,
       },
     },

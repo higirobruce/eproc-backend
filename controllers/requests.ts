@@ -652,7 +652,7 @@ export async function getPurReqTotalAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -748,7 +748,7 @@ export async function getPurReqStatusAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -809,7 +809,7 @@ export async function getPurReqSourcingAnalytics(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -852,7 +852,7 @@ export async function getPurReqServiceCat(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
@@ -983,7 +983,7 @@ export async function getPurReqLeadTime(year: any, currency: any) {
     },
     {
       $match: {
-        year: parseInt(year),
+        year: year == "all" ? { $gte: 1 } : parseInt(year),
         currency: currency,
       },
     },
